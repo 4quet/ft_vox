@@ -1,0 +1,24 @@
+#version 400
+
+layout(location = 0) in vec3 position;
+layout(location = 1) in vec3 normalIn;
+layout(location = 5) in mat4 offsets;
+
+uniform mat4 projectionMatrix;
+uniform mat4 viewMatrix;
+uniform mat4 modelMatrix;
+
+uniform vec3 materialColor;
+
+out vec3 fragColor;
+out vec3 fragPos;
+out vec3 normal;
+
+void main()
+{
+    gl_Position = (projectionMatrix * viewMatrix * offsets) * vec4(position, 1.0);
+
+    fragPos = vec3(modelMatrix * vec4(position, 1.0));
+    fragColor = materialColor;
+    normal = normalIn;
+}
