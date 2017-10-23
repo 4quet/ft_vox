@@ -6,7 +6,7 @@
 #    By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/07/21 11:32:23 by tpierron          #+#    #+#              #
-#    Updated: 2017/10/23 09:57:46 by tpierron         ###   ########.fr        #
+#    Updated: 2017/10/23 10:54:59 by lfourque         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,6 +16,7 @@ NAME = ft_vox
 
 CC = clang++
 SRC =	src/Sdl_gl_win.cpp \
+		src/Block.cpp \
 		main.cpp \
 
 
@@ -23,8 +24,8 @@ CFLAGS = -Wall -Wextra -Werror
 OBJ_PATH = ./obj/
 OBJ_NAME = $(SRC:.cpp=.o)
 
-SDL = -L/Users/tpierron/.brew/lib -lSDL2
-SDL_PATH = -I/Users/tpierron/.brew/include/SDL2
+SDL = -L/Users/$(LOGNAME)/.brew/lib -lSDL2
+SDL_PATH = -I/Users/$(LOGNAME)/.brew/include/SDL2
 
 OPENGL = -framework OpenGl -framework AppKit
 

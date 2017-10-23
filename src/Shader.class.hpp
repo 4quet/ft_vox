@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/16 14:11:32 by thibautpier       #+#    #+#             */
-/*   Updated: 2017/10/19 16:04:29 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/10/23 10:34:07 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 # include <iostream>
 # include <fstream>
 # include <OpenGL/gl3.h>
-// # include "../math3d.hpp"
 # include <gtc/matrix_transform.hpp>
 # include <gtc/type_ptr.hpp>
 
