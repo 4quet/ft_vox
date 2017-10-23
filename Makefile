@@ -6,7 +6,7 @@
 #    By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/07/21 11:32:23 by tpierron          #+#    #+#              #
-#    Updated: 2017/10/23 09:57:46 by tpierron         ###   ########.fr        #
+#    Updated: 2017/10/23 11:31:09 by tpierron         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,6 +16,7 @@ NAME = ft_vox
 
 CC = clang++
 SRC =	src/Sdl_gl_win.cpp \
+		src/Skybox.cpp \
 		main.cpp \
 
 

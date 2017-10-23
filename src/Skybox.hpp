@@ -1,21 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_vox.hpp                                         :+:      :+:    :+:   */
+/*   Skybox.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/10/23 09:22:14 by tpierron          #+#    #+#             */
-/*   Updated: 2017/10/23 11:30:24 by tpierron         ###   ########.fr       */
+/*   Created: 2017/10/23 10:35:17 by tpierron          #+#    #+#             */
+/*   Updated: 2017/10/23 11:38:24 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_VOX_HPP
-# define FT_VOX_HPP
+#ifndef SKYBOX_HPP
+# define SKYBOX_HPP
 
 # include <iostream>
+# include <OpenGL/gl3.h>
+# include <vector>
 
-# include "src/Sdl_gl_win.hpp"
-# include "src/Skybox.hpp"
+class Skybox {
+	public:
+		Skybox(std::string directory);
+		~Skybox();
+		
+		// void	draw() const;
+		unsigned int getTextureID() const;
+	private:
+		Skybox();
+		void	getFacesPath(std::string directory);
+		void	loadTextures();
+
+		unsigned int textureID;
+		std::vector<const char*> textures_faces;
+
+};
 
 #endif
