@@ -6,7 +6,11 @@
 #    By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/07/21 11:32:23 by tpierron          #+#    #+#              #
+<<<<<<< HEAD
 #    Updated: 2017/10/23 11:31:09 by tpierron         ###   ########.fr        #
+=======
+#    Updated: 2017/10/23 10:54:59 by lfourque         ###   ########.fr        #
+>>>>>>> d0d60e9639c28bad85931ab4a6c5918959296cc9
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +20,11 @@ NAME = ft_vox
 
 CC = clang++
 SRC =	src/Sdl_gl_win.cpp \
+<<<<<<< HEAD
 		src/Skybox.cpp \
+=======
+		src/Block.cpp \
+>>>>>>> d0d60e9639c28bad85931ab4a6c5918959296cc9
 		main.cpp \
 
 
@@ -24,8 +32,8 @@ CFLAGS = -Wall -Wextra -Werror
 OBJ_PATH = ./obj/
 OBJ_NAME = $(SRC:.cpp=.o)
 
-SDL = -L/Users/tpierron/.brew/lib -lSDL2
-SDL_PATH = -I/Users/tpierron/.brew/include/SDL2
+SDL = -L/Users/$(LOGNAME)/.brew/lib -lSDL2
+SDL_PATH = -I/Users/$(LOGNAME)/.brew/include/SDL2
 
 OPENGL = -framework OpenGl -framework AppKit
 
