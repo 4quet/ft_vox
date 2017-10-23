@@ -6,7 +6,7 @@
 #    By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/07/21 11:32:23 by tpierron          #+#    #+#              #
-#    Updated: 2017/10/23 13:30:20 by tpierron         ###   ########.fr        #
+#    Updated: 2017/10/23 14:43:18 by tpierron         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,7 +29,6 @@ OBJ_NAME = $(SRC:.cpp=.o)
 SDL = -L/Users/$(LOGNAME)/.brew/lib -lSDL2
 SDL_PATH = -I/Users/$(LOGNAME)/.brew/include/SDL2
 
-# GLM = -L/Users/$(LOGNAME)/.brew/lib -lglm
 GLM_PATH = -I/Users/$(LOGNAME)/.brew/include/glm
 
 OPENGL = -framework OpenGl -framework AppKit
