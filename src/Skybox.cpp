@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 10:37:37 by tpierron          #+#    #+#             */
-/*   Updated: 2017/10/23 11:42:56 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/10/23 14:04:36 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,25 +17,93 @@
 Skybox::Skybox(std::string directory) {
 
 	getFacesPath(directory);
+	Shader shader = Shader("./src/shaders/skybox.glvs", "./src/shaders/skybox.glfs");
 	loadTextures();
+	setBuffers();
 }
 
 Skybox::~Skybox() {
 	return;
 }
 
-void		Skybox::getFacesPath(std::string directory) {
-	std::vector<std::string> paths;
-	paths.push_back(directory + "/right.jpg" );
-	paths.push_back(directory + "/left.jpg" );
-	paths.push_back(directory + "/top.jpg" );
-	paths.push_back(directory + "/bottom.jpg" );
-	paths.push_back(directory + "/back.jpg" );
-	paths.push_back(directory + "/front.jpg" );
+void		Skybox::draw() {
+	// std::cout << "DRAW" << std::endl;
+	glDepthMask(GL_FALSE);
+	shader.use();
+	
+	shader.setView();
 
-	for (unsigned int i = 0; i < 6; i++) {
-		textures_faces.push_back(paths[i].c_str());
-	}
+	glBindVertexArray(vao);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glDepthMask(GL_TRUE);
+}
+
+void		Skybox::setBuffers() {
+	float vertices[108] = {
+		-1.0f,  1.0f, -1.0f,
+		-1.0f, -1.0f, -1.0f,
+		 1.0f, -1.0f, -1.0f,
+		 1.0f, -1.0f, -1.0f,
+		 1.0f,  1.0f, -1.0f,
+		-1.0f,  1.0f, -1.0f,
+	
+		-1.0f, -1.0f,  1.0f,
+		-1.0f, -1.0f, -1.0f,
+		-1.0f,  1.0f, -1.0f,
+		-1.0f,  1.0f, -1.0f,
+		-1.0f,  1.0f,  1.0f,
+		-1.0f, -1.0f,  1.0f,
+	
+		 1.0f, -1.0f, -1.0f,
+		 1.0f, -1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f, -1.0f,
+		 1.0f, -1.0f, -1.0f,
+	
+		-1.0f, -1.0f,  1.0f,
+		-1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f, -1.0f,  1.0f,
+		-1.0f, -1.0f,  1.0f,
+	
+		-1.0f,  1.0f, -1.0f,
+		 1.0f,  1.0f, -1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		-1.0f,  1.0f,  1.0f,
+		-1.0f,  1.0f, -1.0f,
+	
+		-1.0f, -1.0f, -1.0f,
+		-1.0f, -1.0f,  1.0f,
+		 1.0f, -1.0f, -1.0f,
+		 1.0f, -1.0f, -1.0f,
+		-1.0f, -1.0f,  1.0f,
+		 1.0f, -1.0f,  1.0f
+	};
+
+	glGenVertexArrays(1, &vao);
+	glGenBuffers(1, &vbo);
+
+	glBindVertexArray(vao);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glBufferData(GL_ARRAY_BUFFER, 108 * sizeof(float), &vertices[0], GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+	glBindVertexArray(0);
+}
+
+void		Skybox::getFacesPath(std::string directory) {
+	textures_faces.push_back(directory + "/right.jpg" );
+	textures_faces.push_back(directory + "/left.jpg" );
+	textures_faces.push_back(directory + "/top.jpg" );
+	textures_faces.push_back(directory + "/bottom.jpg" );
+	textures_faces.push_back(directory + "/back.jpg" );
+	textures_faces.push_back(directory + "/front.jpg" );
 }
 
 void		Skybox::loadTextures() {
@@ -48,7 +116,7 @@ void		Skybox::loadTextures() {
 	unsigned char *data;
 	for(GLuint i = 0; i < 6; i++)
 	{
-		data = stbi_load(textures_faces[i], &width, &height, &nrChannels, 0);
+		data = stbi_load(textures_faces[i].c_str(), &width, &height, &nrChannels, 0);
 		if(data) {
 			glTexImage2D(
 				GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 
@@ -57,7 +125,7 @@ void		Skybox::loadTextures() {
 			stbi_image_free(data);
 		}
 		else {
-			std::cout << "Loading Skybox texture failed: " << textures_faces[i] << std::endl;
+			std::cout << "Loading Skybox texture failed: " << textures_faces[i].c_str() << std::endl;
 			stbi_image_free(data);
 		}
 	}

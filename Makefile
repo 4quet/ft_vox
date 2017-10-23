@@ -6,7 +6,7 @@
 #    By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/07/21 11:32:23 by tpierron          #+#    #+#              #
-#    Updated: 2017/10/23 11:46:40 by tpierron         ###   ########.fr        #
+#    Updated: 2017/10/23 13:30:20 by tpierron         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,6 +18,7 @@ CC = clang++
 SRC =	src/Sdl_gl_win.cpp \
 		src/Skybox.cpp \
 		src/Block.cpp \
+		src/Shader.class.cpp \
 		main.cpp \
 
 
@@ -28,6 +29,9 @@ OBJ_NAME = $(SRC:.cpp=.o)
 SDL = -L/Users/$(LOGNAME)/.brew/lib -lSDL2
 SDL_PATH = -I/Users/$(LOGNAME)/.brew/include/SDL2
 
+# GLM = -L/Users/$(LOGNAME)/.brew/lib -lglm
+GLM_PATH = -I/Users/$(LOGNAME)/.brew/include/glm
+
 OPENGL = -framework OpenGl -framework AppKit
 
 OBJ = $(addprefix $(OBJ_PATH), $(OBJ_NAME))
@@ -36,10 +40,10 @@ all: $(NAME)
 $(OBJ_PATH)%.o: %.cpp
 	@mkdir $(OBJ_PATH) 2> /dev/null || echo "" > /dev/null
 	@mkdir $(OBJ_PATH)/src 2> /dev/null || echo "" > /dev/null
-	$(CC) $(CFLAGS) -o $@ -c -Isrc $(SDL_PATH) $< -std=c++11
+	$(CC) $(CFLAGS) -o $@ -c -Isrc $(SDL_PATH) $(GLM_PATH) $< -std=c++11
 
 $(NAME): $(OBJ)
-	$(CC) $(SDL) $(OPENGL) $(CFLAGS) -o $@ $^
+	$(CC) $(SDL) $(GLM) $(OPENGL) $(CFLAGS) -o $@ $^
 
 clean:
 	rm -rf $(OBJ_PATH)
