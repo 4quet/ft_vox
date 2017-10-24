@@ -6,7 +6,7 @@
 #    By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/07/21 11:32:23 by tpierron          #+#    #+#              #
-#    Updated: 2017/10/23 15:01:43 by lfourque         ###   ########.fr        #
+#    Updated: 2017/10/24 14:40:53 by tpierron         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,6 +19,7 @@ SRC =	src/Sdl_gl_win.cpp \
 		src/Skybox.cpp \
 		src/Block.cpp \
 		src/Chunk.cpp \
+		src/Skybox.cpp \
 		src/Shader.class.cpp \
 		main.cpp \
 

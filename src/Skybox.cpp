@@ -6,12 +6,12 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 10:37:37 by tpierron          #+#    #+#             */
-/*   Updated: 2017/10/24 14:35:48 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/10/24 14:43:45 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Skybox.hpp"
-// # define STB_IMAGE_IMPLEMENTATION
+# define STB_IMAGE_IMPLEMENTATION
 # include "./stb_image.h"
 
 Skybox::Skybox(std::string directory) {
@@ -30,8 +30,6 @@ Skybox::~Skybox() {
 }
 
 void		Skybox::draw() {
-	// std::cout << "DRAW" << std::endl;
-	// glDepthMask(GL_FALSE);
 	glDepthFunc(GL_LEQUAL);
 	shader->use();
 	shader->setInt("skybox", 0);
@@ -42,7 +40,6 @@ void		Skybox::draw() {
 	glBindTexture(GL_TEXTURE_CUBE_MAP, 1);
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glBindVertexArray(0);
-	// glDepthMask(GL_TRUE);
 	glDepthFunc(GL_LESS);
 }
 
@@ -134,6 +131,7 @@ void		Skybox::loadTextures() {
 		else {
 			std::cout << "Loading Skybox texture failed: " << textures_faces[i].c_str() << std::endl;
 			stbi_image_free(data);
+			glDeleteTextures(1, &textureID);
 		}
 	}
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
