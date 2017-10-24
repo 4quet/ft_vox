@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 10:35:17 by tpierron          #+#    #+#             */
-/*   Updated: 2017/10/23 14:03:04 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/10/23 17:35:34 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ class Skybox {
 
 		GLuint		vao;
 		GLuint		vbo;
-		Shader		shader;
+		Shader		*shader;
 };
 
 #endif
