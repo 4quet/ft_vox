@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 09:34:29 by tpierron          #+#    #+#             */
-/*   Updated: 2017/10/25 16:02:57 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/10/25 17:32:54 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ void	Sdl_gl_win::initSDL() {
 }
 
 void	Sdl_gl_win::initGL() const {
-    glClearColor(0.5f, 0.5f, 0.5f, 0.5f);
+    glClearColor(0.f, 0.f, 0.f, 0.f);
     
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);

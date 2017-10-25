@@ -6,7 +6,7 @@
 #    By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/07/21 11:32:23 by tpierron          #+#    #+#              #
-#    Updated: 2017/10/25 13:40:11 by tpierron         ###   ########.fr        #
+#    Updated: 2017/10/25 16:50:49 by tpierron         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,6 +22,7 @@ SRC =	src/Sdl_gl_win.cpp \
 		src/ChunkManager.cpp \
 		src/Skybox.cpp \
 		src/Camera.cpp \
+		src/GLString.cpp \
 		src/Shader.class.cpp \
 		src/FastNoise.cpp \
 		main.cpp \
@@ -34,6 +35,9 @@ OBJ_NAME = $(SRC:.cpp=.o)
 SDL = -L/Users/$(LOGNAME)/.brew/lib -lSDL2
 SDL_PATH = -I/Users/$(LOGNAME)/.brew/include/SDL2
 
+FREETYPE = -I/Users/$(LOGNAME)/.brew/lib -lfreetype
+FREETYPE_PATH = -I/Users/$(LOGNAME)/.brew/include/freetype2
+
 GLM_PATH = -I/Users/$(LOGNAME)/.brew/include/glm
 
 OPENGL = -framework OpenGl -framework AppKit
@@ -44,10 +48,10 @@ all: $(NAME)
 $(OBJ_PATH)%.o: %.cpp
 	@mkdir $(OBJ_PATH) 2> /dev/null || echo "" > /dev/null
 	@mkdir $(OBJ_PATH)/src 2> /dev/null || echo "" > /dev/null
-	$(CC) $(CFLAGS) -o $@ -c -Isrc $(SDL_PATH) $(GLM_PATH) $< -std=c++11
+	$(CC) $(CFLAGS) -o $@ -c -Isrc $(SDL_PATH) $(GLM_PATH) $(FREETYPE_PATH) $< -std=c++11
 
 $(NAME): $(OBJ)
-	$(CC) $(SDL) $(GLM) $(OPENGL) $(CFLAGS) -o $@ $^
+	$(CC) $(SDL) $(GLM) $(FREETYPE) $(OPENGL) $(CFLAGS) -o $@ $^
 
 clean:
 	rm -rf $(OBJ_PATH)
