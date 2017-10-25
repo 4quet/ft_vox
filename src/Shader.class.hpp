@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Shader.class.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
+/*   By: thibautpierron <thibautpierron@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/16 14:11:32 by thibautpier       #+#    #+#             */
-/*   Updated: 2017/10/23 10:34:07 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/10/25 23:11:37 by thibautpier      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@
 # include <iostream>
 # include <fstream>
 # include <OpenGL/gl3.h>
-# include <gtc/matrix_transform.hpp>
-# include <gtc/type_ptr.hpp>
+# include <glm/gtc/matrix_transform.hpp>
+# include <glm/gtc/type_ptr.hpp>
 
 class Shader {
 
@@ -33,6 +33,8 @@ class Shader {
         GLuint          getProgramID() const;
         static void     setCamera(glm::mat4);
         void            setView();
+        void            setView(glm::mat4);
+        glm::mat4       getViewMatrix();
         void            setOrthoView(float, float);
         
         Shader();

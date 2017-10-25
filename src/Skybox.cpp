@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Skybox.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
+/*   By: thibautpierron <thibautpierron@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 10:37:37 by tpierron          #+#    #+#             */
-/*   Updated: 2017/10/24 14:43:45 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/10/25 23:18:07 by thibautpier      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,8 @@ void		Skybox::draw() {
 	glDepthFunc(GL_LEQUAL);
 	shader->use();
 	shader->setInt("skybox", 0);
-	shader->setView();
+	
+	shader->setView(glm::mat4(glm::mat3(shader->getViewMatrix())));
 
 	glBindVertexArray(vao);
 	glActiveTexture(GL_TEXTURE0);

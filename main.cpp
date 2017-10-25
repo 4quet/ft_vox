@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
+/*   By: thibautpierron <thibautpierron@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 09:23:13 by tpierron          #+#    #+#             */
-/*   Updated: 2017/10/25 16:51:34 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/10/25 22:11:18 by thibautpier      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,8 @@ int     main() {
 
 		m.render(shader);
 
-        info.renderText("OLA", 50, 50, glm::vec3(0.2f, 0.7f, 1.f));
         skybox.draw();
+        info.renderText("OLA", 50, 50, glm::vec3(0.2f, 0.7f, 1.f));
         SDL_GL_SwapWindow(window.getWin());
     }
     return 0;
