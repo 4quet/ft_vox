@@ -6,7 +6,7 @@
 #    By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/07/21 11:32:23 by tpierron          #+#    #+#              #
-#    Updated: 2017/10/24 14:40:53 by tpierron         ###   ########.fr        #
+#    Updated: 2017/10/25 10:35:49 by lfourque         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,12 +19,14 @@ SRC =	src/Sdl_gl_win.cpp \
 		src/Skybox.cpp \
 		src/Block.cpp \
 		src/Chunk.cpp \
+		src/ChunkManager.cpp \
 		src/Skybox.cpp \
 		src/Shader.class.cpp \
+		src/FastNoise.cpp \
 		main.cpp \
 
 
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -Wno-unused-function
 OBJ_PATH = ./obj/
 OBJ_NAME = $(SRC:.cpp=.o)
 

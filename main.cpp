@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 09:23:13 by tpierron          #+#    #+#             */
-/*   Updated: 2017/10/24 14:41:39 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/10/25 10:27:23 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,8 @@ int     main() {
 
     Action::Enum action = Action::NONE;
 
-	Chunk	chunk;
+	ChunkManager	m;
+	Chunk			chunk(m);
 
     Shader	shader("src/shaders/basic_vertex_shader.glvs", "src/shaders/basic_fragment_shader.glfs");
     Skybox  skybox("skybox");

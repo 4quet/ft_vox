@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/16 14:11:27 by thibautpier       #+#    #+#             */
-/*   Updated: 2017/10/24 14:39:57 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/10/25 11:15:27 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,7 +164,7 @@ GLuint  Shader::getProgramID() const {
 }
 
 glm::mat4 Shader::camera = glm::lookAt(
-    glm::vec3(1.f, 2.5f, 15.f),
+    glm::vec3(10.f, 5.0f, 15.f),
     glm::vec3(0.f, 0.f, 0.f),
     glm::vec3(0.f, 1.f, 0.f)
     );

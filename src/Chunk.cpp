@@ -6,13 +6,15 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:27:26 by lfourque          #+#    #+#             */
-/*   Updated: 2017/10/23 18:12:41 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/10/25 11:18:19 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Chunk.hpp"
 
-Chunk::Chunk() : _activeBlocks(0) { 
+//Chunk::Chunk() : _activeBlocks(0) { } 
+
+Chunk::Chunk(ChunkManager & m) : _activeBlocks(0), _chunkManager(m) { 
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
 
@@ -27,6 +29,8 @@ Chunk::Chunk() : _activeBlocks(0) {
 			_blocks[i][j] = new Block[CHUNK_SIZE];
 		}
 	}
+
+	setupLandscape();
 
 	createMesh();
 }
@@ -60,6 +64,25 @@ void	Chunk::render(Shader & shader) {
 	glBindVertexArray(0);
 }
 
+void	Chunk::setupLandscape() {
+
+    for (int x = 0; x < CHUNK_SIZE; x++)
+    {
+        for (int z = 0; z < CHUNK_SIZE; z++)
+        {
+            // Use the noise library to get the height value of x, z
+			float height = _chunkManager.getHeightMapValue(x, z) * (CHUNK_SIZE-1);
+
+            for (int y = 0; y < height; y++)
+            {
+                _blocks[x][y][z].setActive(true);
+                //_blocks[x][y][z].setBlockType(BLOCKTYPE_GRASS);
+            }
+        }
+    }
+
+}
+
 void	Chunk::createMesh() {
 	for (int x = 0; x < CHUNK_SIZE; x++)
 	{
@@ -72,7 +95,7 @@ void	Chunk::createMesh() {
 					// Don't create triangle data for inactive blocks
 					continue;
 				}
-				createCube(x, y, z);
+				createCube(x * BLOCK_RENDER_SIZE, y * BLOCK_RENDER_SIZE, z * BLOCK_RENDER_SIZE);
 				++_activeBlocks;
 			}
 		}
@@ -93,14 +116,14 @@ void	Chunk::createMesh() {
 }
 
 void	Chunk::createCube(float x, float y, float z) {
-	glm::vec3	p1(x - BLOCK_RENDER_SIZE, y - BLOCK_RENDER_SIZE, z + BLOCK_RENDER_SIZE); // Left top back
-	glm::vec3	p2(x + BLOCK_RENDER_SIZE, y - BLOCK_RENDER_SIZE, z + BLOCK_RENDER_SIZE); // Right top back
-	glm::vec3	p3(x + BLOCK_RENDER_SIZE, y + BLOCK_RENDER_SIZE, z + BLOCK_RENDER_SIZE); // Left bottom back
-	glm::vec3	p4(x - BLOCK_RENDER_SIZE, y + BLOCK_RENDER_SIZE, z + BLOCK_RENDER_SIZE); // Right bottom back
-	glm::vec3	p5(x + BLOCK_RENDER_SIZE, y - BLOCK_RENDER_SIZE, z - BLOCK_RENDER_SIZE); // Left top front
-	glm::vec3	p6(x - BLOCK_RENDER_SIZE, y - BLOCK_RENDER_SIZE, z - BLOCK_RENDER_SIZE); // Right top front
-	glm::vec3	p7(x - BLOCK_RENDER_SIZE, y + BLOCK_RENDER_SIZE, z - BLOCK_RENDER_SIZE); // Left bottom front
-	glm::vec3	p8(x + BLOCK_RENDER_SIZE, y + BLOCK_RENDER_SIZE, z - BLOCK_RENDER_SIZE); // Right bottom front
+	glm::vec3	p1(x - BLOCK_RENDER_SIZE, y - BLOCK_RENDER_SIZE, z + BLOCK_RENDER_SIZE);
+	glm::vec3	p2(x + BLOCK_RENDER_SIZE, y - BLOCK_RENDER_SIZE, z + BLOCK_RENDER_SIZE);
+	glm::vec3	p3(x + BLOCK_RENDER_SIZE, y + BLOCK_RENDER_SIZE, z + BLOCK_RENDER_SIZE);
+	glm::vec3	p4(x - BLOCK_RENDER_SIZE, y + BLOCK_RENDER_SIZE, z + BLOCK_RENDER_SIZE);
+	glm::vec3	p5(x + BLOCK_RENDER_SIZE, y - BLOCK_RENDER_SIZE, z - BLOCK_RENDER_SIZE);
+	glm::vec3	p6(x - BLOCK_RENDER_SIZE, y - BLOCK_RENDER_SIZE, z - BLOCK_RENDER_SIZE);
+	glm::vec3	p7(x - BLOCK_RENDER_SIZE, y + BLOCK_RENDER_SIZE, z - BLOCK_RENDER_SIZE);
+	glm::vec3	p8(x + BLOCK_RENDER_SIZE, y + BLOCK_RENDER_SIZE, z - BLOCK_RENDER_SIZE);
 
 	glm::vec3	normal;
 
