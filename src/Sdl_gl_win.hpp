@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/19 13:18:30 by tpierron          #+#    #+#             */
-/*   Updated: 2017/10/23 10:05:51 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/10/25 15:11:09 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@ class Sdl_gl_win {
 		~Sdl_gl_win();
 
 		Action::Enum	eventManager();
+		int				getMouseX() const;
+		int				getMouseY() const;
 		SDL_Window		*getWin() const;
 
 	private:
@@ -34,6 +36,8 @@ class Sdl_gl_win {
 		SDL_Event		events;
 		SDL_GLContext	ctx;
 		SDL_Window		*win;
+		int				mouseX;
+		int				mouseY;
 };
 
 #endif

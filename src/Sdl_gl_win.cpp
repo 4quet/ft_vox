@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 09:34:29 by tpierron          #+#    #+#             */
-/*   Updated: 2017/10/24 15:24:01 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/10/25 15:11:10 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,25 +57,35 @@ void	Sdl_gl_win::initGL() const {
 }
 
 Action::Enum    Sdl_gl_win::eventManager() {
-    static int repeatFlag = 0;
-    SDL_PollEvent(&events);
-    if (events.window.event == SDL_WINDOWEVENT_CLOSE || events.key.keysym.sym == SDLK_ESCAPE) {
-        return Action::ESCAPE;
-    }
-    if (events.type == SDL_KEYUP)
-    repeatFlag = 0;
-    if (events.type == SDL_KEYDOWN && repeatFlag == 0) {
-        repeatFlag = 1;
-        switch(events.key.keysym.sym) {
-            case SDLK_a: return Action::LEFT; break;
-            case SDLK_d: return Action::RIGHT; break;
-            case SDLK_w: return Action::FORWARD; break;
-            case SDLK_s: return Action::BACKWARD; break;
+    while (SDL_PollEvent(&events)) {
+        if(events.type == SDL_MOUSEMOTION) 
+            SDL_GetMouseState(&mouseX, &mouseY);
+    
+        if (events.window.event == SDL_WINDOWEVENT_CLOSE || events.key.keysym.sym == SDLK_ESCAPE) {
+            return Action::ESCAPE;
         }
-	}
-	return Action::NONE;
+    
+        if (events.type == SDL_KEYDOWN) {
+            switch(events.key.keysym.sym) {
+                case SDLK_a: return Action::LEFT; break;
+                case SDLK_d: return Action::RIGHT; break;
+                case SDLK_w: return Action::FORWARD; break;
+                case SDLK_s: return Action::BACKWARD; break;
+            }
+        }
+    }
+
+    return Action::NONE;
 }
 
 SDL_Window      *Sdl_gl_win::getWin() const {
     return win;
+}
+
+int             Sdl_gl_win::getMouseX() const {
+    return mouseX;
+}
+
+int             Sdl_gl_win::getMouseY() const {
+    return mouseY;
 }
