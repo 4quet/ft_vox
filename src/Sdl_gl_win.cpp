@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 09:34:29 by tpierron          #+#    #+#             */
-/*   Updated: 2017/10/25 15:11:10 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/10/25 16:02:57 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,8 @@ Action::Enum    Sdl_gl_win::eventManager() {
         if(events.type == SDL_MOUSEMOTION) 
             SDL_GetMouseState(&mouseX, &mouseY);
     
-        if (events.window.event == SDL_WINDOWEVENT_CLOSE || events.key.keysym.sym == SDLK_ESCAPE) {
+        if (events.window.event == SDL_WINDOWEVENT_CLOSE ||
+            (events.type == SDL_KEYDOWN && events.key.keysym.sym == SDLK_ESCAPE)) {
             return Action::ESCAPE;
         }
     
