@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:23:42 by lfourque          #+#    #+#             */
-/*   Updated: 2017/10/25 10:30:14 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/10/25 13:39:48 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,12 @@
 
 # include "Shader.class.hpp"
 # include "Block.hpp"
-# include "ChunkManager.hpp"
 # include <vector>
 
 class Chunk
 {
 	public:
-		Chunk(ChunkManager & m);
+		Chunk();
 		~Chunk();
 
 		void	update();
@@ -34,18 +33,24 @@ class Chunk
 
 		void	addVertex(glm::vec3 pos, glm::vec3 normal);
 
+		glm::vec3	getPosition() const;
+		void		setPosition(glm::vec3 pos);
+
+		void		setHeightMap(float hm[CHUNK_SIZE][CHUNK_SIZE]);
+
 	private:
 		Block***	_blocks;
 		int			_activeBlocks;
 
-		ChunkManager &	_chunkManager;
+		float		_heightMap[CHUNK_SIZE][CHUNK_SIZE];
+
+		glm::vec3	_position;
 
 		GLuint		VAO;
 		GLuint		VBO;
 
 		std::vector<float>	mesh;
 
-		Chunk();
 };
 
 #endif /* CHUNK_HPP */

@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:27:26 by lfourque          #+#    #+#             */
-/*   Updated: 2017/10/25 11:18:19 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/10/25 15:40:31 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,8 @@
 
 //Chunk::Chunk() : _activeBlocks(0) { } 
 
-Chunk::Chunk(ChunkManager & m) : _activeBlocks(0), _chunkManager(m) { 
+Chunk::Chunk() : _activeBlocks(0) { 
+	//std::cout << "--- Creating new chunk ---" << std::endl;
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
 
@@ -29,10 +30,6 @@ Chunk::Chunk(ChunkManager & m) : _activeBlocks(0), _chunkManager(m) {
 			_blocks[i][j] = new Block[CHUNK_SIZE];
 		}
 	}
-
-	setupLandscape();
-
-	createMesh();
 }
 
 Chunk::~Chunk() {
@@ -66,12 +63,13 @@ void	Chunk::render(Shader & shader) {
 
 void	Chunk::setupLandscape() {
 
+	//std::cout << "setting up chunk landscape" << std::endl;
     for (int x = 0; x < CHUNK_SIZE; x++)
     {
         for (int z = 0; z < CHUNK_SIZE; z++)
         {
             // Use the noise library to get the height value of x, z
-			float height = _chunkManager.getHeightMapValue(x, z) * (CHUNK_SIZE-1);
+			float height = _heightMap[x][z] * (CHUNK_SIZE);
 
             for (int y = 0; y < height; y++)
             {
@@ -84,6 +82,7 @@ void	Chunk::setupLandscape() {
 }
 
 void	Chunk::createMesh() {
+	//std::cout << "creating chunk mesh" << std::endl;
 	for (int x = 0; x < CHUNK_SIZE; x++)
 	{
 		for (int y = 0; y < CHUNK_SIZE; y++)
@@ -95,7 +94,7 @@ void	Chunk::createMesh() {
 					// Don't create triangle data for inactive blocks
 					continue;
 				}
-				createCube(x * BLOCK_RENDER_SIZE, y * BLOCK_RENDER_SIZE, z * BLOCK_RENDER_SIZE);
+				createCube(_position.x + x * BLOCK_RENDER_SIZE, _position.y + y * BLOCK_RENDER_SIZE, _position.z + z * BLOCK_RENDER_SIZE);
 				++_activeBlocks;
 			}
 		}
@@ -196,4 +195,17 @@ void	Chunk::createCube(float x, float y, float z) {
 
 void	Chunk::addVertex(glm::vec3 pos, glm::vec3 normal) {
 	mesh.insert(mesh.end(), { pos.x, pos.y, pos.z, normal.x, normal.y, normal.z });
+}
+
+glm::vec3	Chunk::getPosition() const { return _position; }
+void		Chunk::setPosition(glm::vec3 pos) { _position = pos; }
+
+void		Chunk::setHeightMap(float hm[CHUNK_SIZE][CHUNK_SIZE]) {
+	for (int x = 0; x < CHUNK_SIZE; ++x)
+	{
+		for (int y = 0; y < CHUNK_SIZE; ++y)
+		{
+			_heightMap[x][y] = hm[x][y];
+		}
+	}
 }
