@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/18 16:15:29 by tpierron          #+#    #+#             */
-/*   Updated: 2017/10/23 19:23:05 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/10/24 15:23:19 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define CONSTANTS_HPP
 
 namespace Action {
-	enum Enum { NONE, ESCAPE };
+	enum Enum { NONE, LEFT, RIGHT, FORWARD, BACKWARD, ESCAPE };
 }
 
 enum BlockType

@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 09:34:29 by tpierron          #+#    #+#             */
-/*   Updated: 2017/10/23 10:05:35 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/10/24 15:24:01 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,8 +67,10 @@ Action::Enum    Sdl_gl_win::eventManager() {
     if (events.type == SDL_KEYDOWN && repeatFlag == 0) {
         repeatFlag = 1;
         switch(events.key.keysym.sym) {
-            // case SDLK_RIGHT: return Action::RIGHT; break;
-            // case SDLK_LEFT: return Action::LEFT; break;
+            case SDLK_a: return Action::LEFT; break;
+            case SDLK_d: return Action::RIGHT; break;
+            case SDLK_w: return Action::FORWARD; break;
+            case SDLK_s: return Action::BACKWARD; break;
         }
 	}
 	return Action::NONE;
