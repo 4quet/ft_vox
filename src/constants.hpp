@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/18 16:15:29 by tpierron          #+#    #+#             */
-/*   Updated: 2017/10/24 15:23:19 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/10/25 11:50:13 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ enum BlockType
 	BLOCKTYPE_STONE
 };
 
-# define BLOCK_RENDER_SIZE	0.5f
-# define CHUNK_SIZE	1
+# define BLOCK_RENDER_SIZE	0.1f
+# define CHUNK_SIZE	64
 
 #endif

@@ -1,23 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Block.cpp                                          :+:      :+:    :+:   */
+/*   ChunkManager.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/10/23 10:47:04 by lfourque          #+#    #+#             */
-/*   Updated: 2017/10/25 10:36:52 by lfourque         ###   ########.fr       */
+/*   Created: 2017/10/24 17:27:54 by lfourque          #+#    #+#             */
+/*   Updated: 2017/10/25 10:32:59 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Block.hpp"
+#ifndef CHUNK_MANAGER_HPP
+# define CHUNK_MANAGER_HPP
 
-Block::Block() : _active(false), _blockType(BLOCKTYPE_DEFAULT) { }
+# include "FastNoise.h"
+# include "constants.hpp"
 
-Block::~Block() { }
+class ChunkManager
+{
+	public:
+		ChunkManager();
+		~ChunkManager();
 
-bool		Block::isActive() const { return this->_active; }
-BlockType	Block::getBlockType() const { return this->_blockType; }
+		float	getHeightMapValue(unsigned int, unsigned int) const;
 
-void		Block::setActive(bool active) { this->_active = active; }
-void		Block::setBlockType(BlockType blockType) { this->_blockType = blockType; }
+	private:
+		float	_heightMap[CHUNK_SIZE][CHUNK_SIZE];
+};
+
+#endif /* CHUNK_MANAGER_HPP */
