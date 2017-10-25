@@ -6,13 +6,15 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:27:26 by lfourque          #+#    #+#             */
-/*   Updated: 2017/10/25 15:40:31 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/10/25 17:24:30 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Chunk.hpp"
 
 //Chunk::Chunk() : _activeBlocks(0) { } 
+
+FastNoise	Chunk::sNoise;
 
 Chunk::Chunk() : _activeBlocks(0) { 
 	//std::cout << "--- Creating new chunk ---" << std::endl;
@@ -50,12 +52,7 @@ void	Chunk::update() {
 	// ...
 }
 
-void	Chunk::render(Shader & shader) {
-	shader.use();
-
-	shader.setView();
-	shader.setModel(glm::mat4());
-
+void	Chunk::render() {
 	glBindVertexArray(VAO);
 	glDrawArrays(GL_TRIANGLES, 0, 36 * _activeBlocks);
 	glBindVertexArray(0);
@@ -200,12 +197,15 @@ void	Chunk::addVertex(glm::vec3 pos, glm::vec3 normal) {
 glm::vec3	Chunk::getPosition() const { return _position; }
 void		Chunk::setPosition(glm::vec3 pos) { _position = pos; }
 
-void		Chunk::setHeightMap(float hm[CHUNK_SIZE][CHUNK_SIZE]) {
+size_t		Chunk::getActiveBlocks() const { return _activeBlocks; }
+
+void		Chunk::setHeightMap(float noiseX, float noiseY) {
 	for (int x = 0; x < CHUNK_SIZE; ++x)
 	{
 		for (int y = 0; y < CHUNK_SIZE; ++y)
 		{
-			_heightMap[x][y] = hm[x][y];
+			_heightMap[x][y] = Chunk::sNoise.GetNoise(noiseX + x, noiseY + y);
+			//_heightMap[x][y] = Chunk::sNoise.GetNoise(x, y);
 		}
 	}
 }

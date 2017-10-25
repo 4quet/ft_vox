@@ -6,13 +6,14 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:23:42 by lfourque          #+#    #+#             */
-/*   Updated: 2017/10/25 13:39:48 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/10/25 16:53:08 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CHUNK_HPP
 # define CHUNK_HPP
 
+# include "FastNoise.h"
 # include "Shader.class.hpp"
 # include "Block.hpp"
 # include <vector>
@@ -24,7 +25,7 @@ class Chunk
 		~Chunk();
 
 		void	update();
-		void	render(Shader & shader);
+		void	render();
 
 		void	setupLandscape();
 
@@ -34,13 +35,17 @@ class Chunk
 		void	addVertex(glm::vec3 pos, glm::vec3 normal);
 
 		glm::vec3	getPosition() const;
-		void		setPosition(glm::vec3 pos);
+		void		setPosition(glm::vec3);
 
-		void		setHeightMap(float hm[CHUNK_SIZE][CHUNK_SIZE]);
+		size_t		getActiveBlocks() const;
+
+		void		setHeightMap(float, float);
+
+		static 	FastNoise	sNoise;
 
 	private:
 		Block***	_blocks;
-		int			_activeBlocks;
+		size_t		_activeBlocks;
 
 		float		_heightMap[CHUNK_SIZE][CHUNK_SIZE];
 
