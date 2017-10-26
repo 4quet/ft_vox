@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:23:42 by lfourque          #+#    #+#             */
-/*   Updated: 2017/10/25 16:53:08 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/10/26 11:24:10 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ class Chunk
 
 		size_t		getActiveBlocks() const;
 
-		void		setHeightMap(float, float);
+		void		setHeightMap(float, float, float);
 
 		static 	FastNoise	sNoise;
 
@@ -47,7 +47,7 @@ class Chunk
 		Block***	_blocks;
 		size_t		_activeBlocks;
 
-		float		_heightMap[CHUNK_SIZE][CHUNK_SIZE];
+		float		_heightMap[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE];
 
 		glm::vec3	_position;
 

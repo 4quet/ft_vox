@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/24 17:27:54 by lfourque          #+#    #+#             */
-/*   Updated: 2017/10/25 16:48:17 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/10/26 11:03:35 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,14 +23,12 @@ class ChunkManager
 		~ChunkManager();
 
 		void	render(Shader &);
-	//	float	getHeightMapValue(unsigned int, unsigned int) const;
 
 		size_t	getTotalActiveBlocks() const;
 		size_t	getTotalActiveChunks() const;
 
 	private:
-		Chunk**		_chunks;
-	//	float		_heightMap[CHUNK_SIZE][CHUNK_SIZE];
+		Chunk***	_chunks;
 
 		size_t		_totalActiveBlocks;
 		size_t		_totalActiveChunks;

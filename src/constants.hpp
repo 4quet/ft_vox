@@ -6,7 +6,7 @@
 /*   By: thibautpierron <thibautpierron@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/18 16:15:29 by tpierron          #+#    #+#             */
-/*   Updated: 2017/10/26 08:44:12 by thibautpier      ###   ########.fr       */
+/*   Updated: 2017/10/26 11:28:09 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,6 @@ enum BlockType
 # define BLOCK_RENDER_SIZE	0.1f
 # define CHUNK_SIZE	16
 
-# define MAP_SIZE 20
+# define MAP_SIZE 5
 
 #endif

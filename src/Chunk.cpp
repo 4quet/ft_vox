@@ -6,13 +6,11 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:27:26 by lfourque          #+#    #+#             */
-/*   Updated: 2017/10/25 17:24:30 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/10/26 11:46:47 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Chunk.hpp"
-
-//Chunk::Chunk() : _activeBlocks(0) { } 
 
 FastNoise	Chunk::sNoise;
 
@@ -63,15 +61,16 @@ void	Chunk::setupLandscape() {
 	//std::cout << "setting up chunk landscape" << std::endl;
     for (int x = 0; x < CHUNK_SIZE; x++)
     {
-        for (int z = 0; z < CHUNK_SIZE; z++)
+        for (int y = 0; y < CHUNK_SIZE; y++)
         {
-            // Use the noise library to get the height value of x, z
-			float height = _heightMap[x][z] * (CHUNK_SIZE);
-
-            for (int y = 0; y < height; y++)
+            for (int z = 0; z < CHUNK_SIZE; z++)
             {
-                _blocks[x][y][z].setActive(true);
-                //_blocks[x][y][z].setBlockType(BLOCKTYPE_GRASS);
+				float density = _heightMap[x][y][z] * CHUNK_SIZE;
+				if (density > 0.0f)
+				{
+                	_blocks[x][y][z].setActive(true);
+            	    //_blocks[x][y][z].setBlockType(BLOCKTYPE_GRASS);
+				}
             }
         }
     }
@@ -199,13 +198,13 @@ void		Chunk::setPosition(glm::vec3 pos) { _position = pos; }
 
 size_t		Chunk::getActiveBlocks() const { return _activeBlocks; }
 
-void		Chunk::setHeightMap(float noiseX, float noiseY) {
+void		Chunk::setHeightMap(float noiseX, float noiseY, float noiseZ) {
 	for (int x = 0; x < CHUNK_SIZE; ++x)
 	{
 		for (int y = 0; y < CHUNK_SIZE; ++y)
 		{
-			_heightMap[x][y] = Chunk::sNoise.GetNoise(noiseX + x, noiseY + y);
-			//_heightMap[x][y] = Chunk::sNoise.GetNoise(x, y);
+			for (int z = 0; z < CHUNK_SIZE; ++z)
+				_heightMap[x][y][z] = Chunk::sNoise.GetNoise(noiseX + x, noiseY + y, noiseZ + z);
 		}
 	}
 }
