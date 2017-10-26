@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:23:42 by lfourque          #+#    #+#             */
-/*   Updated: 2017/10/26 11:24:10 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/10/26 15:54:26 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,11 @@
 # include "Shader.class.hpp"
 # include "Block.hpp"
 # include <vector>
+
+struct AdjacentBlocks
+{
+	bool right, left, top, bottom, front, back;
+};
 
 class Chunk
 {
@@ -30,7 +35,7 @@ class Chunk
 		void	setupLandscape();
 
 		void	createMesh();
-		void	createCube(float x, float y, float z);
+		void	createCube(float, float, float, AdjacentBlocks &);
 
 		void	addVertex(glm::vec3 pos, glm::vec3 normal);
 
@@ -46,6 +51,8 @@ class Chunk
 	private:
 		Block***	_blocks;
 		size_t		_activeBlocks;
+
+		size_t		_totalVertices;
 
 		float		_heightMap[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE];
 

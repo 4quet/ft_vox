@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:27:26 by lfourque          #+#    #+#             */
-/*   Updated: 2017/10/26 11:46:47 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/10/26 15:54:54 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ void	Chunk::update() {
 
 void	Chunk::render() {
 	glBindVertexArray(VAO);
-	glDrawArrays(GL_TRIANGLES, 0, 36 * _activeBlocks);
+	glDrawArrays(GL_TRIANGLES, 0, _totalVertices);
 	glBindVertexArray(0);
 }
 
@@ -78,7 +78,7 @@ void	Chunk::setupLandscape() {
 }
 
 void	Chunk::createMesh() {
-	//std::cout << "creating chunk mesh" << std::endl;
+//	std::cout << "creating chunk mesh" << std::endl;
 	for (int x = 0; x < CHUNK_SIZE; x++)
 	{
 		for (int y = 0; y < CHUNK_SIZE; y++)
@@ -90,8 +90,15 @@ void	Chunk::createMesh() {
 					// Don't create triangle data for inactive blocks
 					continue;
 				}
-				createCube(_position.x + x * BLOCK_RENDER_SIZE, _position.y + y * BLOCK_RENDER_SIZE, _position.z + z * BLOCK_RENDER_SIZE);
-				++_activeBlocks;
+				AdjacentBlocks	adj;
+				adj.right = (x + 1 < CHUNK_SIZE) ? _blocks[x + 1][y][z].isActive() : false;
+				adj.left = (x - 1 >= 0) ? _blocks[x - 1][y][z].isActive() : false;
+				adj.top = (y + 1 < CHUNK_SIZE) ? _blocks[x][y + 1][z].isActive() : false;
+				adj.bottom = (y - 1 >= 0) ? _blocks[x][y - 1][z].isActive() : false;
+				adj.front = (z + 1 < CHUNK_SIZE) ? _blocks[x][y][z + 1].isActive() : false;
+				adj.back = (z - 1 >= 0) ? _blocks[x][y][z - 1].isActive() : false;
+
+				createCube(_position.x + x * BLOCK_RENDER_SIZE, _position.y + y * BLOCK_RENDER_SIZE, _position.z + z * BLOCK_RENDER_SIZE, adj);
 			}
 		}
 	}
@@ -110,7 +117,7 @@ void	Chunk::createMesh() {
 	glBindVertexArray(0);	
 }
 
-void	Chunk::createCube(float x, float y, float z) {
+void	Chunk::createCube(float x, float y, float z, AdjacentBlocks & adj) {
 	glm::vec3	p1(x - BLOCK_RENDER_SIZE, y - BLOCK_RENDER_SIZE, z + BLOCK_RENDER_SIZE);
 	glm::vec3	p2(x + BLOCK_RENDER_SIZE, y - BLOCK_RENDER_SIZE, z + BLOCK_RENDER_SIZE);
 	glm::vec3	p3(x + BLOCK_RENDER_SIZE, y + BLOCK_RENDER_SIZE, z + BLOCK_RENDER_SIZE);
@@ -123,74 +130,95 @@ void	Chunk::createCube(float x, float y, float z) {
 	glm::vec3	normal;
 
 	// Front
-	normal = glm::vec3(0.0f, 0.0f, 1.0f);
-	// First triangle
-	addVertex(p1, normal);
-	addVertex(p2, normal);
-	addVertex(p3, normal);
-	// Second triangle
-	addVertex(p1, normal);
-	addVertex(p3, normal);
-	addVertex(p4, normal);
+	if (!adj.front)
+	{
+		normal = glm::vec3(0.0f, 0.0f, 1.0f);
+		// First triangle
+		addVertex(p1, normal);
+		addVertex(p2, normal);
+		addVertex(p3, normal);
+		// Second triangle
+		addVertex(p1, normal);
+		addVertex(p3, normal);
+		addVertex(p4, normal);
+	}
 
 	// Back
-	normal = glm::vec3(0.0f, 0.0f, -1.0f);
-	// First triangle
-	addVertex(p5, normal);
-	addVertex(p6, normal);
-	addVertex(p7, normal);
-	// Second triangle
-	addVertex(p5, normal);
-	addVertex(p7, normal);
-	addVertex(p8, normal);
+	if (!adj.back)
+	{
+		normal = glm::vec3(0.0f, 0.0f, -1.0f);
+		// First triangle
+		addVertex(p5, normal);
+		addVertex(p6, normal);
+		addVertex(p7, normal);
+		// Second triangle
+		addVertex(p5, normal);
+		addVertex(p7, normal);
+		addVertex(p8, normal);
+	}
 
 	// Right
-	normal = glm::vec3(1.0f, 0.0f, 0.0f);
-	// First triangle
-	addVertex(p2, normal);
-	addVertex(p5, normal);
-	addVertex(p8, normal);
-	// Second triangle
-	addVertex(p2, normal);
-	addVertex(p8, normal);
-	addVertex(p3, normal);
+	if (!adj.right)
+	{
+		normal = glm::vec3(1.0f, 0.0f, 0.0f);
+		// First triangle
+		addVertex(p2, normal);
+		addVertex(p5, normal);
+		addVertex(p8, normal);
+		// Second triangle
+		addVertex(p2, normal);
+		addVertex(p8, normal);
+		addVertex(p3, normal);
+	}
 
 	// Left
-	normal = glm::vec3(-1.0f, 0.0f, 0.0f);
-	// First triangle
-	addVertex(p6, normal);
-	addVertex(p1, normal);
-	addVertex(p4, normal);
-	// Second triangle
-	addVertex(p6, normal);
-	addVertex(p4, normal);
-	addVertex(p7, normal);
+	if (!adj.left)
+	{
+		normal = glm::vec3(-1.0f, 0.0f, 0.0f);
+		// First triangle
+		addVertex(p6, normal);
+		addVertex(p1, normal);
+		addVertex(p4, normal);
+		// Second triangle
+		addVertex(p6, normal);
+		addVertex(p4, normal);
+		addVertex(p7, normal);
+	}
 
 	// Top
-	normal = glm::vec3(0.0f, 1.0f, 0.0f);
-	// First triangle
-	addVertex(p4, normal);
-	addVertex(p3, normal);
-	addVertex(p8, normal);
-	// Second triangle
-	addVertex(p4, normal);
-	addVertex(p8, normal);
-	addVertex(p7, normal);
+	if (!adj.top)
+	{
+		normal = glm::vec3(0.0f, 1.0f, 0.0f);
+		// First triangle
+		addVertex(p4, normal);
+		addVertex(p3, normal);
+		addVertex(p8, normal);
+		// Second triangle
+		addVertex(p4, normal);
+		addVertex(p8, normal);
+		addVertex(p7, normal);
+	}
 
 	// Bottom
-	normal = glm::vec3(0.0f, -1.0f, 0.0f);
-	// First triangle
-	addVertex(p6, normal);
-	addVertex(p5, normal);
-	addVertex(p2, normal);
-	// Second triangle
-	addVertex(p6, normal);
-	addVertex(p2, normal);
-	addVertex(p1, normal);
+	if (!adj.bottom)
+	{
+		normal = glm::vec3(0.0f, -1.0f, 0.0f);
+		// First triangle
+		addVertex(p6, normal);
+		addVertex(p5, normal);
+		addVertex(p2, normal);
+		// Second triangle
+		addVertex(p6, normal);
+		addVertex(p2, normal);
+		addVertex(p1, normal);
+	}
+	if (normal != glm::vec3())
+		_activeBlocks++;
 }
 
 void	Chunk::addVertex(glm::vec3 pos, glm::vec3 normal) {
 	mesh.insert(mesh.end(), { pos.x, pos.y, pos.z, normal.x, normal.y, normal.z });
+	_totalVertices++;
 }
 
 glm::vec3	Chunk::getPosition() const { return _position; }
