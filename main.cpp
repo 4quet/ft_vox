@@ -6,7 +6,7 @@
 /*   By: thibautpierron <thibautpierron@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 09:23:13 by tpierron          #+#    #+#             */
-/*   Updated: 2017/10/26 09:05:47 by thibautpier      ###   ########.fr       */
+/*   Updated: 2017/10/26 13:24:31 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ int     main() {
         camera.move(action, window.getMouseX(), window.getMouseY());
         shader.setCamera(camera.getMatrix());
 
-		m.render(shader);
+		m.update(shader);
 
         skybox.draw();
         UIManager(action, m);

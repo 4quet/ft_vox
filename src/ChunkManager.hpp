@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/24 17:27:54 by lfourque          #+#    #+#             */
-/*   Updated: 2017/10/26 11:03:35 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/10/26 13:57:00 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,14 @@ class ChunkManager
 		~ChunkManager();
 
 		void	render(Shader &);
+		void	update(Shader &);
 
 		size_t	getTotalActiveBlocks() const;
 		size_t	getTotalActiveChunks() const;
 
 	private:
-		Chunk***	_chunks;
+	//	Chunk***	_chunks;
+		std::vector<Chunk*>	_vChunks;
 
 		size_t		_totalActiveBlocks;
 		size_t		_totalActiveChunks;
