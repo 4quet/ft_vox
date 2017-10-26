@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Camera.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
+/*   By: thibautpierron <thibautpierron@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/25 13:39:17 by tpierron          #+#    #+#             */
-/*   Updated: 2017/10/25 14:54:19 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/10/26 08:32:08 by thibautpier      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,19 +27,23 @@ Camera::~Camera() {}
 void		Camera::move(Action::Enum action, int mouseX, int mouseY) {
     float dx = 0.f;
     float dy = 0.f;
+    float dz = 0.f;
 
     switch(action) {
         case Action::FORWARD: dy--; break;
         case Action::BACKWARD: dy++; break;
         case Action::LEFT: dx++; break;
         case Action::RIGHT: dx--; break;
+        case Action::UP: dz++; break;
+        case Action::DOWN: dz--; break;
         default: break;
     }
     glm::vec3 forward(matrix[0][2], matrix[1][2], matrix[2][2]);
     glm::vec3 strafe(matrix[0][0], matrix[1][0], matrix[2][0]);
+    glm::vec3 vertical(matrix[0][1], matrix[1][1], matrix[2][1]);
     
     const float speed = 1.f;
-    eyeVec += (-dy * forward + dx * strafe) * speed;
+    eyeVec += (-dy * forward + dx * strafe + -dz * vertical) * speed;
     manageMouse(glm::vec2(mouseX, mouseY));
     updateMatrix();
 }

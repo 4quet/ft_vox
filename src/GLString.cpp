@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   GLString.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
+/*   By: thibautpierron <thibautpierron@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/25 16:36:07 by tpierron          #+#    #+#             */
-/*   Updated: 2017/10/25 17:19:14 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/10/26 09:06:13 by thibautpier      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void	GLString::initFont(std::string fontPath) {
 	if (FT_New_Face(ft, fontPath.c_str(), 0, &face))
     	std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;
 
-	FT_Set_Pixel_Sizes(face, 0, 48);
+	FT_Set_Pixel_Sizes(face, 0, 24);
 
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
   
