@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 09:23:13 by tpierron          #+#    #+#             */
-/*   Updated: 2017/10/27 10:59:51 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/10/27 12:11:17 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ int     main() {
         camera.move(action, window.getMouseX(), window.getMouseY());
         shader.setCamera(camera.getMatrix());
         
-		m.update(shader);
+		m.update(shader, camera);
         skybox.draw();
         
         end = std::clock();
