@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Camera.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thibautpierron <thibautpierron@student.    +#+  +:+       +#+        */
+/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/25 13:39:17 by tpierron          #+#    #+#             */
-/*   Updated: 2017/10/26 08:32:08 by thibautpier      ###   ########.fr       */
+/*   Updated: 2017/10/27 12:05:16 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,10 @@ void        Camera::updateMatrix() {
 }
 
 glm::mat4	Camera::getMatrix() const {
+    // std::cout << eyeVec.x << " : " << eyeVec.y << " : " << eyeVec.z << std::endl;
 	return this->matrix;
 }
 
+glm::vec3   Camera::getPosition() const {
+    return  eyeVec;
+}
