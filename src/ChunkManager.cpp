@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/24 17:29:47 by lfourque          #+#    #+#             */
-/*   Updated: 2017/10/30 18:55:49 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/10/30 19:05:19 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ ChunkManager::ChunkManager(glm::vec3 camPos) : _chunkMap(std::map<index3D, Chunk
 					_chunkMap.insert( std::pair<index3D, Chunk*>(index, new Chunk()) );
 
 					_chunkMap.at(index)->setPosition(glm::vec3(xPos, yPos, zPos));
-					_chunkMap.at(index)->setHeightMap(x * CHUNK_SIZE, y * CHUNK_SIZE, z * CHUNK_SIZE);
+					_chunkMap.at(index)->setHeightMap(xPos, yPos, zPos);
 					_chunkMap.at(index)->setupLandscape();
 					_chunkMap.at(index)->createMesh();
 
@@ -80,7 +80,7 @@ void	ChunkManager::updateLoadList() {
 			glm::vec3	chunkPos = chunk->getPosition();
 			index3D		chunkIndex(chunkPos.x, chunkPos.y, chunkPos.z);
 
-			chunk->setHeightMap(chunkPos.x * CHUNK_SIZE, chunkPos.y * CHUNK_SIZE, chunkPos.z * CHUNK_SIZE);
+			chunk->setHeightMap(chunkPos.x, chunkPos.y, chunkPos.z);
 			chunk->setupLandscape();
 			chunk->createMesh();
 
@@ -158,7 +158,7 @@ void	ChunkManager::render(Shader & shader) {
 	}
 }
 
-std::map<std::tuple<float, float, float>, Chunk*> & ChunkManager::getChunks() {
+std::map<index3D, Chunk*> & ChunkManager::getChunks() {
 	return _chunkMap;
 }
 
