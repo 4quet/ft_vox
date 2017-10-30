@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/27 13:53:42 by tpierron          #+#    #+#             */
-/*   Updated: 2017/10/30 15:44:01 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/10/30 17:00:54 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,19 +57,19 @@ void		Frustum::compute(glm::mat4 view, std::map<std::tuple<float, float, float>,
 	int o = 0;
 	for (std::map<index3D, Chunk*>::iterator i = chunks.begin(); i != chunks.end(); ++i) {
 		glm::vec3 pos = chunks[i->first]->getPosition();
-		if (pointIn(pos.x, pos.y, pos.z)) {
+		if (pointIn(pos.x + (CHUNK_SIZE * BLOCK_RENDER_SIZE / 2), pos.y + (CHUNK_SIZE * BLOCK_RENDER_SIZE / 2), pos.z + (CHUNK_SIZE * BLOCK_RENDER_SIZE / 2))) {
 			chunks[i->first]->setVisibility(true);
 			o++;
 		} else
 			chunks[i->first]->setVisibility(false);
 	}
 		
-	std::cout << "chunks in: " << o << std::endl;
+	// std::cout << "chunks in: " << o << std::endl;
 }
 
 bool		Frustum::pointIn(float x, float y, float z) {
 	for(unsigned int i = 0; i < 6; i++) {
-		if(planes[i][0] * x + (CHUNK_SIZE / 2) + planes[i][1] * y + planes[i][2] * z + planes[i][3] <= -CHUNK_SIZE * BLOCK_RENDER_SIZE / 2)
+		if(planes[i][0] * x + (CHUNK_SIZE / 2) + planes[i][1] * y + planes[i][2] * z + planes[i][3] <= -CHUNK_SIZE * BLOCK_RENDER_SIZE)
 			return false;
 	}
 	return true;

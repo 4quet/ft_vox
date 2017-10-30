@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Shader.class.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thibautpierron <thibautpierron@student.    +#+  +:+       +#+        */
+/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/16 14:11:27 by thibautpier       #+#    #+#             */
-/*   Updated: 2017/10/25 23:12:48 by thibautpier      ###   ########.fr       */
+/*   Updated: 2017/10/30 17:11:26 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,4 +178,4 @@ glm::mat4 Shader::camera = glm::lookAt(
     glm::vec3(0.f, 1.f, 0.f)
     );
 
-glm::mat4 Shader::perspective = glm::perspective(45.f, 1.0f, 0.1f, 500.f);
+glm::mat4 Shader::perspective = glm::perspective(45.f, 1.0f, 0.1f, 4000.f);
