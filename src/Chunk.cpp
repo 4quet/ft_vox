@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:27:26 by lfourque          #+#    #+#             */
-/*   Updated: 2017/10/26 15:54:54 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/10/27 15:54:20 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 FastNoise	Chunk::sNoise;
 
-Chunk::Chunk() : _activeBlocks(0) { 
+Chunk::Chunk() : _activeBlocks(0), _totalVertices(0) { 
 	//std::cout << "--- Creating new chunk ---" << std::endl;
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
