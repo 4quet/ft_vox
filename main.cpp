@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 09:23:13 by tpierron          #+#    #+#             */
-/*   Updated: 2017/10/27 10:59:51 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/10/30 11:48:59 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ int     main() {
 
     Shader	shader("src/shaders/basic_vertex_shader.glvs", "src/shaders/basic_fragment_shader.glfs");
     Skybox  skybox("skybox");
+    Frustum frustum(Shader::perspective);
     
     start = 0;
     while(action != Action::ESCAPE) {
@@ -49,6 +50,8 @@ int     main() {
         camera.move(action, window.getMouseX(), window.getMouseY());
         shader.setCamera(camera.getMatrix());
         
+        frustum.compute(camera.getMatrix(), m.getChunks());
+
 		m.update(shader);
         skybox.draw();
         

@@ -1,41 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ChunkManager.hpp                                   :+:      :+:    :+:   */
+/*   Frustum.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/10/24 17:27:54 by lfourque          #+#    #+#             */
-/*   Updated: 2017/10/27 15:38:39 by tpierron         ###   ########.fr       */
+/*   Created: 2017/10/27 11:08:28 by tpierron          #+#    #+#             */
+/*   Updated: 2017/10/27 16:20:20 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef CHUNK_MANAGER_HPP
-# define CHUNK_MANAGER_HPP
+#ifndef FRUSTUM_HPP
+# define FRUSTUM_HPP
 
-# include "constants.hpp"
+# include <gtc/matrix_transform.hpp>
+# include <vector>
 # include "Chunk.hpp"
 
-class ChunkManager
-{
+class Frustum {
 	public:
-		ChunkManager();
-		~ChunkManager();
-
-		void	render(Shader &);
-		void	update(Shader &);
-		std::vector<Chunk*> & getChunks();
-
-		size_t	getTotalActiveBlocks() const;
-		size_t	getTotalActiveChunks() const;
+		Frustum(glm::mat4 projection);
+		// void	setView(glm::mat4 view);
+		void	compute(glm::mat4 view, std::vector<Chunk*> & chunks);
 
 	private:
-	//	Chunk***	_chunks;
-		std::vector<Chunk*>	_vChunks;
+		Frustum();
 
-		size_t		_totalActiveBlocks;
-		size_t		_totalActiveChunks;
+		void		setPlanes();
+		bool		pointIn(float x, float y, float z);
+
+		glm::mat4	projection;
+		glm::mat4	view;
+		float		planes[6][4];
 };
 
-
-#endif /* CHUNK_MANAGER_HPP */
+#endif

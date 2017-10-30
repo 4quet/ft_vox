@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Shader.class.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thibautpierron <thibautpierron@student.    +#+  +:+       +#+        */
+/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/16 14:11:32 by thibautpier       #+#    #+#             */
-/*   Updated: 2017/10/25 23:20:30 by thibautpier      ###   ########.fr       */
+/*   Updated: 2017/10/27 15:31:29 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,10 @@ class Shader {
         glm::mat4       getViewMatrix();
         void            setOrthoView(float, float);
         
-        Shader();
+        static glm::mat4    perspective;
+        
     private:
+        Shader();
         GLuint      load(GLenum , std::string);
         void        compile();
 
@@ -46,7 +48,6 @@ class Shader {
         bool        checkProgramCompilation(GLuint);
 
         static glm::mat4    camera;
-        static glm::mat4    perspective;
         GLuint          vertexID;
         GLuint          fragmentID;
         GLuint          geometryID;

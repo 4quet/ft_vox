@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 09:22:14 by tpierron          #+#    #+#             */
-/*   Updated: 2017/10/25 16:51:19 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/10/27 15:36:58 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include "src/Chunk.hpp"
 # include "src/ChunkManager.hpp"
 # include "src/Camera.hpp"
+# include "src/Frustum.hpp"
 # include "src/GLString.hpp"
 
 #endif
