@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:23:42 by lfourque          #+#    #+#             */
-/*   Updated: 2017/10/26 15:54:26 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/10/30 12:44:18 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,8 @@ struct AdjacentBlocks
 class Chunk
 {
 	public:
-		Chunk();
+		Chunk(); // to remove
+		Chunk(glm::vec3);
 		~Chunk();
 
 		void	update();

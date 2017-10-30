@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:27:26 by lfourque          #+#    #+#             */
-/*   Updated: 2017/10/27 15:54:20 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/10/30 15:31:24 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,24 @@
 FastNoise	Chunk::sNoise;
 
 Chunk::Chunk() : _activeBlocks(0), _totalVertices(0) { 
+	//std::cout << "--- Creating new chunk ---" << std::endl;
+	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &VBO);
+
+	// Create the blocks
+	_blocks = new Block**[CHUNK_SIZE];
+	for(int i = 0; i < CHUNK_SIZE; i++)
+	{
+		_blocks[i] = new Block*[CHUNK_SIZE];
+
+		for(int j = 0; j < CHUNK_SIZE; j++)
+		{
+			_blocks[i][j] = new Block[CHUNK_SIZE];
+		}
+	}
+}
+
+Chunk::Chunk(glm::vec3 position) : _activeBlocks(0), _totalVertices(0), _position(position) { 
 	//std::cout << "--- Creating new chunk ---" << std::endl;
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
@@ -51,6 +69,7 @@ void	Chunk::update() {
 }
 
 void	Chunk::render() {
+//	std::cout << "OPP " << _position.x << "; " << _position.y << "; " << _position.z << std::endl;
 	glBindVertexArray(VAO);
 	glDrawArrays(GL_TRIANGLES, 0, _totalVertices);
 	glBindVertexArray(0);

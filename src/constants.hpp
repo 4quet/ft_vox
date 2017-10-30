@@ -6,7 +6,7 @@
 /*   By: thibautpierron <thibautpierron@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/18 16:15:29 by tpierron          #+#    #+#             */
-/*   Updated: 2017/10/26 15:27:57 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/10/30 16:44:10 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,9 @@ enum BlockType
 	BLOCKTYPE_STONE
 };
 
-# define BLOCK_RENDER_SIZE	0.1f
+# define BLOCK_RENDER_SIZE	1.0f
 # define CHUNK_SIZE	16
 
-# define MAP_SIZE 8
+# define MAP_SIZE 6
 
 #endif

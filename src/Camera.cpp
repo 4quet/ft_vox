@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/25 13:39:17 by tpierron          #+#    #+#             */
-/*   Updated: 2017/10/27 12:05:16 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/10/30 16:10:21 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,12 +30,12 @@ void		Camera::move(Action::Enum action, int mouseX, int mouseY) {
     float dz = 0.f;
 
     switch(action) {
-        case Action::FORWARD: dy--; break;
-        case Action::BACKWARD: dy++; break;
-        case Action::LEFT: dx++; break;
-        case Action::RIGHT: dx--; break;
-        case Action::UP: dz++; break;
-        case Action::DOWN: dz--; break;
+        case Action::FORWARD: dy++; break;
+        case Action::BACKWARD: dy--; break;
+        case Action::LEFT: dx--; break;
+        case Action::RIGHT: dx++; break;
+        case Action::UP: dz--; break;
+        case Action::DOWN: dz++; break;
         default: break;
     }
     glm::vec3 forward(matrix[0][2], matrix[1][2], matrix[2][2]);
@@ -64,16 +64,16 @@ void        Camera::updateMatrix() {
 
     rollMat = glm::rotate(rollMat, glm::radians(roll), glm::vec3(1.f, 0.f, 0.f));
     yawMat = glm::rotate(yawMat, glm::radians(yaw), glm::vec3(0.f, 1.f, 0.f));
-    translate = glm::translate(translate, eyeVec);
+    translate = glm::translate(translate, -eyeVec);
 
     matrix = rollMat * yawMat * translate;
 }
 
 glm::mat4	Camera::getMatrix() const {
-    // std::cout << eyeVec.x << " : " << eyeVec.y << " : " << eyeVec.z << std::endl;
 	return this->matrix;
 }
 
 glm::vec3   Camera::getPosition() const {
+  //  std::cout << eyeVec.x << " : " << eyeVec.y << " : " << eyeVec.z << std::endl;
     return  eyeVec;
 }
