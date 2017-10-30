@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/24 17:27:54 by lfourque          #+#    #+#             */
-/*   Updated: 2017/10/30 11:51:04 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/10/30 13:50:57 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ class ChunkManager
 		void	updateSetupList();
 		void	updateUnloadList();
 		void	updateVisibilityList(Camera &);
-		std::vector<Chunk*> & getChunks();
+		std::map<std::tuple<float, float, float>, Chunk*> & getChunks();
 
 		size_t	getTotalActiveBlocks() const;
 		size_t	getTotalActiveChunks() const;

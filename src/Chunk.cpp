@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Chunk.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:27:26 by lfourque          #+#    #+#             */
-/*   Updated: 2017/10/27 15:54:20 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/10/30 14:29:09 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -235,4 +235,12 @@ void		Chunk::setHeightMap(float noiseX, float noiseY, float noiseZ) {
 				_heightMap[x][y][z] = Chunk::sNoise.GetNoise(noiseX + x, noiseY + y, noiseZ + z);
 		}
 	}
+}
+
+void		Chunk::setVisibility(bool b) {
+	_visible = b;
+}
+
+bool		Chunk::getVisibility() const {
+	return _visible;
 }

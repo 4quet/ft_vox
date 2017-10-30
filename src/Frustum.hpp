@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/27 11:08:28 by tpierron          #+#    #+#             */
-/*   Updated: 2017/10/27 16:20:20 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/10/30 14:10:58 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,15 +15,17 @@
 
 # include <gtc/matrix_transform.hpp>
 # include <vector>
+# include <map>
 # include "Chunk.hpp"
 
 class Frustum {
 	public:
 		Frustum(glm::mat4 projection);
 		// void	setView(glm::mat4 view);
-		void	compute(glm::mat4 view, std::vector<Chunk*> & chunks);
+		void	compute(glm::mat4 view, std::map<std::tuple<float, float, float>, Chunk*> & chunks);
 
 	private:
+		typedef	std::tuple<float, float, float>	index3D;
 		Frustum();
 
 		void		setPlanes();

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   constants.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thibautpierron <thibautpierron@student.    +#+  +:+       +#+        */
+/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/18 16:15:29 by tpierron          #+#    #+#             */
-/*   Updated: 2017/10/26 15:27:57 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/10/30 14:42:06 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,6 @@ enum BlockType
 # define BLOCK_RENDER_SIZE	0.1f
 # define CHUNK_SIZE	16
 
-# define MAP_SIZE 8
+# define MAP_SIZE 16
 
 #endif

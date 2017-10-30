@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ChunkManager.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/24 17:29:47 by lfourque          #+#    #+#             */
-/*   Updated: 2017/10/27 16:55:43 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/10/30 14:28:42 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,8 +129,8 @@ void	ChunkManager::render(Shader & shader) {
 	for (std::map<index3D, Chunk*>::iterator it = _chunkMap.begin(); it != _chunkMap.end(); ++it)
 	{
 		index3D index = it->first;
-		(void)index;
-		_chunkMap.at(index)->render();
+		if(_chunkMap.at(index)->getVisibility())
+			_chunkMap.at(index)->render();
 	}
 	/*
 	   for (int x = 0; x < MAP_SIZE; ++x)
@@ -145,6 +145,10 @@ void	ChunkManager::render(Shader & shader) {
 	   }
 	   }
 	   */
+}
+
+std::map<std::tuple<float, float, float>, Chunk*> & ChunkManager::getChunks() {
+	return _chunkMap;
 }
 
 size_t	ChunkManager::getTotalActiveBlocks() const { return _totalActiveBlocks; }

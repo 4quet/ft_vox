@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Chunk.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:23:42 by lfourque          #+#    #+#             */
-/*   Updated: 2017/10/26 15:54:26 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/10/30 14:29:35 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,8 @@ class Chunk
 		size_t		getActiveBlocks() const;
 
 		void		setHeightMap(float, float, float);
+		void		setVisibility(bool);
+		bool		getVisibility() const;
 
 		static 	FastNoise	sNoise;
 
@@ -57,6 +59,7 @@ class Chunk
 		float		_heightMap[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE];
 
 		glm::vec3	_position;
+		bool		_visible;
 
 		GLuint		VAO;
 		GLuint		VBO;

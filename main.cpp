@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 09:23:13 by tpierron          #+#    #+#             */
-/*   Updated: 2017/10/30 11:51:07 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/10/30 13:46:54 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ int     main() {
         
         frustum.compute(camera.getMatrix(), m.getChunks());
 
-		m.update(shader);
+		m.update(shader, camera);
         skybox.draw();
         
         end = std::clock();
