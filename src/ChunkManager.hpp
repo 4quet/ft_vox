@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/24 17:27:54 by lfourque          #+#    #+#             */
-/*   Updated: 2017/10/30 13:50:57 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/10/30 18:17:03 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,17 +16,18 @@
 # include "constants.hpp"
 # include "Chunk.hpp"
 # include "Camera.hpp"
+# include "Frustum.hpp"
 # include <map>
 
 class ChunkManager
 {
 	public:
 		ChunkManager();
+		ChunkManager(glm::vec3);
 		~ChunkManager();
 
 		void	render(Shader &);
 
-		
 		void	update(Shader &, Camera &);
 		
 		void	updateLoadList();
@@ -39,8 +40,6 @@ class ChunkManager
 		size_t	getTotalActiveChunks() const;
 
 	private:
-		typedef	std::tuple<float, float, float>	index3D;
-
 		std::map<index3D, Chunk*>	_chunkMap;
 
 		std::vector<Chunk*>	_loadList;

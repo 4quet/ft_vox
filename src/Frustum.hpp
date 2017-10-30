@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/27 11:08:28 by tpierron          #+#    #+#             */
-/*   Updated: 2017/10/30 14:10:58 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/10/30 18:17:26 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,8 @@ class Frustum {
 	public:
 		Frustum(glm::mat4 projection);
 		// void	setView(glm::mat4 view);
-		void	compute(glm::mat4 view, std::map<std::tuple<float, float, float>, Chunk*> & chunks);
+		void	compute(glm::mat4 view, std::map<index3D, Chunk*> & chunks);
+		void	compute(glm::mat4 view, std::vector<Chunk*> & chunks);
 
 	private:
 		typedef	std::tuple<float, float, float>	index3D;

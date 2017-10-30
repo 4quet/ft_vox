@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:23:42 by lfourque          #+#    #+#             */
-/*   Updated: 2017/10/30 16:52:46 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/10/30 18:32:19 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 # include "Shader.class.hpp"
 # include "Block.hpp"
 # include <vector>
+
+typedef	std::tuple<float, float, float>	index3D;
 
 struct AdjacentBlocks
 {
@@ -47,7 +49,7 @@ class Chunk
 
 		void		setHeightMap(float, float, float);
 		void		setVisibility(bool);
-		bool		getVisibility() const;
+		bool		isVisible() const;
 
 		static 	FastNoise	sNoise;
 
