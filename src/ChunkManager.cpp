@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/24 17:29:47 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/01 14:20:14 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/01 16:05:58 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 ChunkManager::ChunkManager(glm::vec3 camPos) : _chunkMap(std::map<index3D, Chunk*>()) {
 
 	Chunk::sNoise.SetNoiseType(FastNoise::Perlin); // Set the desired noise type
-	Chunk::sNoise.SetFrequency(0.04f); // Set the desired noise freq
+//	Chunk::sNoise.SetFrequency(0.04f); // Set the desired noise freq
 
 	int	start = -(MAP_SIZE / 2);
 	int end = MAP_SIZE / 2;
@@ -87,7 +87,7 @@ void	ChunkManager::updateRenderList(Camera & camera) {
 			{
 				chunk->setup();
 			}
-			if (chunk->getPosition().y < 0)
+			if (chunk->getPosition().y < BLOCK_RENDER_SIZE * CHUNK_SIZE)
 				_renderList.push_back(chunk);
 		}
 	}
@@ -109,7 +109,7 @@ void	ChunkManager::updateUnloadList() {
 void	ChunkManager::updateVisibilityList(Camera & camera) {
 
 	glm::vec3	camPos = camera.getPosition();
-	//	std::cout << "CAM " << camPos.x << " ; " << camPos.y << " ; " << camPos.z << std::endl;
+//		std::cout << "CAM " << camPos.x << " ; " << camPos.y << " ; " << camPos.z << std::endl;
 	float		maxDist = ((BLOCK_RENDER_SIZE * CHUNK_SIZE) * (MAP_SIZE)) / 2.0f;
 
 	for (std::map<index3D, Chunk*>::iterator it = _chunkMap.begin(); it != _chunkMap.end(); ++it)

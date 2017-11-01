@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:27:26 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/01 14:14:58 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/01 16:08:51 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ void	Chunk::update() {
 }
 
 void	Chunk::render() {
-//	std::cout << "OPP " << _position.x << "; " << _position.y << "; " << _position.z << std::endl;
+	//	std::cout << "OPP " << _position.x << "; " << _position.y << "; " << _position.z << std::endl;
 	glBindVertexArray(VAO);
 	glDrawArrays(GL_TRIANGLES, 0, _totalVertices);
 	glBindVertexArray(0);
@@ -65,28 +65,70 @@ void	Chunk::setup() {
 
 void	Chunk::setupLandscape() {
 
+	/*
 	//std::cout << "setting up chunk landscape" << std::endl;
-    for (int x = 0; x < CHUNK_SIZE; x++)
-    {
-        for (int y = 0; y < CHUNK_SIZE; y++)
-        {
-            for (int z = 0; z < CHUNK_SIZE; z++)
-            {
-				_heightMap[x][y][z] = Chunk::sNoise.GetNoise(_position.x + x, _position.y + y, _position.z + z);
-				float density = _heightMap[x][y][z] * CHUNK_SIZE;
-				if (density > 0.0f)
-				{
-                	_blocks[x][y][z].setActive(true);
-            	    //_blocks[x][y][z].setBlockType(BLOCKTYPE_GRASS);
-				}
-            }
-        }
-    }
+	for (int x = 0; x < CHUNK_SIZE; x++)
+	{
+	for (int y = 0; y < CHUNK_SIZE; y++)
+	{
+	for (int z = 0; z < CHUNK_SIZE; z++)
+	{
+	_heightMap[x][y][z] =
+	Chunk::sNoise.GetNoise(_position.x + x, _position.y + y, _position.z + z);
+	float density = _heightMap[x][y][z] * CHUNK_SIZE;
+	if (density > 0.0f)
+	{
+	_blocks[x][y][z].setActive(true);
+	//_blocks[x][y][z].setBlockType(BLOCKTYPE_GRASS);
+	}
 
+	}
+	}
+	}
+	*/
+
+	for (int x = 0; x < CHUNK_SIZE; x++)
+	{
+		for (int z = 0; z < CHUNK_SIZE; z++)
+		{
+			// CAVES
+			//if (_position.y < -BLOCK_RENDER_SIZE * CHUNK_SIZE)
+			if (_position.y < 0.0f)
+			{
+				Chunk::sNoise.SetFrequency(0.099f); // Set the desired noise freq
+				for (int y = 0; y < CHUNK_SIZE; ++y)
+				{
+					float density = CHUNK_SIZE *  Chunk::sNoise.GetNoise(_position.x + x, _position.y + y, _position.z + z);
+					if (density > 0.0f)
+					{
+						_blocks[x][y][z].setActive(true);
+					}
+				}
+			}
+			// SURFACE
+			else //if (_position.y > 0.0f)
+			{
+				Chunk::sNoise.SetFrequency(0.04f); // Set the desired noise freq
+				float	hm = Chunk::sNoise.GetNoise(_position.x + x, _position.z + z) * CHUNK_SIZE;
+				for (int y = 0; y < hm; ++y)
+				{
+					_blocks[x][y][z].setActive(true);
+				}
+			}
+			/*
+			// IN BETWEEN
+			else
+			{
+				for (int y = 0; y < CHUNK_SIZE; ++y)
+					_blocks[x][y][z].setActive(true);
+			}
+			*/
+		}
+	}
 }
 
 void	Chunk::createMesh() {
-//	std::cout << "creating chunk mesh" << std::endl;
+	//	std::cout << "creating chunk mesh" << std::endl;
 	for (int x = 0; x < CHUNK_SIZE; x++)
 	{
 		for (int y = 0; y < CHUNK_SIZE; y++)
