@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/24 17:29:47 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/01 13:14:22 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/01 14:20:14 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,26 +29,23 @@ ChunkManager::ChunkManager(glm::vec3 camPos) : _chunkMap(std::map<index3D, Chunk
 				float yPos = y * (CHUNK_SIZE * BLOCK_RENDER_SIZE);
 				float zPos = z * (CHUNK_SIZE * BLOCK_RENDER_SIZE);
 
-				if (yPos <= -BLOCK_RENDER_SIZE * (CHUNK_SIZE))
+				index3D		index(xPos, yPos, zPos);
+				glm::vec3	chunkPos(xPos, yPos, zPos);
+
+				_chunkMap.insert( std::pair<index3D, Chunk*>(index, new Chunk(chunkPos)) );
+				_chunkMap.at(index)->setup();
+
+				// Add active blocks / chunks to total
+				size_t	toAdd = _chunkMap.at(index)->getActiveBlocks();
+				if (toAdd > 0)
 				{
-					index3D		index(xPos, yPos, zPos);
-					glm::vec3	chunkPos(xPos, yPos, zPos);
-
-					_chunkMap.insert( std::pair<index3D, Chunk*>(index, new Chunk(chunkPos)) );
-					_chunkMap.at(index)->setup();
-
-					// Add active blocks / chunks to total
-					size_t	toAdd = _chunkMap.at(index)->getActiveBlocks();
-					if (toAdd > 0)
-					{
-						_totalActiveBlocks += toAdd;
-						_totalActiveChunks += 1;
-					}
+					_totalActiveBlocks += toAdd;
+					_totalActiveChunks += 1;
 				}
-			}
 		}
 	}
-	std::cout << "ChunkManager successfully constructed" << std::endl;
+}
+std::cout << "ChunkManager successfully constructed" << std::endl;
 }
 
 ChunkManager::~ChunkManager() { }
@@ -90,9 +87,11 @@ void	ChunkManager::updateRenderList(Camera & camera) {
 			{
 				chunk->setup();
 			}
-			_renderList.push_back(chunk);
+			if (chunk->getPosition().y < 0)
+				_renderList.push_back(chunk);
 		}
 	}
+	//	std::cout << _renderList.size() << std::endl;
 }
 
 void	ChunkManager::updateUnloadList() {
@@ -110,7 +109,7 @@ void	ChunkManager::updateUnloadList() {
 void	ChunkManager::updateVisibilityList(Camera & camera) {
 
 	glm::vec3	camPos = camera.getPosition();
-//	std::cout << "CAM " << camPos.x << " ; " << camPos.y << " ; " << camPos.z << std::endl;
+	//	std::cout << "CAM " << camPos.x << " ; " << camPos.y << " ; " << camPos.z << std::endl;
 	float		maxDist = ((BLOCK_RENDER_SIZE * CHUNK_SIZE) * (MAP_SIZE)) / 2.0f;
 
 	for (std::map<index3D, Chunk*>::iterator it = _chunkMap.begin(); it != _chunkMap.end(); ++it)
@@ -122,23 +121,19 @@ void	ChunkManager::updateVisibilityList(Camera & camera) {
 
 		if (fabs(dist.x) > maxDist)
 		{
-			glm::vec3	oppositePos;
-			if (chunkPos.x > camPos.x)
-				oppositePos = glm::vec3(chunkPos.x - (maxDist * 2.0f), chunkPos.y, chunkPos.z);
-			else
-				oppositePos = glm::vec3(chunkPos.x + (maxDist * 2.0f), chunkPos.y, chunkPos.z);
-
+			glm::vec3	oppositePos = glm::vec3(chunkPos.x - maxDist * 2.0f * std::copysign(1.0f, dist.x), chunkPos.y, chunkPos.z);
 			_loadList.push_back(new Chunk(oppositePos));
 			_unloadList.push_back(it->second);
 		}
 		if (fabs(dist.z) > maxDist)
 		{
-			glm::vec3	oppositePos;
-			if (chunkPos.z > camPos.z)
-				oppositePos = glm::vec3(chunkPos.x, chunkPos.y, chunkPos.z - (maxDist * 2.0f));
-			else
-				oppositePos = glm::vec3(chunkPos.x, chunkPos.y, chunkPos.z + (maxDist * 2.0f));
-
+			glm::vec3	oppositePos = glm::vec3(chunkPos.x, chunkPos.y, chunkPos.z - maxDist * 2.0f * std::copysign(1.0f, dist.z));
+			_loadList.push_back(new Chunk(oppositePos));
+			_unloadList.push_back(it->second);
+		}
+		if (fabs(dist.y) > maxDist)
+		{
+			glm::vec3	oppositePos = glm::vec3(chunkPos.x, chunkPos.y - maxDist * 2.0f * std::copysign(1.0f, dist.y), chunkPos.z);
 			_loadList.push_back(new Chunk(oppositePos));
 			_unloadList.push_back(it->second);
 		}

@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:27:26 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/01 13:00:15 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/01 14:14:58 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,6 @@ void	Chunk::render() {
 }
 
 void	Chunk::setup() {
-	setHeightMap(_position.x, _position.y, _position.z);
 	setupLandscape();
 	createMesh();
 	_setup = true;
@@ -73,6 +72,7 @@ void	Chunk::setupLandscape() {
         {
             for (int z = 0; z < CHUNK_SIZE; z++)
             {
+				_heightMap[x][y][z] = Chunk::sNoise.GetNoise(_position.x + x, _position.y + y, _position.z + z);
 				float density = _heightMap[x][y][z] * CHUNK_SIZE;
 				if (density > 0.0f)
 				{
@@ -93,7 +93,7 @@ void	Chunk::createMesh() {
 		{
 			for (int z = 0; z < CHUNK_SIZE; z++)
 			{
-				if(_blocks[x][y][z].isActive() == false)
+				if (_blocks[x][y][z].isActive() == false)
 				{
 					// Don't create triangle data for inactive blocks
 					continue;
