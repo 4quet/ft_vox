@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:23:42 by lfourque          #+#    #+#             */
-/*   Updated: 2017/10/30 18:32:19 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/01 12:56:16 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@ struct AdjacentBlocks
 class Chunk
 {
 	public:
-		Chunk(); // to remove
 		Chunk(glm::vec3);
 		~Chunk();
 
@@ -48,12 +47,18 @@ class Chunk
 		size_t		getActiveBlocks() const;
 
 		void		setHeightMap(float, float, float);
+
 		void		setVisibility(bool);
 		bool		isVisible() const;
+
+		void		setup();
+		bool		isSetup() const;
 
 		static 	FastNoise	sNoise;
 
 	private:
+		Chunk(); // to remove
+
 		Block***	_blocks;
 		size_t		_activeBlocks;
 
@@ -63,6 +68,7 @@ class Chunk
 
 		glm::vec3	_position;
 		bool		_visible;
+		bool		_setup;
 
 		GLuint		VAO;
 		GLuint		VBO;

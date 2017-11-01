@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/24 17:29:47 by lfourque          #+#    #+#             */
-/*   Updated: 2017/10/30 19:05:19 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/01 13:14:22 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,14 +31,11 @@ ChunkManager::ChunkManager(glm::vec3 camPos) : _chunkMap(std::map<index3D, Chunk
 
 				if (yPos <= -BLOCK_RENDER_SIZE * (CHUNK_SIZE))
 				{
-					index3D	index(xPos, yPos, zPos);
+					index3D		index(xPos, yPos, zPos);
+					glm::vec3	chunkPos(xPos, yPos, zPos);
 
-					_chunkMap.insert( std::pair<index3D, Chunk*>(index, new Chunk()) );
-
-					_chunkMap.at(index)->setPosition(glm::vec3(xPos, yPos, zPos));
-					_chunkMap.at(index)->setHeightMap(xPos, yPos, zPos);
-					_chunkMap.at(index)->setupLandscape();
-					_chunkMap.at(index)->createMesh();
+					_chunkMap.insert( std::pair<index3D, Chunk*>(index, new Chunk(chunkPos)) );
+					_chunkMap.at(index)->setup();
 
 					// Add active blocks / chunks to total
 					size_t	toAdd = _chunkMap.at(index)->getActiveBlocks();
@@ -57,16 +54,12 @@ ChunkManager::ChunkManager(glm::vec3 camPos) : _chunkMap(std::map<index3D, Chunk
 ChunkManager::~ChunkManager() { }
 
 void	ChunkManager::update(Shader & shader, Camera & camera) {
-	Frustum	f(Shader::perspective);
-
-	f.compute(camera.getMatrix(), _chunkMap);
-
 	updateVisibilityList(camera);
-
-//	f.compute(camera.getMatrix(), _loadList);
 
 	updateLoadList();
 	updateUnloadList();
+
+	updateRenderList(camera);
 
 	render(shader);
 }
@@ -75,24 +68,31 @@ void	ChunkManager::updateLoadList() {
 	for (std::vector<Chunk*>::iterator it = _loadList.begin(); it != _loadList.end(); ++it)
 	{
 		Chunk *		chunk = *it;
-		if (chunk->isVisible())
-		{
-			glm::vec3	chunkPos = chunk->getPosition();
-			index3D		chunkIndex(chunkPos.x, chunkPos.y, chunkPos.z);
+		glm::vec3	chunkPos = chunk->getPosition();
+		index3D		chunkIndex(chunkPos.x, chunkPos.y, chunkPos.z);
 
-			chunk->setHeightMap(chunkPos.x, chunkPos.y, chunkPos.z);
-			chunk->setupLandscape();
-			chunk->createMesh();
-
-			_chunkMap.insert( std::pair<index3D, Chunk*>(chunkIndex, chunk) );
-		}
-
+		_chunkMap.insert( std::pair<index3D, Chunk*>(chunkIndex, chunk) );
 	}
 	_loadList.clear();
 }
 
-void	ChunkManager::updateSetupList() {
-	//...
+void	ChunkManager::updateRenderList(Camera & camera) {
+	Frustum	f(Shader::perspective);
+	_renderList.clear();
+
+	f.compute(camera.getMatrix(), _chunkMap);
+	for (std::map<index3D, Chunk*>::iterator it = _chunkMap.begin(); it != _chunkMap.end(); ++it)
+	{
+		Chunk *		chunk = it->second;
+		if (chunk->isVisible())
+		{
+			if (chunk->isSetup() == false)
+			{
+				chunk->setup();
+			}
+			_renderList.push_back(chunk);
+		}
+	}
 }
 
 void	ChunkManager::updateUnloadList() {
@@ -150,11 +150,9 @@ void	ChunkManager::render(Shader & shader) {
 	shader.use();
 	shader.setView();
 
-	for (std::map<index3D, Chunk*>::iterator it = _chunkMap.begin(); it != _chunkMap.end(); ++it)
+	for (std::vector<Chunk*>::iterator it = _renderList.begin(); it != _renderList.end(); ++it)
 	{
-		index3D index = it->first;
-		if(_chunkMap.at(index)->isVisible())
-			_chunkMap.at(index)->render();
+		(*it)->render();
 	}
 }
 

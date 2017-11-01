@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/24 17:27:54 by lfourque          #+#    #+#             */
-/*   Updated: 2017/10/30 18:17:03 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/01 13:15:08 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ class ChunkManager
 		void	update(Shader &, Camera &);
 		
 		void	updateLoadList();
-		void	updateSetupList();
+		void	updateRenderList(Camera &);
 		void	updateUnloadList();
 		void	updateVisibilityList(Camera &);
 		std::map<std::tuple<float, float, float>, Chunk*> & getChunks();
@@ -43,9 +43,8 @@ class ChunkManager
 		std::map<index3D, Chunk*>	_chunkMap;
 
 		std::vector<Chunk*>	_loadList;
-		std::vector<Chunk*>	_setupList;
+		std::vector<Chunk*>	_renderList;
 		std::vector<Chunk*>	_unloadList;
-		std::vector<Chunk*>	_visibilityList;
 
 		size_t		_totalActiveBlocks;
 		size_t		_totalActiveChunks;
