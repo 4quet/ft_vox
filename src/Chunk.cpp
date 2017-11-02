@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:27:26 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/02 14:28:19 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/02 15:32:19 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,41 +65,20 @@ void	Chunk::setup() {
 
 void	Chunk::setupLandscape() {
 
-	/*
-	//std::cout << "setting up chunk landscape" << std::endl;
-	for (int x = 0; x < CHUNK_SIZE; x++)
-	{
-	for (int y = 0; y < CHUNK_SIZE; y++)
-	{
-	for (int z = 0; z < CHUNK_SIZE; z++)
-	{
-	_heightMap[x][y][z] =
-	Chunk::sNoise.GetNoise(_position.x + x, _position.y + y, _position.z + z);
-	float density = _heightMap[x][y][z] * CHUNK_SIZE;
-	if (density > 0.0f)
-	{
-	_blocks[x][y][z].setActive(true);
-	//_blocks[x][y][z].setBlockType(BLOCKTYPE_GRASS);
-	}
-
-	}
-	}
-	}
-	*/
+	float	caveFreq = 0.05f;
+	float	surfaceFreq = 0.05f;
 
 	for (int x = 0; x < CHUNK_SIZE; ++x)
 	{
 		for (int z = 0; z < CHUNK_SIZE; ++z)
 		{
 			// CAVES
-			if (_position.y < -BLOCK_RENDER_SIZE * CHUNK_SIZE)
-			//if (_position.y < 0.0f)
+			if (_position.y < 0.0f)
 			{
-				Chunk::sNoise.SetFrequency(0.03f); // Set the desired noise freq
+				Chunk::sNoise.SetFrequency(caveFreq); // Set the desired noise freq
 				for (int y = 0; y < CHUNK_SIZE; ++y)
 				{
 					float density = CHUNK_SIZE *  Chunk::sNoise.GetNoise(_position.x + x, _position.y + y, _position.z + z);
-			//		float density = _heightMap[x][y][z];
 					if (density > 0.0f)
 					{
 						_blocks[x][y][z].setActive(true);
@@ -107,25 +86,32 @@ void	Chunk::setupLandscape() {
 				}
 			}
 			// SURFACE
-			else if (_position.y >= 0.0f)
-			{
-				Chunk::sNoise.SetFrequency(0.04f); // Set the desired noise freq
-				float	hm = Chunk::sNoise.GetNoise(_position.x + x, _position.z + z) * CHUNK_SIZE;
-			//	float hm = CHUNK_SIZE;
-				for (int y = 0; y < hm; ++y)
-				{
-					_blocks[x][y][z].setActive(true);
-				}
-			}
-			// IN BETWEEN
 			else
 			{
-				for (int y = 0; y < CHUNK_SIZE; ++y)
+				Chunk::sNoise.SetFrequency(surfaceFreq); // Set the desired noise freq
+				float	hm = Chunk::sNoise.GetNoise(_position.x + x, _position.z + z) * CHUNK_SIZE;
+				for (int y = 0; y < hm; ++y)
 				{
-					_blocks[x][y][z].setActive(true);
+					Chunk::sNoise.SetFrequency(caveFreq); // Set the desired noise freq
+					float density = CHUNK_SIZE *  Chunk::sNoise.GetNoise(_position.x + x, _position.y + y, _position.z + z);
+
+					if (density > 0.0f)
+						_blocks[x][y][z].setActive(true);
 				}
 			}
 			/*
+			// MULTI-CHUNK SURFACE
+			else
+			{
+				Chunk::sNoise.SetFrequency(0.09f); // Set the desired noise freq
+				float	hm = Chunk::sNoise.GetNoise(_position.x + x, _position.z + z) * CHUNK_SIZE;
+				for (int y = 0; y < CHUNK_SIZE; ++y)
+					_blocks[x][y][z].setActive(true);
+				for (int y = 0; y > hm; --y)
+				{
+					_blocks[x][CHUNK_SIZE + y - 1][z].setActive(false);
+				}
+			}
 			*/
 		}
 	}
