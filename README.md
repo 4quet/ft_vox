@@ -3,3 +3,5 @@
 ### To do:
 - Remove FastNoise lib ?
 - Remove -Wno-unused flag
+- Proper unload for chunks
+- Memory leaks

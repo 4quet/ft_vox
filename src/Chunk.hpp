@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:23:42 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/02 13:42:40 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/02 15:53:22 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,9 @@ class Chunk
 		void	setupLandscape();
 
 		void	createMesh();
-		void	createCube(float, float, float, AdjacentBlocks &);
+		void	createCube(float, float, float, AdjacentBlocks &, BlockType);
 
-		void	addVertex(glm::vec3 pos, glm::vec3 normal);
+		void	addVertex(glm::vec3, glm::vec3, glm::vec3);
 
 		glm::vec3	getPosition() const;
 		void		setPosition(glm::vec3);
@@ -57,7 +57,7 @@ class Chunk
 		static 	FastNoise	sNoise;
 
 	private:
-		Chunk(); // to remove
+		Chunk();
 
 		Block***	_blocks;
 		size_t		_activeBlocks;
