@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/27 13:53:42 by tpierron          #+#    #+#             */
-/*   Updated: 2017/10/30 18:53:12 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/02 13:12:51 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,10 @@
 
 Frustum::Frustum(glm::mat4 projection) : projection(projection) {
 	view = glm::mat4(1.0);
+}
+
+void	Frustum::setView(glm::mat4 v) {
+	this->view = v;
 }
 
 void	Frustum::setPlanes() {

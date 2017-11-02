@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 09:23:13 by tpierron          #+#    #+#             */
-/*   Updated: 2017/10/30 18:56:07 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/02 12:01:32 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ int     main() {
     Camera          camera;
 	ChunkManager	m(camera.getPosition());
 
-    Shader	shader("src/shaders/basic_vertex_shader.glvs", "src/shaders/basic_fragment_shader.glfs");
+    Shader	shader("src/shaders/vertex_shader.glvs", "src/shaders/fragment_shader.glfs");
     Skybox  skybox("skybox");
     
     start = 0;

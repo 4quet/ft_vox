@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:23:42 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/01 12:56:16 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/02 13:42:40 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ class Chunk
 
 		size_t		getActiveBlocks() const;
 
-		void		setHeightMap(float, float, float);
+		void		setHeightMap();
 
 		void		setVisibility(bool);
 		bool		isVisible() const;

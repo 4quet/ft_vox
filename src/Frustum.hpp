@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/27 11:08:28 by tpierron          #+#    #+#             */
-/*   Updated: 2017/10/30 18:17:26 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/02 13:12:08 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,13 +24,12 @@ class Frustum {
 		// void	setView(glm::mat4 view);
 		void	compute(glm::mat4 view, std::map<index3D, Chunk*> & chunks);
 		void	compute(glm::mat4 view, std::vector<Chunk*> & chunks);
+		bool	pointIn(float x, float y, float z);
+		void	setPlanes();
+		void	setView(glm::mat4 view);
 
 	private:
-		typedef	std::tuple<float, float, float>	index3D;
 		Frustum();
-
-		void		setPlanes();
-		bool		pointIn(float x, float y, float z);
 
 		glm::mat4	projection;
 		glm::mat4	view;

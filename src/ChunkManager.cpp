@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/24 17:29:47 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/01 16:05:58 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/02 14:37:46 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,13 +35,6 @@ ChunkManager::ChunkManager(glm::vec3 camPos) : _chunkMap(std::map<index3D, Chunk
 				_chunkMap.insert( std::pair<index3D, Chunk*>(index, new Chunk(chunkPos)) );
 				_chunkMap.at(index)->setup();
 
-				// Add active blocks / chunks to total
-				size_t	toAdd = _chunkMap.at(index)->getActiveBlocks();
-				if (toAdd > 0)
-				{
-					_totalActiveBlocks += toAdd;
-					_totalActiveChunks += 1;
-				}
 		}
 	}
 }
@@ -51,12 +44,18 @@ std::cout << "ChunkManager successfully constructed" << std::endl;
 ChunkManager::~ChunkManager() { }
 
 void	ChunkManager::update(Shader & shader, Camera & camera) {
+
+	glm::vec3	camPos = camera.getPosition();
+	shader.use();
+	shader.setVec3("lightPos", camPos.x, camPos.y, camPos.z);
+
 	updateVisibilityList(camera);
 
 	updateLoadList();
+
 	updateUnloadList();
 
-	updateRenderList(camera);
+	updateRenderList(camera.getMatrix());
 
 	render(shader);
 }
@@ -73,25 +72,34 @@ void	ChunkManager::updateLoadList() {
 	_loadList.clear();
 }
 
-void	ChunkManager::updateRenderList(Camera & camera) {
+void	ChunkManager::updateRenderList(glm::mat4 viewMatrix) {
 	Frustum	f(Shader::perspective);
+	f.setView(viewMatrix);
+	f.setPlanes();
+
 	_renderList.clear();
 
-	f.compute(camera.getMatrix(), _chunkMap);
+	float	halfChunk = CHUNK_SIZE * BLOCK_RENDER_SIZE / 2.0f; // This is improvable
 	for (std::map<index3D, Chunk*>::iterator it = _chunkMap.begin(); it != _chunkMap.end(); ++it)
 	{
 		Chunk *		chunk = it->second;
-		if (chunk->isVisible())
+		glm::vec3	pos = chunk->getPosition();
+		if (f.pointIn(pos.x + halfChunk, pos.y + halfChunk, pos.z + halfChunk))
 		{
+			chunk->setVisibility(true);
 			if (chunk->isSetup() == false)
 			{
 				chunk->setup();
 			}
-			if (chunk->getPosition().y < BLOCK_RENDER_SIZE * CHUNK_SIZE)
+			if (pos.y < BLOCK_RENDER_SIZE * CHUNK_SIZE)
 				_renderList.push_back(chunk);
 		}
+		else
+		{
+			chunk->setVisibility(false);
+		}
 	}
-	//	std::cout << _renderList.size() << std::endl;
+//		std::cout << _renderList.size() << std::endl;
 }
 
 void	ChunkManager::updateUnloadList() {
@@ -109,7 +117,7 @@ void	ChunkManager::updateUnloadList() {
 void	ChunkManager::updateVisibilityList(Camera & camera) {
 
 	glm::vec3	camPos = camera.getPosition();
-//		std::cout << "CAM " << camPos.x << " ; " << camPos.y << " ; " << camPos.z << std::endl;
+//	std::cout << "CAM " << camPos.x << " ; " << camPos.y << " ; " << camPos.z << std::endl;
 	float		maxDist = ((BLOCK_RENDER_SIZE * CHUNK_SIZE) * (MAP_SIZE)) / 2.0f;
 
 	for (std::map<index3D, Chunk*>::iterator it = _chunkMap.begin(); it != _chunkMap.end(); ++it)
@@ -142,12 +150,16 @@ void	ChunkManager::updateVisibilityList(Camera & camera) {
 
 void	ChunkManager::render(Shader & shader) {
 
-	shader.use();
+	//shader.use();
 	shader.setView();
 
+	_totalActiveBlocks = 0;
+	_totalActiveChunks = 0;
 	for (std::vector<Chunk*>::iterator it = _renderList.begin(); it != _renderList.end(); ++it)
 	{
 		(*it)->render();
+		_totalActiveBlocks += (*it)->getActiveBlocks();
+		_totalActiveChunks += 1;
 	}
 }
 

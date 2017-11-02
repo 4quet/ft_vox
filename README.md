@@ -1,4 +1,5 @@
 # ft_vox
 
-###To do:
+### To do:
 - Remove FastNoise lib ?
+- Remove -Wno-unused flag

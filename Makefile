@@ -6,7 +6,7 @@
 #    By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/07/21 11:32:23 by tpierron          #+#    #+#              #
-#    Updated: 2017/10/27 15:36:46 by tpierron         ###   ########.fr        #
+#    Updated: 2017/11/02 14:14:04 by lfourque         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,7 +29,7 @@ SRC =	src/Sdl_gl_win.cpp \
 		main.cpp \
 
 
-CFLAGS = -Wall -Wextra -Werror -Wno-unused-function
+CFLAGS = -Wall -Wextra -Werror -Wno-unused
 OBJ_PATH = ./obj/
 OBJ_NAME = $(SRC:.cpp=.o)
 

@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/16 14:11:27 by thibautpier       #+#    #+#             */
-/*   Updated: 2017/10/30 17:11:26 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/02 11:58:50 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,6 +166,10 @@ void    Shader::setFloat(const std::string &name, float value) const {
 
 void    Shader::setInt(const std::string &name, float value) const {
     glUniform1i(glGetUniformLocation(this->programID, name.c_str()), value);
+}
+
+void    Shader::setVec3(const std::string &name, float x, float y, float z) const {
+    glUniform3f(glGetUniformLocation(this->programID, name.c_str()), x, y, z);
 }
 
 GLuint  Shader::getProgramID() const {

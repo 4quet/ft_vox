@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/24 17:27:54 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/01 13:15:08 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/02 13:15:07 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,10 @@ class ChunkManager
 		void	update(Shader &, Camera &);
 		
 		void	updateLoadList();
-		void	updateRenderList(Camera &);
+		void	updateRenderList(glm::mat4);
 		void	updateUnloadList();
 		void	updateVisibilityList(Camera &);
-		std::map<std::tuple<float, float, float>, Chunk*> & getChunks();
+		std::map<index3D, Chunk*> & getChunks();
 
 		size_t	getTotalActiveBlocks() const;
 		size_t	getTotalActiveChunks() const;
