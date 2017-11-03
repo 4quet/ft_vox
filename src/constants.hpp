@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/18 16:15:29 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/02 15:57:02 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/03 15:32:30 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,5 +28,7 @@ enum BlockType
 # define CHUNK_SIZE	16
 
 # define MAP_SIZE 16
+
+# define MAX_CHUNK_LOAD_PER_FRAME 8
 
 #endif

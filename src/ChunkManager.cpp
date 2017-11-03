@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/24 17:29:47 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/02 14:37:46 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/03 17:03:06 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 ChunkManager::ChunkManager(glm::vec3 camPos) : _chunkMap(std::map<index3D, Chunk*>()) {
 
 	Chunk::sNoise.SetNoiseType(FastNoise::Perlin); // Set the desired noise type
-//	Chunk::sNoise.SetFrequency(0.04f); // Set the desired noise freq
 
 	int	start = -(MAP_SIZE / 2);
 	int end = MAP_SIZE / 2;
@@ -35,10 +34,9 @@ ChunkManager::ChunkManager(glm::vec3 camPos) : _chunkMap(std::map<index3D, Chunk
 				_chunkMap.insert( std::pair<index3D, Chunk*>(index, new Chunk(chunkPos)) );
 				_chunkMap.at(index)->setup();
 
+			}
 		}
 	}
-}
-std::cout << "ChunkManager successfully constructed" << std::endl;
 }
 
 ChunkManager::~ChunkManager() { }
@@ -79,6 +77,8 @@ void	ChunkManager::updateRenderList(glm::mat4 viewMatrix) {
 
 	_renderList.clear();
 
+	int	loadedChunks = 0;
+
 	float	halfChunk = CHUNK_SIZE * BLOCK_RENDER_SIZE / 2.0f; // This is improvable
 	for (std::map<index3D, Chunk*>::iterator it = _chunkMap.begin(); it != _chunkMap.end(); ++it)
 	{
@@ -89,7 +89,11 @@ void	ChunkManager::updateRenderList(glm::mat4 viewMatrix) {
 			chunk->setVisibility(true);
 			if (chunk->isSetup() == false)
 			{
-				chunk->setup();
+				if (loadedChunks < MAX_CHUNK_LOAD_PER_FRAME)
+				{
+					chunk->setup();
+					loadedChunks++;
+				}
 			}
 			if (pos.y < BLOCK_RENDER_SIZE * CHUNK_SIZE)
 				_renderList.push_back(chunk);
@@ -99,7 +103,6 @@ void	ChunkManager::updateRenderList(glm::mat4 viewMatrix) {
 			chunk->setVisibility(false);
 		}
 	}
-//		std::cout << _renderList.size() << std::endl;
 }
 
 void	ChunkManager::updateUnloadList() {
@@ -109,6 +112,13 @@ void	ChunkManager::updateUnloadList() {
 		glm::vec3	chunkPos = chunk->getPosition();
 		index3D		chunkIndex(chunkPos.x, chunkPos.y, chunkPos.z);
 
+		try {
+			delete _chunkMap.at(chunkIndex);
+		}
+		catch (std::exception & e)
+		{
+			std::cout << e.what() << ": " << chunkPos.x << ", " << chunkPos.y << ", " << chunkPos.z <<  std::endl;
+		}
 		_chunkMap.erase(chunkIndex);
 	}
 	_unloadList.clear();
@@ -145,6 +155,8 @@ void	ChunkManager::updateVisibilityList(Camera & camera) {
 			_loadList.push_back(new Chunk(oppositePos));
 			_unloadList.push_back(it->second);
 		}
+		/*
+		*/
 	}
 }
 

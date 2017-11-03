@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:23:42 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/02 15:53:22 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/03 16:24:59 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@ typedef	std::tuple<float, float, float>	index3D;
 struct AdjacentBlocks
 {
 	bool right, left, top, bottom, front, back;
+
+	bool	everywhere() { return (right && left && top && bottom && front && back); }
 };
 
 class Chunk
@@ -39,7 +41,7 @@ class Chunk
 		void	createMesh();
 		void	createCube(float, float, float, AdjacentBlocks &, BlockType);
 
-		void	addVertex(glm::vec3, glm::vec3, glm::vec3);
+		void	addTriangle(glm::vec3 &, glm::vec3 &, glm::vec3 &, glm::vec3 &, glm::vec3 &);
 
 		glm::vec3	getPosition() const;
 		void		setPosition(glm::vec3);

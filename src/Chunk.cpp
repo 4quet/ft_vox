@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:27:26 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/02 16:20:11 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/03 16:23:58 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ void	Chunk::setupLandscape() {
 					if (density > 0.0f)
 					{
 						_blocks[x][y][z].setActive(true);
-					//	_blocks[x][y][z].setBlockType(BLOCKTYPE_STONE);
+						//	_blocks[x][y][z].setBlockType(BLOCKTYPE_STONE);
 					}
 				}
 			}
@@ -99,7 +99,7 @@ void	Chunk::setupLandscape() {
 					if (density > 0.0f)
 					{
 						_blocks[x][y][z].setActive(true);
-					//	_blocks[x][y][z].setBlockType(BLOCKTYPE_GRASS);
+						//	_blocks[x][y][z].setBlockType(BLOCKTYPE_GRASS);
 					}
 				}
 			}
@@ -107,14 +107,14 @@ void	Chunk::setupLandscape() {
 			// MULTI-CHUNK SURFACE
 			else
 			{
-				Chunk::sNoise.SetFrequency(0.09f); // Set the desired noise freq
-				float	hm = Chunk::sNoise.GetNoise(_position.x + x, _position.z + z) * CHUNK_SIZE;
-				for (int y = 0; y < CHUNK_SIZE; ++y)
-					_blocks[x][y][z].setActive(true);
-				for (int y = 0; y > hm; --y)
-				{
-					_blocks[x][CHUNK_SIZE + y - 1][z].setActive(false);
-				}
+			Chunk::sNoise.SetFrequency(0.09f); // Set the desired noise freq
+			float	hm = Chunk::sNoise.GetNoise(_position.x + x, _position.z + z) * CHUNK_SIZE;
+			for (int y = 0; y < CHUNK_SIZE; ++y)
+			_blocks[x][y][z].setActive(true);
+			for (int y = 0; y > hm; --y)
+			{
+			_blocks[x][CHUNK_SIZE + y - 1][z].setActive(false);
+			}
 			}
 			*/
 		}
@@ -123,33 +123,38 @@ void	Chunk::setupLandscape() {
 
 void	Chunk::createMesh() {
 	//	std::cout << "creating chunk mesh" << std::endl;
+	AdjacentBlocks	adj;
+	bool			defaultState = false;
+	BlockType 		t;
 	for (int x = 0; x < CHUNK_SIZE; x++)
 	{
 		for (int y = 0; y < CHUNK_SIZE; y++)
 		{
 			for (int z = 0; z < CHUNK_SIZE; z++)
 			{
-				if (_blocks[x][y][z].isActive() == false)
+				if (_blocks[x][y][z].isActive() == true)
 				{
-					// Don't create triangle data for inactive blocks
-					continue;
-				}
-				AdjacentBlocks	adj;
-				bool			defaultState = false;
-				adj.right = (x + 1 < CHUNK_SIZE) ? _blocks[x + 1][y][z].isActive() : defaultState;
-				adj.left = (x - 1 >= 0) ? _blocks[x - 1][y][z].isActive() : defaultState;
-				adj.top = (y + 1 < CHUNK_SIZE) ? _blocks[x][y + 1][z].isActive() : defaultState;
-				adj.bottom = (y - 1 >= 0) ? _blocks[x][y - 1][z].isActive() : defaultState;
-				adj.front = (z + 1 < CHUNK_SIZE) ? _blocks[x][y][z + 1].isActive() : defaultState;
-				adj.back = (z - 1 >= 0) ? _blocks[x][y][z - 1].isActive() : defaultState;
+					adj.right = (x + 1 < CHUNK_SIZE) ? _blocks[x + 1][y][z].isActive() : defaultState;
+					adj.left = (x - 1 >= 0) ? _blocks[x - 1][y][z].isActive() : defaultState;
+					adj.top = (y + 1 < CHUNK_SIZE) ? _blocks[x][y + 1][z].isActive() : defaultState;
+					adj.bottom = (y - 1 >= 0) ? _blocks[x][y - 1][z].isActive() : defaultState;
+					adj.front = (z + 1 < CHUNK_SIZE) ? _blocks[x][y][z + 1].isActive() : defaultState;
+					adj.back = (z - 1 >= 0) ? _blocks[x][y][z - 1].isActive() : defaultState;
 
-				BlockType t;
-				if (adj.top == false)
-					t = BLOCKTYPE_GRASS;
-				else
-					t = BLOCKTYPE_STONE;
-				_blocks[x][y][z].setBlockType(t);
-				createCube(_position.x + x * BLOCK_RENDER_SIZE, _position.y + y * BLOCK_RENDER_SIZE, _position.z + z * BLOCK_RENDER_SIZE, adj, t);
+					if (adj.everywhere())
+					{
+						_blocks[x][y][z].setActive(false);
+					}
+					else
+					{
+						if (adj.top == false)
+							t = BLOCKTYPE_GRASS;
+						else
+							t = BLOCKTYPE_STONE;
+						_blocks[x][y][z].setBlockType(t);
+						createCube(_position.x + x * BLOCK_RENDER_SIZE, _position.y + y * BLOCK_RENDER_SIZE, _position.z + z * BLOCK_RENDER_SIZE, adj, t);
+					}
+				}
 			}
 		}
 	}
@@ -172,14 +177,16 @@ void	Chunk::createMesh() {
 }
 
 void	Chunk::createCube(float x, float y, float z, AdjacentBlocks & adj, BlockType t) {
-	glm::vec3	p1(x - BLOCK_RENDER_SIZE, y - BLOCK_RENDER_SIZE, z + BLOCK_RENDER_SIZE);
-	glm::vec3	p2(x + BLOCK_RENDER_SIZE, y - BLOCK_RENDER_SIZE, z + BLOCK_RENDER_SIZE);
-	glm::vec3	p3(x + BLOCK_RENDER_SIZE, y + BLOCK_RENDER_SIZE, z + BLOCK_RENDER_SIZE);
-	glm::vec3	p4(x - BLOCK_RENDER_SIZE, y + BLOCK_RENDER_SIZE, z + BLOCK_RENDER_SIZE);
-	glm::vec3	p5(x + BLOCK_RENDER_SIZE, y - BLOCK_RENDER_SIZE, z - BLOCK_RENDER_SIZE);
-	glm::vec3	p6(x - BLOCK_RENDER_SIZE, y - BLOCK_RENDER_SIZE, z - BLOCK_RENDER_SIZE);
-	glm::vec3	p7(x - BLOCK_RENDER_SIZE, y + BLOCK_RENDER_SIZE, z - BLOCK_RENDER_SIZE);
-	glm::vec3	p8(x + BLOCK_RENDER_SIZE, y + BLOCK_RENDER_SIZE, z - BLOCK_RENDER_SIZE);
+	float halfBlockSize = BLOCK_RENDER_SIZE / 2.0f;
+	
+	glm::vec3	p1(x - halfBlockSize, y - halfBlockSize, z + halfBlockSize);
+	glm::vec3	p2(x + halfBlockSize, y - halfBlockSize, z + halfBlockSize);
+	glm::vec3	p3(x + halfBlockSize, y + halfBlockSize, z + halfBlockSize);
+	glm::vec3	p4(x - halfBlockSize, y + halfBlockSize, z + halfBlockSize);
+	glm::vec3	p5(x + halfBlockSize, y - halfBlockSize, z - halfBlockSize);
+	glm::vec3	p6(x - halfBlockSize, y - halfBlockSize, z - halfBlockSize);
+	glm::vec3	p7(x - halfBlockSize, y + halfBlockSize, z - halfBlockSize);
+	glm::vec3	p8(x + halfBlockSize, y + halfBlockSize, z - halfBlockSize);
 
 	glm::vec3	normal;
 	glm::vec3	color;
@@ -191,96 +198,56 @@ void	Chunk::createCube(float x, float y, float z, AdjacentBlocks & adj, BlockTyp
 	else
 		color = glm::vec3(1.0f, 1.0f, 1.0f);
 
-	// Front
+	_activeBlocks++;
+
 	if (!adj.front)
 	{
 		normal = glm::vec3(0.0f, 0.0f, 1.0f);
-		// First triangle
-		addVertex(p1, normal, color);
-		addVertex(p2, normal, color);
-		addVertex(p3, normal, color);
-		// Second triangle
-		addVertex(p1, normal, color);
-		addVertex(p3, normal, color);
-		addVertex(p4, normal, color);
+		addTriangle(p1, p2, p3, normal, color);
+		addTriangle(p1, p3, p4, normal, color);
 	}
 
-	// Back
 	if (!adj.back)
 	{
 		normal = glm::vec3(0.0f, 0.0f, -1.0f);
-		// First triangle
-		addVertex(p5, normal, color);
-		addVertex(p6, normal, color);
-		addVertex(p7, normal, color);
-		// Second triangle
-		addVertex(p5, normal, color);
-		addVertex(p7, normal, color);
-		addVertex(p8, normal, color);
+		addTriangle(p5, p6, p7, normal, color);
+		addTriangle(p5, p7, p8, normal, color);
 	}
 
-	// Right
 	if (!adj.right)
 	{
 		normal = glm::vec3(1.0f, 0.0f, 0.0f);
-		// First triangle
-		addVertex(p2, normal, color);
-		addVertex(p5, normal, color);
-		addVertex(p8, normal, color);
-		// Second triangle
-		addVertex(p2, normal, color);
-		addVertex(p8, normal, color);
-		addVertex(p3, normal, color);
+		addTriangle(p2, p5, p8, normal, color);
+		addTriangle(p2, p8, p3, normal, color);
 	}
 
-	// Left
 	if (!adj.left)
 	{
 		normal = glm::vec3(-1.0f, 0.0f, 0.0f);
-		// First triangle
-		addVertex(p6, normal, color);
-		addVertex(p1, normal, color);
-		addVertex(p4, normal, color);
-		// Second triangle
-		addVertex(p6, normal, color);
-		addVertex(p4, normal, color);
-		addVertex(p7, normal, color);
+		addTriangle(p6, p1, p4, normal, color);
+		addTriangle(p6, p4, p7, normal, color);
 	}
 
-	// Top
 	if (!adj.top)
 	{
 		normal = glm::vec3(0.0f, 1.0f, 0.0f);
-		// First triangle
-		addVertex(p4, normal, color);
-		addVertex(p3, normal, color);
-		addVertex(p8, normal, color);
-		// Second triangle
-		addVertex(p4, normal, color);
-		addVertex(p8, normal, color);
-		addVertex(p7, normal, color);
+		addTriangle(p4, p3, p8, normal, color);
+		addTriangle(p4, p8, p7, normal, color);
 	}
 
-	// Bottom
 	if (!adj.bottom)
 	{
 		normal = glm::vec3(0.0f, -1.0f, 0.0f);
-		// First triangle
-		addVertex(p6, normal, color);
-		addVertex(p5, normal, color);
-		addVertex(p2, normal, color);
-		// Second triangle
-		addVertex(p6, normal, color);
-		addVertex(p2, normal, color);
-		addVertex(p1, normal, color);
+		addTriangle(p6, p5, p2, normal, color);
+		addTriangle(p6, p2, p1, normal, color);
 	}
-	if (normal != glm::vec3())
-		_activeBlocks++;
 }
 
-void	Chunk::addVertex(glm::vec3 pos, glm::vec3 normal, glm::vec3 color) {
-	mesh.insert(mesh.end(), { pos.x, pos.y, pos.z, normal.x, normal.y, normal.z, color.x, color.y, color.z });
-	_totalVertices++;
+void	Chunk::addTriangle(glm::vec3 & p1, glm::vec3 & p2, glm::vec3 & p3, glm::vec3 & normal, glm::vec3 & color) {
+	mesh.insert(mesh.end(), { p1.x, p1.y, p1.z, normal.x, normal.y, normal.z, color.x, color.y, color.z });
+	mesh.insert(mesh.end(), { p2.x, p2.y, p2.z, normal.x, normal.y, normal.z, color.x, color.y, color.z });
+	mesh.insert(mesh.end(), { p3.x, p3.y, p3.z, normal.x, normal.y, normal.z, color.x, color.y, color.z });
+	_totalVertices += 3;
 }
 
 glm::vec3	Chunk::getPosition() const { return _position; }
