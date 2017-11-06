@@ -6,7 +6,7 @@
 #    By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/07/21 11:32:23 by tpierron          #+#    #+#              #
-#    Updated: 2017/11/02 14:14:04 by lfourque         ###   ########.fr        #
+#    Updated: 2017/11/06 11:20:01 by lfourque         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,6 +26,7 @@ SRC =	src/Sdl_gl_win.cpp \
 		src/Shader.class.cpp \
 		src/FastNoise.cpp \
 		src/Frustum.cpp \
+		src/Query.cpp \
 		main.cpp \
 
 

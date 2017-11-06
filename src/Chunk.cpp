@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:27:26 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/03 16:23:58 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/06 17:53:38 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 FastNoise	Chunk::sNoise;
 
-Chunk::Chunk(glm::vec3 position) : _activeBlocks(0), _totalVertices(0), _position(position), _visible(false), _setup(false) { 
+Chunk::Chunk(glm::vec3 position) : _activeBlocks(0), _totalVertices(0), _position(position), _visible(false), _setup(false), _built(false) { 
 	//std::cout << "--- Creating new chunk ---" << std::endl;
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
@@ -59,7 +59,7 @@ void	Chunk::render() {
 
 void	Chunk::setup() {
 	setupLandscape();
-	createMesh();
+	fillMesh();
 	_setup = true;
 }
 
@@ -121,7 +121,7 @@ void	Chunk::setupLandscape() {
 	}
 }
 
-void	Chunk::createMesh() {
+void	Chunk::fillMesh() {
 	//	std::cout << "creating chunk mesh" << std::endl;
 	AdjacentBlocks	adj;
 	bool			defaultState = false;
@@ -158,7 +158,9 @@ void	Chunk::createMesh() {
 			}
 		}
 	}
+}
 
+void	Chunk::buildMesh() {
 	glBindVertexArray(VAO);
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
@@ -174,6 +176,7 @@ void	Chunk::createMesh() {
 	glEnableVertexAttribArray(2);
 
 	glBindVertexArray(0);	
+	_built = true;
 }
 
 void	Chunk::createCube(float x, float y, float z, AdjacentBlocks & adj, BlockType t) {
@@ -276,4 +279,8 @@ bool		Chunk::isVisible() const {
 
 bool		Chunk::isSetup() const {
 	return _setup;
+}
+
+bool		Chunk::isBuilt() const {
+	return _built;
 }

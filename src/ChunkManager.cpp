@@ -6,13 +6,17 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/24 17:29:47 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/03 17:03:06 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/06 18:27:57 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ChunkManager.hpp"
 
-ChunkManager::ChunkManager(glm::vec3 camPos) : _chunkMap(std::map<index3D, Chunk*>()) {
+std::mutex	ChunkManager::mutex;
+
+ChunkManager::ChunkManager(glm::vec3 camPos) :
+	_chunkMap(), 
+	_query(GL_ANY_SAMPLES_PASSED) {
 
 	Chunk::sNoise.SetNoiseType(FastNoise::Perlin); // Set the desired noise type
 
@@ -24,16 +28,7 @@ ChunkManager::ChunkManager(glm::vec3 camPos) : _chunkMap(std::map<index3D, Chunk
 		{
 			for (int z = camPos.z + start; z < camPos.z + end; ++z)
 			{
-				float xPos = x * (CHUNK_SIZE * BLOCK_RENDER_SIZE);
-				float yPos = y * (CHUNK_SIZE * BLOCK_RENDER_SIZE);
-				float zPos = z * (CHUNK_SIZE * BLOCK_RENDER_SIZE);
-
-				index3D		index(xPos, yPos, zPos);
-				glm::vec3	chunkPos(xPos, yPos, zPos);
-
-				_chunkMap.insert( std::pair<index3D, Chunk*>(index, new Chunk(chunkPos)) );
-				_chunkMap.at(index)->setup();
-
+				initChunkAt(x, y, z);
 			}
 		}
 	}
@@ -41,10 +36,25 @@ ChunkManager::ChunkManager(glm::vec3 camPos) : _chunkMap(std::map<index3D, Chunk
 
 ChunkManager::~ChunkManager() { }
 
+void	ChunkManager::initChunkAt(float x, float y, float z) {
+	float	chunkRenderSize = CHUNK_SIZE * BLOCK_RENDER_SIZE;
+	float	xPos = x * chunkRenderSize;
+	float	yPos = y * chunkRenderSize;
+	float	zPos = z * chunkRenderSize;
+
+	index3D		index(xPos, yPos, zPos);
+	glm::vec3	chunkPos(xPos, yPos, zPos);
+
+	_chunkMap.insert( std::pair<index3D, Chunk*>(index, new Chunk(chunkPos)) );
+	_chunkMap.at(index)->setup();
+}
+
 void	ChunkManager::update(Shader & shader, Camera & camera) {
 
 	glm::vec3	camPos = camera.getPosition();
+
 	shader.use();
+	shader.setView();
 	shader.setVec3("lightPos", camPos.x, camPos.y, camPos.z);
 
 	updateVisibilityList(camera);
@@ -53,9 +63,10 @@ void	ChunkManager::update(Shader & shader, Camera & camera) {
 
 	updateUnloadList();
 
-	updateRenderList(camera.getMatrix());
+	setRenderList(camera);
 
-	render(shader);
+	render();
+
 }
 
 void	ChunkManager::updateLoadList() {
@@ -70,38 +81,33 @@ void	ChunkManager::updateLoadList() {
 	_loadList.clear();
 }
 
-void	ChunkManager::updateRenderList(glm::mat4 viewMatrix) {
+Chunk *	ChunkManager::setupChunkInFrustum(Frustum & frustum, Chunk & chunk) {
+
+	float		halfChunk = CHUNK_SIZE * BLOCK_RENDER_SIZE / 2.0f;
+	glm::vec3	pos = chunk.getPosition();
+
+	if (frustum.pointIn(pos.x + halfChunk, pos.y + halfChunk, pos.z + halfChunk))
+	{
+		if (chunk.isSetup() == false)
+			chunk.setup();
+		if (pos.y < BLOCK_RENDER_SIZE * CHUNK_SIZE) // This probably shouldn't be here
+			return &chunk;
+	}
+	return NULL;
+}
+
+void	ChunkManager::setRenderList(Camera & camera) {
 	Frustum	f(Shader::perspective);
-	f.setView(viewMatrix);
+	f.setView(camera.getMatrix());
 	f.setPlanes();
 
 	_renderList.clear();
 
-	int	loadedChunks = 0;
-
-	float	halfChunk = CHUNK_SIZE * BLOCK_RENDER_SIZE / 2.0f; // This is improvable
 	for (std::map<index3D, Chunk*>::iterator it = _chunkMap.begin(); it != _chunkMap.end(); ++it)
 	{
 		Chunk *		chunk = it->second;
-		glm::vec3	pos = chunk->getPosition();
-		if (f.pointIn(pos.x + halfChunk, pos.y + halfChunk, pos.z + halfChunk))
-		{
-			chunk->setVisibility(true);
-			if (chunk->isSetup() == false)
-			{
-				if (loadedChunks < MAX_CHUNK_LOAD_PER_FRAME)
-				{
-					chunk->setup();
-					loadedChunks++;
-				}
-			}
-			if (pos.y < BLOCK_RENDER_SIZE * CHUNK_SIZE)
-				_renderList.push_back(chunk);
-		}
-		else
-		{
-			chunk->setVisibility(false);
-		}
+
+		_renderList.push_back( setupChunkInFrustum(f, *chunk) );
 	}
 }
 
@@ -124,54 +130,73 @@ void	ChunkManager::updateUnloadList() {
 	_unloadList.clear();
 }
 
-void	ChunkManager::updateVisibilityList(Camera & camera) {
+void	ChunkManager::checkChunkDistance(glm::vec3 camPos, Chunk & chunk) {
 
-	glm::vec3	camPos = camera.getPosition();
-//	std::cout << "CAM " << camPos.x << " ; " << camPos.y << " ; " << camPos.z << std::endl;
 	float		maxDist = ((BLOCK_RENDER_SIZE * CHUNK_SIZE) * (MAP_SIZE)) / 2.0f;
+	glm::vec3	chunkPos = chunk.getPosition();
+	glm::vec3	dist = chunkPos - camPos;
 
-	for (std::map<index3D, Chunk*>::iterator it = _chunkMap.begin(); it != _chunkMap.end(); ++it)
+	bool		b = false;
+	glm::vec3	oppositePos;
+
+	if (fabs(dist.x) > maxDist)
 	{
-		index3D		index = it->first;
-		glm::vec3	chunkPos = _chunkMap.at(index)->getPosition();
+		oppositePos = glm::vec3(chunkPos.x - maxDist * 2.0f * std::copysign(1.0f, dist.x), chunkPos.y, chunkPos.z);
+		b = true;
+	}
+	else if (fabs(dist.z) > maxDist)
+	{
+		oppositePos = glm::vec3(chunkPos.x, chunkPos.y, chunkPos.z - maxDist * 2.0f * std::copysign(1.0f, dist.z));
+		b = true;
+	}
+	else if (fabs(dist.y) > maxDist)
+	{
+		oppositePos = glm::vec3(chunkPos.x, chunkPos.y - maxDist * 2.0f * std::copysign(1.0f, dist.y), chunkPos.z);
+		b = true;
+	}
 
-		glm::vec3	dist = chunkPos - camPos;
-
-		if (fabs(dist.x) > maxDist)
-		{
-			glm::vec3	oppositePos = glm::vec3(chunkPos.x - maxDist * 2.0f * std::copysign(1.0f, dist.x), chunkPos.y, chunkPos.z);
-			_loadList.push_back(new Chunk(oppositePos));
-			_unloadList.push_back(it->second);
-		}
-		if (fabs(dist.z) > maxDist)
-		{
-			glm::vec3	oppositePos = glm::vec3(chunkPos.x, chunkPos.y, chunkPos.z - maxDist * 2.0f * std::copysign(1.0f, dist.z));
-			_loadList.push_back(new Chunk(oppositePos));
-			_unloadList.push_back(it->second);
-		}
-		if (fabs(dist.y) > maxDist)
-		{
-			glm::vec3	oppositePos = glm::vec3(chunkPos.x, chunkPos.y - maxDist * 2.0f * std::copysign(1.0f, dist.y), chunkPos.z);
-			_loadList.push_back(new Chunk(oppositePos));
-			_unloadList.push_back(it->second);
-		}
-		/*
-		*/
+	if (b)
+	{
+		_loadList.push_back(new Chunk(oppositePos));
+		_unloadList.push_back(&chunk);
 	}
 }
 
-void	ChunkManager::render(Shader & shader) {
+void	ChunkManager::updateVisibilityList(Camera & camera) {
 
-	//shader.use();
-	shader.setView();
+	glm::vec3	camPos = camera.getPosition();
+
+	for (std::map<index3D, Chunk*>::iterator it = _chunkMap.begin(); it != _chunkMap.end(); ++it)
+	{
+		checkChunkDistance(camPos, *(it->second));
+	}
+}
+
+bool	ChunkManager::isOccluded(Chunk * chunk) {
+	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+	glDepthMask(GL_FALSE);
+	_query.start();
+		chunk->render();
+	_query.end();
+	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+	glDepthMask(GL_TRUE);
+	return !_query.getResult();
+}
+
+void	ChunkManager::render() {
 
 	_totalActiveBlocks = 0;
-	_totalActiveChunks = 0;
+	_totalActiveChunks = _renderList.size();
 	for (std::vector<Chunk*>::iterator it = _renderList.begin(); it != _renderList.end(); ++it)
 	{
-		(*it)->render();
-		_totalActiveBlocks += (*it)->getActiveBlocks();
-		_totalActiveChunks += 1;
+		Chunk *	chunk = (*it);
+		if (chunk != NULL)
+		{
+			if (chunk->isBuilt() == false)
+				chunk->buildMesh();
+			chunk->render();
+			_totalActiveBlocks += chunk->getActiveBlocks();
+		}
 	}
 }
 

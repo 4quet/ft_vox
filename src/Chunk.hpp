@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:23:42 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/03 16:24:59 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/06 17:51:04 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,10 @@ class Chunk
 
 		void	setupLandscape();
 
-		void	createMesh();
+		void	fillMesh();
+		void	buildMesh();
+		bool	isBuilt() const;
+
 		void	createCube(float, float, float, AdjacentBlocks &, BlockType);
 
 		void	addTriangle(glm::vec3 &, glm::vec3 &, glm::vec3 &, glm::vec3 &, glm::vec3 &);
@@ -71,6 +74,7 @@ class Chunk
 		glm::vec3	_position;
 		bool		_visible;
 		bool		_setup;
+		bool		_built;
 
 		GLuint		VAO;
 		GLuint		VBO;
