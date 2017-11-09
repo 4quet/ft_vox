@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:27:26 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/09 13:00:59 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/09 14:36:27 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,6 @@ Chunk::Chunk(glm::vec3 position)
 	: _activeBlocks(0), _totalVertices(0), _position(position),
 		_visible(false), _setup(false), _built(false) { 
 	//std::cout << "--- Creating new chunk ---" << std::endl;
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
 
 	// Create the blocks
 	_blocks = new Block**[CHUNK_SIZE];
@@ -168,6 +166,9 @@ void	Chunk::fillMesh() {
 }
 
 void	Chunk::buildMesh() {
+	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &VBO);
+
 	glBindVertexArray(VAO);
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
