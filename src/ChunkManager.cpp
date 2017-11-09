@@ -6,16 +6,17 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/24 17:29:47 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/09 14:56:44 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/09 18:30:58 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ChunkManager.hpp"
+#include <chrono>
 
 std::mutex	ChunkManager::mutex;
 
 ChunkManager::ChunkManager(glm::vec3 camPos) :
-	_chunkMap(), 
+	_chunkMap(),
 	_query(GL_ANY_SAMPLES_PASSED) {
 
 	Chunk::loadTexturesAtlas("./textures/texturesLowRes.png");
@@ -79,8 +80,16 @@ void	ChunkManager::update(Shader & shader, Camera & camera) {
 
 	updateVisibilityList(camera);
 
-	std::async( std::launch::async, &ChunkManager::updateLoadList, this );
-	std::async( std::launch::async, &ChunkManager::updateUnloadList, this );
+	//std::async( std::launch::async, &ChunkManager::updateLoadList, this );
+	updateLoadList();
+
+	if (_setupList.size() > 0)
+	{
+		updateSetupList();
+	}
+
+	//std::async( std::launch::async, &ChunkManager::updateUnloadList, this );
+	updateUnloadList();
 
 	//updateLoadList();
 	//updateUnloadList();
@@ -103,33 +112,60 @@ void	ChunkManager::updateLoadList() {
 	_loadList.clear();
 }
 
-Chunk *	ChunkManager::setupChunkInFrustum(Frustum & frustum, Chunk & chunk) {
+void	ChunkManager::updateSetupList() {
+	//std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
 
-	float		halfChunk = CHUNK_SIZE * BLOCK_RENDER_SIZE / 2.0f;
-	glm::vec3	pos = chunk.getPosition();
+	int	setupThisFrame = 0;
 
-	if (frustum.pointIn(pos.x + halfChunk, pos.y + halfChunk, pos.z + halfChunk))
+	for (std::vector<Chunk*>::iterator it = _setupList.begin(); it != _setupList.end(); ++it)
 	{
-		if (chunk.isSetup() == false)
-			chunk.setup();
-		return &chunk;
+		if (setupThisFrame >= MAX_CHUNK_SETUP_PER_FRAME)
+		{
+			break;
+		}
+		Chunk *		chunk = *it;
+		chunk->setup();
+		setupThisFrame++;
 	}
-	return NULL;
+
+	_setupList.clear();
+
+	/*
+	std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
+	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>( t2 - t1 ).count();
+
+	if (duration)
+		std::cout << " duration: " << duration << " ms - " << setupThisFrame << " setup this frame" << std::endl;
+		*/
 }
 
+
 void	ChunkManager::setRenderList(Camera & camera) {
-	Frustum	f(Shader::perspective);
-	f.setView(camera.getMatrix());
-	f.setPlanes();
+
+	Frustum	frustum(Shader::perspective);
+	frustum.setView(camera.getMatrix());
+	frustum.setPlanes();
+
+	float		halfChunk = CHUNK_SIZE * BLOCK_RENDER_SIZE / 2.0f;
+	int			setupThisFrame = 0;
 
 	_renderList.clear();
 
 	for (std::map<index3D, Chunk*>::iterator it = _chunkMap.begin(); it != _chunkMap.end(); ++it)
 	{
 		Chunk *		chunk = it->second;
-		Chunk *		ret = setupChunkInFrustum(f, *chunk);
-		if (ret != NULL)
-			_renderList.push_back(ret);
+		glm::vec3	pos = chunk->getPosition();
+
+		if (frustum.pointIn(pos.x + halfChunk, pos.y + halfChunk, pos.z + halfChunk))
+		{
+			_renderList.push_back(chunk);
+		}
+
+		// this may move
+		if (chunk->isSetup() == false)
+		{
+			_setupList.push_back(chunk);
+		}
 	}
 }
 
@@ -179,7 +215,9 @@ void	ChunkManager::checkChunkDistance(glm::vec3 & camPos, Chunk & chunk) {
 
 	if (b && oppositePos.y < GROUND_LEVEL)
 	{
-		_loadList.push_back(new Chunk(oppositePos));
+		Chunk * newChunk = new Chunk(oppositePos);
+		_loadList.push_back(newChunk);
+		_setupList.push_back(newChunk);
 		_unloadList.push_back(&chunk);
 	}
 }
@@ -190,7 +228,9 @@ void	ChunkManager::updateVisibilityList(Camera & camera) {
 
 	for (std::map<index3D, Chunk*>::iterator it = _chunkMap.begin(); it != _chunkMap.end(); ++it)
 	{
-		checkChunkDistance(camPos, *(it->second));
+		Chunk *	chunk = it->second;
+
+		checkChunkDistance(camPos, *chunk);
 	}
 }
 
@@ -212,8 +252,10 @@ void	ChunkManager::render() {
 	for (std::vector<Chunk*>::iterator it = _renderList.begin(); it != _renderList.end(); ++it)
 	{
 		Chunk *	chunk = (*it);
-		if (chunk->isBuilt() == false)
+		if (chunk->isBuilt() == false && chunk->isSetup() == true)
+		{
 			chunk->buildMesh();
+		}
 		chunk->render();
 		_totalActiveChunks += 1;
 		_totalActiveBlocks += chunk->getActiveBlocks();

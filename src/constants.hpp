@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/18 16:15:29 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/09 13:38:05 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/09 18:36:24 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ enum BlockType
 
 # define MAP_SIZE 16
 
-# define MAX_CHUNK_LOAD_PER_FRAME 8
+# define MAX_CHUNK_SETUP_PER_FRAME 8
 
 # define GROUND_LEVEL BLOCK_RENDER_SIZE * CHUNK_SIZE
 

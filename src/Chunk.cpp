@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:27:26 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/09 14:36:27 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/09 16:07:03 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,9 +63,12 @@ void	Chunk::render() {
 }
 
 void	Chunk::setup() {
-	setupLandscape();
-	fillMesh();
-	_setup = true;
+	if (_setup == false)
+	{
+		setupLandscape();
+		fillMesh();
+		_setup = true;
+	}
 }
 
 void	Chunk::setupLandscape() {
@@ -166,25 +169,28 @@ void	Chunk::fillMesh() {
 }
 
 void	Chunk::buildMesh() {
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
+	if (_built == false)
+	{
+		glGenVertexArrays(1, &VAO);
+		glGenBuffers(1, &VBO);
 
-	glBindVertexArray(VAO);
+		glBindVertexArray(VAO);
 
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, mesh.size() * sizeof(float), &mesh[0], GL_STATIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, VBO);
+		glBufferData(GL_ARRAY_BUFFER, mesh.size() * sizeof(float), &mesh[0], GL_STATIC_DRAW);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)0);
-	glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)0);
+		glEnableVertexAttribArray(0);
 
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
-	glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+		glEnableVertexAttribArray(1);
 
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(6 * sizeof(GLfloat)));
-	glEnableVertexAttribArray(2);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(6 * sizeof(GLfloat)));
+		glEnableVertexAttribArray(2);
 
-	glBindVertexArray(0);	
-	_built = true;
+		glBindVertexArray(0);	
+		_built = true;
+	}
 }
 
 void	Chunk::createCube(float x, float y, float z, AdjacentBlocks & adj, BlockType t) {
