@@ -6,15 +6,20 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:27:26 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/06 17:53:38 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/09 13:00:59 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Chunk.hpp"
+#include "./stb_image.h"
 
 FastNoise	Chunk::sNoise;
+std::vector<glm::vec2> Chunk::uvs;
+unsigned int Chunk::texturesID;
 
-Chunk::Chunk(glm::vec3 position) : _activeBlocks(0), _totalVertices(0), _position(position), _visible(false), _setup(false), _built(false) { 
+Chunk::Chunk(glm::vec3 position)
+	: _activeBlocks(0), _totalVertices(0), _position(position),
+		_visible(false), _setup(false), _built(false) { 
 	//std::cout << "--- Creating new chunk ---" << std::endl;
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
@@ -52,6 +57,8 @@ void	Chunk::update() {
 
 void	Chunk::render() {
 	//	std::cout << "OPP " << _position.x << "; " << _position.y << "; " << _position.z << std::endl;
+	glActiveTexture(texturesID);
+	glBindTexture(GL_TEXTURE_2D, texturesID);
 	glBindVertexArray(VAO);
 	glDrawArrays(GL_TRIANGLES, 0, _totalVertices);
 	glBindVertexArray(0);
@@ -166,13 +173,13 @@ void	Chunk::buildMesh() {
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, mesh.size() * sizeof(float), &mesh[0], GL_STATIC_DRAW);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat), (GLvoid*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)0);
 	glEnableVertexAttribArray(0);
 
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
 	glEnableVertexAttribArray(1);
 
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat), (GLvoid*)(6 * sizeof(GLfloat)));
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(6 * sizeof(GLfloat)));
 	glEnableVertexAttribArray(2);
 
 	glBindVertexArray(0);	
@@ -191,65 +198,141 @@ void	Chunk::createCube(float x, float y, float z, AdjacentBlocks & adj, BlockTyp
 	glm::vec3	p7(x - halfBlockSize, y + halfBlockSize, z - halfBlockSize);
 	glm::vec3	p8(x + halfBlockSize, y + halfBlockSize, z - halfBlockSize);
 
-	glm::vec3	normal;
-	glm::vec3	color;
+	glm::vec3		normal;
+	unsigned int	texture;
+	std::vector<glm::vec2>	uv;
 
 	if (t == BLOCKTYPE_GRASS)
-		color = glm::vec3(0.3f, 0.4f, 0.25f);
-	else if (t == BLOCKTYPE_STONE)
-		color = glm::vec3(0.3f, 0.3f, 0.31f);
+		texture = 0;
 	else
-		color = glm::vec3(1.0f, 1.0f, 1.0f);
-
-	_activeBlocks++;
+		texture = 2;
+	glm::vec2	topLeft = uvs[texture * 4];
+	glm::vec2	topRight = uvs[texture * 4 + 1];
+	glm::vec2	bottomRight = uvs[texture * 4 + 2];
+	glm::vec2	bottomLeft = uvs[texture * 4 + 3];	
 
 	if (!adj.front)
 	{
 		normal = glm::vec3(0.0f, 0.0f, 1.0f);
-		addTriangle(p1, p2, p3, normal, color);
-		addTriangle(p1, p3, p4, normal, color);
+
+		uv.clear();
+		uv.push_back(bottomLeft);
+		uv.push_back(bottomRight);
+		uv.push_back(topRight);
+		addTriangle(p1, p2, p3, normal, uv);
+
+		uv.clear();
+		uv.push_back(bottomLeft);
+		uv.push_back(topRight);
+		uv.push_back(topLeft);
+		addTriangle(p1, p3, p4, normal, uv);
 	}
 
 	if (!adj.back)
 	{
 		normal = glm::vec3(0.0f, 0.0f, -1.0f);
-		addTriangle(p5, p6, p7, normal, color);
-		addTriangle(p5, p7, p8, normal, color);
+
+		uv.clear();
+		uv.push_back(bottomRight);
+		uv.push_back(bottomLeft);
+		uv.push_back(topLeft);
+		addTriangle(p5, p6, p7, normal, uv);
+
+		uv.clear();
+		uv.push_back(bottomRight);
+		uv.push_back(topLeft);
+		uv.push_back(topRight);
+		addTriangle(p5, p7, p8, normal, uv);
 	}
 
 	if (!adj.right)
 	{
 		normal = glm::vec3(1.0f, 0.0f, 0.0f);
-		addTriangle(p2, p5, p8, normal, color);
-		addTriangle(p2, p8, p3, normal, color);
+		
+		uv.clear();
+		uv.push_back(bottomLeft);
+		uv.push_back(bottomRight);
+		uv.push_back(topRight);
+		addTriangle(p2, p5, p8, normal, uv);
+
+		uv.clear();
+		uv.push_back(bottomLeft);
+		uv.push_back(topRight);
+		uv.push_back(topLeft);
+		addTriangle(p2, p8, p3, normal, uv);
 	}
 
 	if (!adj.left)
 	{
 		normal = glm::vec3(-1.0f, 0.0f, 0.0f);
-		addTriangle(p6, p1, p4, normal, color);
-		addTriangle(p6, p4, p7, normal, color);
+
+		uv.clear();
+		uv.push_back(bottomRight);
+		uv.push_back(bottomLeft);
+		uv.push_back(topLeft);
+		addTriangle(p6, p1, p4, normal, uv);
+
+		uv.clear();
+		uv.push_back(bottomLeft);
+		uv.push_back(topRight);
+		uv.push_back(topLeft);
+		addTriangle(p6, p4, p7, normal, uv);
 	}
 
 	if (!adj.top)
 	{
+		if (t == BLOCKTYPE_GRASS) {
+			bottomLeft = uvs[4];
+			bottomRight = uvs[5];
+			topLeft = uvs[6];
+			topRight = uvs[7];
+		}
+		
 		normal = glm::vec3(0.0f, 1.0f, 0.0f);
-		addTriangle(p4, p3, p8, normal, color);
-		addTriangle(p4, p8, p7, normal, color);
+		
+		uv.clear();
+		uv.push_back(bottomLeft);
+		uv.push_back(bottomRight);
+		uv.push_back(topRight);
+		addTriangle(p4, p3, p8, normal, uv);
+		
+		uv.clear();
+		uv.push_back(bottomLeft);
+		uv.push_back(topRight);
+		uv.push_back(topLeft);
+		addTriangle(p4, p8, p7, normal, uv);
+
+		if (t == BLOCKTYPE_GRASS) {
+			bottomLeft = uvs[0];
+			bottomRight = uvs[1];
+			topLeft = uvs[2];
+			topRight = uvs[3];
+		}
 	}
 
 	if (!adj.bottom)
 	{
 		normal = glm::vec3(0.0f, -1.0f, 0.0f);
-		addTriangle(p6, p5, p2, normal, color);
-		addTriangle(p6, p2, p1, normal, color);
+
+		uv.clear();
+		uv.push_back(bottomLeft);
+		uv.push_back(bottomRight);
+		uv.push_back(topRight);
+		addTriangle(p6, p5, p2, normal, uv);
+
+		uv.clear();
+		uv.push_back(topLeft);
+		uv.push_back(bottomRight);
+		uv.push_back(bottomLeft);
+		addTriangle(p6, p2, p1, normal, uv);
 	}
+	_activeBlocks++;
 }
 
-void	Chunk::addTriangle(glm::vec3 & p1, glm::vec3 & p2, glm::vec3 & p3, glm::vec3 & normal, glm::vec3 & color) {
-	mesh.insert(mesh.end(), { p1.x, p1.y, p1.z, normal.x, normal.y, normal.z, color.x, color.y, color.z });
-	mesh.insert(mesh.end(), { p2.x, p2.y, p2.z, normal.x, normal.y, normal.z, color.x, color.y, color.z });
-	mesh.insert(mesh.end(), { p3.x, p3.y, p3.z, normal.x, normal.y, normal.z, color.x, color.y, color.z });
+void	Chunk::addTriangle(glm::vec3 & p1, glm::vec3 & p2, glm::vec3 & p3, glm::vec3 & normal, std::vector<glm::vec2> & uv) {
+	mesh.insert(mesh.end(), { p1.x, p1.y, p1.z, normal.x, normal.y, normal.z, uv[0].x, uv[0].y });
+	mesh.insert(mesh.end(), { p2.x, p2.y, p2.z, normal.x, normal.y, normal.z, uv[1].x, uv[1].y });
+	mesh.insert(mesh.end(), { p3.x, p3.y, p3.z, normal.x, normal.y, normal.z, uv[2].x, uv[2].y });
 	_totalVertices += 3;
 }
 
@@ -283,4 +366,60 @@ bool		Chunk::isSetup() const {
 
 bool		Chunk::isBuilt() const {
 	return _built;
+}
+
+void	Chunk::loadTexturesAtlas(std::string file) {
+	unsigned int textureID;
+	glGenTextures(1, &textureID);
+
+    int width, height, componentNbr;
+    stbi_set_flip_vertically_on_load(true);
+	unsigned char *data = stbi_load(file.c_str(), &width, &height, &componentNbr, 0);
+	if(data) {
+		GLenum format;
+		switch(componentNbr) {
+			case 1: format = GL_RED; break;
+			case 3: format = GL_RGB; break;
+			case 4: format = GL_RGBA; break;
+		}
+		glBindTexture(GL_TEXTURE_2D, textureID);
+		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		stbi_image_free(data);
+	}
+	else {
+		std::cout << "Loading texture failed: " << file << std::endl;
+		stbi_image_free(data);
+	}
+	Chunk::texturesID = textureID;
+}
+
+void	Chunk::setUVs(unsigned int width, unsigned int height, unsigned int nbr) {
+	// from top/left to bottom/right
+	float stepX = 1 / static_cast<float>(width);
+	float stepY = 1 / static_cast<float>(height);
+	std::vector<glm::vec2> uvs;
+	
+	for (int i = height; i > 0; i--) {
+		for (unsigned int j = 0; j < width; j++) {
+			uvs.push_back(glm::vec2(j * stepX, i * stepY));
+			uvs.push_back(glm::vec2(j * stepX + stepX, i * stepY));
+			uvs.push_back(glm::vec2(j * stepX + stepX, i * stepY - stepY));
+			uvs.push_back(glm::vec2(j * stepX, i * stepY - stepY));
+			if (uvs.size() == nbr * 4)
+				break;
+		}
+	}
+
+	// for (unsigned int i = 0; i < uvs.size(); i++) {
+	// 	std::cout << uvs[i].x << " : " << uvs[i].y << std::endl;
+	// }
+
+	Chunk::uvs = uvs;
 }

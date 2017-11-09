@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:23:42 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/06 17:51:04 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/09 10:38:16 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ class Chunk
 
 		void	createCube(float, float, float, AdjacentBlocks &, BlockType);
 
-		void	addTriangle(glm::vec3 &, glm::vec3 &, glm::vec3 &, glm::vec3 &, glm::vec3 &);
+		void	addTriangle(glm::vec3 &, glm::vec3 &, glm::vec3 &, glm::vec3 &, std::vector<glm::vec2> &);
 
 		glm::vec3	getPosition() const;
 		void		setPosition(glm::vec3);
@@ -58,6 +58,9 @@ class Chunk
 
 		void		setup();
 		bool		isSetup() const;
+
+		static void	loadTexturesAtlas(std::string file);
+		static void	setUVs(unsigned int width, unsigned int height, unsigned int nbr);
 
 		static 	FastNoise	sNoise;
 
@@ -76,6 +79,9 @@ class Chunk
 		bool		_setup;
 		bool		_built;
 
+		static unsigned int texturesID;
+		static std::vector<glm::vec2> uvs;
+
 		GLuint		VAO;
 		GLuint		VBO;
 
@@ -83,4 +89,4 @@ class Chunk
 
 };
 
-#endif /* CHUNK_HPP */
+#endif

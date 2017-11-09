@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 10:37:37 by tpierron          #+#    #+#             */
-/*   Updated: 2017/10/30 17:11:05 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/09 13:02:33 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,8 @@ void		Skybox::draw() {
 	shader->setView(glm::mat4(glm::mat3(shader->getViewMatrix())));
 
 	glBindVertexArray(vao);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, 1);
+	glActiveTexture(textureID);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glBindVertexArray(0);
 	glDepthFunc(GL_LESS);
@@ -115,10 +115,12 @@ void		Skybox::getFacesPath(std::string directory) {
 void		Skybox::loadTextures() {
 
 	glGenTextures(1, &textureID);
+	std::cout << textureID << std::endl;
 	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 
 	int width, height, nrChannels;
 	unsigned char *data;
+	stbi_set_flip_vertically_on_load(false);
 	for(GLuint i = 0; i < 6; i++)
 	{
 		data = stbi_load(textures_faces[i].c_str(), &width, &height, &nrChannels, 0);

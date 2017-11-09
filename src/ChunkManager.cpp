@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/24 17:29:47 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/06 18:27:57 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/09 10:51:05 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,9 @@ ChunkManager::ChunkManager(glm::vec3 camPos) :
 	_chunkMap(), 
 	_query(GL_ANY_SAMPLES_PASSED) {
 
+	Chunk::loadTexturesAtlas("./textures/texturesLowRes.png");
+	Chunk::setUVs(2, 2, 3);
+	
 	Chunk::sNoise.SetNoiseType(FastNoise::Perlin); // Set the desired noise type
 
 	int	start = -(MAP_SIZE / 2);

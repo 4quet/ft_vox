@@ -1,10 +1,11 @@
 #version 400
 
-in vec3 fragColor;
+in vec2 uv;
 in vec3 fragPos;
 in vec3 normal;
 
 uniform vec3 lightPos;
+uniform sampler2D text;
 
 out vec4 outputColor;
 
@@ -20,8 +21,9 @@ void main() {
 	float	diff = max(dot(norm, lightDir), 0.0f);
 	vec3	diffuse = diff * lightColor;
 
-	vec3	result = (ambient + diffuse) * fragColor;
+	vec3	result = (ambient + diffuse);
+	vec4	tex = texture(text, uv);
 
-	outputColor = vec4( result , 1.0f );
+	outputColor = tex * vec4(result, 1.0);
 
 }
