@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/24 17:27:54 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/06 18:05:26 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/09 18:41:35 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,19 +28,19 @@ class ChunkManager
 		ChunkManager(glm::vec3);
 		~ChunkManager();
 
-		void	initChunkAt(float, float, float);
+		std::pair<index3D, Chunk*>	initChunkAt(float, float, float);
 
 		void	render();
 
 		void	update(Shader &, Camera &);
 		
 		void	updateLoadList();
+		void	updateSetupList();
 		void	updateUnloadList();
 		void	updateVisibilityList(Camera &);
 		void	setRenderList(Camera &);
 
-		Chunk *	setupChunkInFrustum(Frustum &, Chunk &);
-		void	checkChunkDistance(glm::vec3, Chunk &);
+		void	checkChunkDistance(glm::vec3 &, Chunk &);
 
 		std::map<index3D, Chunk*> & getChunks();
 
@@ -51,6 +51,7 @@ class ChunkManager
 		std::map<index3D, Chunk*>	_chunkMap;
 
 		std::vector<Chunk*>	_loadList;
+		std::vector<Chunk*>	_setupList;
 		std::vector<Chunk*>	_renderList;
 		std::vector<Chunk*>	_unloadList;
 
