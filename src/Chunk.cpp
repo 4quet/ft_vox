@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:27:26 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/10 12:02:42 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/10 14:51:17 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,12 +63,18 @@ void	Chunk::render() {
 }
 
 void	Chunk::setup() {
-	if (_setup == false)
-	{
-		setupLandscape();
-		fillMesh();
-		_setup = true;
-	}
+	if (_setup)
+		return;
+	clock_t t0, t1, t2;
+
+	t0 = std::clock();
+	setupLandscape();
+	t1 = std::clock();
+	fillMesh();
+	t2 = std::clock();
+	_setup = true;
+
+	// std::cout << t1 - t0 << " : " << t2 - t1 << std::endl;
 }
 
 void	Chunk::setupLandscape() {
@@ -134,6 +140,7 @@ void	Chunk::fillMesh() {
 	AdjacentBlocks	adj;
 	bool			defaultState = false;
 	BlockType 		t;
+
 	for (int x = 0; x < CHUNK_SIZE; x++)
 	{
 		for (int y = 0; y < CHUNK_SIZE; y++)
@@ -149,12 +156,7 @@ void	Chunk::fillMesh() {
 					adj.front = (z + 1 < CHUNK_SIZE) ? _blocks[x][y][z + 1].isActive() : defaultState;
 					adj.back = (z - 1 >= 0) ? _blocks[x][y][z - 1].isActive() : defaultState;
 
-					if (adj.everywhere())
-					{
-						_blocks[x][y][z].setActive(false);
-					}
-					else
-					{
+					if (!adj.everywhere()) {
 						if (adj.top == false)
 							t = BLOCKTYPE_GRASS;
 						else

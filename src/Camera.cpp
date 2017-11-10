@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/25 13:39:17 by tpierron          #+#    #+#             */
-/*   Updated: 2017/10/30 16:10:21 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/10 14:40:58 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ void		Camera::move(Action::Enum action, int mouseX, int mouseY) {
     float dx = 0.f;
     float dy = 0.f;
     float dz = 0.f;
+    static float speed = 1.f;
 
     switch(action) {
         case Action::FORWARD: dy++; break;
@@ -36,13 +37,13 @@ void		Camera::move(Action::Enum action, int mouseX, int mouseY) {
         case Action::RIGHT: dx++; break;
         case Action::UP: dz--; break;
         case Action::DOWN: dz++; break;
+        case Action::TOGGLESPEED: speed = (speed == 1.f) ? 5.f : 1.f; break;
         default: break;
     }
     glm::vec3 forward(matrix[0][2], matrix[1][2], matrix[2][2]);
     glm::vec3 strafe(matrix[0][0], matrix[1][0], matrix[2][0]);
     glm::vec3 vertical(matrix[0][1], matrix[1][1], matrix[2][1]);
     
-    const float speed = 1.f;
     eyeVec += (-dy * forward + dx * strafe + -dz * vertical) * speed;
     manageMouse(glm::vec2(mouseX, mouseY));
     updateMatrix();

@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/18 16:15:29 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/10 12:01:25 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/10 14:46:05 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define CONSTANTS_HPP
 
 namespace Action {
-	enum Enum { NONE, LEFT, RIGHT, FORWARD, BACKWARD, UP, DOWN, DEBUG, ESCAPE };
+	enum Enum { NONE, LEFT, RIGHT, FORWARD, BACKWARD, UP, DOWN, DEBUG, ESCAPE, TOGGLESPEED};
 }
 
 namespace Faces {
@@ -31,9 +31,9 @@ enum BlockType
 # define BLOCK_RENDER_SIZE	1.0f
 # define CHUNK_SIZE	16
 
-# define MAP_SIZE 16
+# define MAP_SIZE 32
 
-# define MAX_CHUNK_SETUP_PER_FRAME 8
+# define MAX_CHUNK_SETUP_PER_FRAME 12
 
 # define GROUND_LEVEL BLOCK_RENDER_SIZE * CHUNK_SIZE
 

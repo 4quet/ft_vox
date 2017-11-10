@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Sdl_gl_win.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thibautpierron <thibautpierron@student.    +#+  +:+       +#+        */
+/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 09:34:29 by tpierron          #+#    #+#             */
-/*   Updated: 2017/10/26 08:43:42 by thibautpier      ###   ########.fr       */
+/*   Updated: 2017/11/10 14:33:41 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,7 @@ Action::Enum    Sdl_gl_win::eventManager() {
                 case SDLK_c: return Action::DOWN; break;
                 case SDLK_SPACE: return Action::UP; break;
                 case SDLK_TAB: return Action::DEBUG; break;
+                case SDLK_LSHIFT: return Action::TOGGLESPEED; break;
             }
         }
     }
