@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:27:26 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/10 14:51:17 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/10 14:53:21 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,18 +63,12 @@ void	Chunk::render() {
 }
 
 void	Chunk::setup() {
-	if (_setup)
-		return;
-	clock_t t0, t1, t2;
-
-	t0 = std::clock();
-	setupLandscape();
-	t1 = std::clock();
-	fillMesh();
-	t2 = std::clock();
-	_setup = true;
-
-	// std::cout << t1 - t0 << " : " << t2 - t1 << std::endl;
+	if (_setup == false)
+	{
+		setupLandscape();
+		fillMesh();
+		_setup = true;
+	}
 }
 
 void	Chunk::setupLandscape() {
