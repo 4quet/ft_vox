@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:27:26 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/09 13:00:59 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/10 11:58:55 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -191,145 +191,119 @@ void	Chunk::createCube(float x, float y, float z, AdjacentBlocks & adj, BlockTyp
 	
 	glm::vec3	p1(x - halfBlockSize, y - halfBlockSize, z + halfBlockSize);
 	glm::vec3	p2(x + halfBlockSize, y - halfBlockSize, z + halfBlockSize);
-	glm::vec3	p3(x + halfBlockSize, y + halfBlockSize, z + halfBlockSize);
+	// glm::vec3	p3(x + halfBlockSize, y + halfBlockSize, z + halfBlockSize);
 	glm::vec3	p4(x - halfBlockSize, y + halfBlockSize, z + halfBlockSize);
 	glm::vec3	p5(x + halfBlockSize, y - halfBlockSize, z - halfBlockSize);
 	glm::vec3	p6(x - halfBlockSize, y - halfBlockSize, z - halfBlockSize);
-	glm::vec3	p7(x - halfBlockSize, y + halfBlockSize, z - halfBlockSize);
-	glm::vec3	p8(x + halfBlockSize, y + halfBlockSize, z - halfBlockSize);
+	// glm::vec3	p7(x - halfBlockSize, y + halfBlockSize, z - halfBlockSize);
+	// glm::vec3	p8(x + halfBlockSize, y + halfBlockSize, z - halfBlockSize);
 
-	glm::vec3		normal;
+	// std::cout << adj.front << " : ";
+	// std::cout << adj.back << " : ";
+	// std::cout << adj.right << " : ";
+	// std::cout << adj.left << " : ";
+	// std::cout << adj.top << " : ";
+	// std::cout << adj.bottom << std::endl;
+
+
+	if (!adj.front)
+		createFace(p1, Faces::FRONT, t);
+	if (!adj.back)
+		createFace(p5, Faces::BACK, t);
+	if (!adj.right)
+		createFace(p2, Faces::RIGHT, t);
+	if (!adj.left)
+		createFace(p6, Faces::LEFT, t);
+	if (!adj.top)
+		createFace(p4, Faces::TOP, t);
+	if (!adj.bottom)
+		createFace(p6, Faces::BOTTOM, t);
+
+	_activeBlocks++;
+}
+
+void	Chunk::createFace(glm::vec3 point, Faces::Enum face, BlockType type) {
+	glm::vec3 incX = glm::vec3(BLOCK_RENDER_SIZE, 0, 0);
+	glm::vec3 incY = glm::vec3(0, BLOCK_RENDER_SIZE, 0);
+	glm::vec3 incZ = glm::vec3(0, 0, BLOCK_RENDER_SIZE);
+
+	std::vector<glm::vec2>	uv;
+
+	switch(face) {
+		case Faces::FRONT:
+			uv = getTriangleUVs(1, face, type);
+			addTriangle(point, point + incX, point + incX + incY, glm::vec3(0.f, 0.f, 1.f), uv);
+			uv = getTriangleUVs(0, face, type);
+			addTriangle(point, point + incX + incY, point + incY, glm::vec3(0.f, 0.f, 1.f), uv);
+			return;
+		case Faces::BACK:
+			uv = getTriangleUVs(1, face, type);
+			addTriangle(point, point - incX, point - incX + incY, glm::vec3(0.f, 0.f, -1.f), uv);
+			uv = getTriangleUVs(0, face, type);
+			addTriangle(point, point - incX + incY, point + incY, glm::vec3(0.f, 0.f, -1.f), uv);
+			return;
+		case Faces::RIGHT:
+			uv = getTriangleUVs(1, face, type);
+			addTriangle(point, point - incZ, point - incZ + incY, glm::vec3(1.f, 0.f, 0.f), uv);
+			uv = getTriangleUVs(0, face, type);
+			addTriangle(point, point - incZ + incY, point + incY, glm::vec3(1.f, 0.f, 0.f), uv);
+			return;
+		case Faces::LEFT:
+			uv = getTriangleUVs(1, face, type);
+			addTriangle(point, point + incZ, point + incZ + incY, glm::vec3(-1.f, 0.f, 0.f), uv);
+			uv = getTriangleUVs(0, face, type);
+			addTriangle(point, point + incZ + incY, point + incY, glm::vec3(-1.f, 0.f, 0.f), uv);
+			return;
+		case Faces::TOP:
+			uv = getTriangleUVs(1, face, type);
+			addTriangle(point, point + incX, point + incX - incZ, glm::vec3(0.f, 1.f, 0.f), uv);
+			uv = getTriangleUVs(0, face, type);
+			addTriangle(point, point + incX - incZ, point - incZ, glm::vec3(0.f, 1.f, 0.f), uv);
+			return;
+		case Faces::BOTTOM:
+			uv = getTriangleUVs(1, face, type);
+			addTriangle(point, point + incX, point + incX + incZ, glm::vec3(0.f, -1.f, 0.f), uv);
+			uv = getTriangleUVs(0, face, type);
+			addTriangle(point, point + incX + incZ, point + incZ, glm::vec3(0.f, -1.f, 0.f), uv);
+			return;
+	}
+}
+
+std::vector<glm::vec2>	Chunk::getTriangleUVs(bool firstTriangle, Faces::Enum face, BlockType type) const {
 	unsigned int	texture;
 	std::vector<glm::vec2>	uv;
 
-	if (t == BLOCKTYPE_GRASS)
-		texture = 0;
-	else
-		texture = 2;
+	switch(type) {
+		case BLOCKTYPE_GRASS:
+			if (face == Faces::TOP)
+				texture = 1;
+			else if (face == Faces::BOTTOM)
+				texture = 2;
+			else
+				texture = 0;
+			break;
+		case BLOCKTYPE_STONE: texture = 2; break;
+		case BLOCKTYPE_DEFAULT: texture = 2; break;
+	}
+	
 	glm::vec2	topLeft = uvs[texture * 4];
 	glm::vec2	topRight = uvs[texture * 4 + 1];
 	glm::vec2	bottomRight = uvs[texture * 4 + 2];
 	glm::vec2	bottomLeft = uvs[texture * 4 + 3];	
-
-	if (!adj.front)
-	{
-		normal = glm::vec3(0.0f, 0.0f, 1.0f);
-
-		uv.clear();
-		uv.push_back(bottomLeft);
+	
+	if(firstTriangle) {
 		uv.push_back(bottomRight);
-		uv.push_back(topRight);
-		addTriangle(p1, p2, p3, normal, uv);
-
-		uv.clear();
 		uv.push_back(bottomLeft);
-		uv.push_back(topRight);
 		uv.push_back(topLeft);
-		addTriangle(p1, p3, p4, normal, uv);
+	} else {
+		uv.push_back(bottomRight);
+		uv.push_back(topLeft);
+		uv.push_back(topRight);
 	}
-
-	if (!adj.back)
-	{
-		normal = glm::vec3(0.0f, 0.0f, -1.0f);
-
-		uv.clear();
-		uv.push_back(bottomRight);
-		uv.push_back(bottomLeft);
-		uv.push_back(topLeft);
-		addTriangle(p5, p6, p7, normal, uv);
-
-		uv.clear();
-		uv.push_back(bottomRight);
-		uv.push_back(topLeft);
-		uv.push_back(topRight);
-		addTriangle(p5, p7, p8, normal, uv);
-	}
-
-	if (!adj.right)
-	{
-		normal = glm::vec3(1.0f, 0.0f, 0.0f);
-		
-		uv.clear();
-		uv.push_back(bottomLeft);
-		uv.push_back(bottomRight);
-		uv.push_back(topRight);
-		addTriangle(p2, p5, p8, normal, uv);
-
-		uv.clear();
-		uv.push_back(bottomLeft);
-		uv.push_back(topRight);
-		uv.push_back(topLeft);
-		addTriangle(p2, p8, p3, normal, uv);
-	}
-
-	if (!adj.left)
-	{
-		normal = glm::vec3(-1.0f, 0.0f, 0.0f);
-
-		uv.clear();
-		uv.push_back(bottomRight);
-		uv.push_back(bottomLeft);
-		uv.push_back(topLeft);
-		addTriangle(p6, p1, p4, normal, uv);
-
-		uv.clear();
-		uv.push_back(bottomLeft);
-		uv.push_back(topRight);
-		uv.push_back(topLeft);
-		addTriangle(p6, p4, p7, normal, uv);
-	}
-
-	if (!adj.top)
-	{
-		if (t == BLOCKTYPE_GRASS) {
-			bottomLeft = uvs[4];
-			bottomRight = uvs[5];
-			topLeft = uvs[6];
-			topRight = uvs[7];
-		}
-		
-		normal = glm::vec3(0.0f, 1.0f, 0.0f);
-		
-		uv.clear();
-		uv.push_back(bottomLeft);
-		uv.push_back(bottomRight);
-		uv.push_back(topRight);
-		addTriangle(p4, p3, p8, normal, uv);
-		
-		uv.clear();
-		uv.push_back(bottomLeft);
-		uv.push_back(topRight);
-		uv.push_back(topLeft);
-		addTriangle(p4, p8, p7, normal, uv);
-
-		if (t == BLOCKTYPE_GRASS) {
-			bottomLeft = uvs[0];
-			bottomRight = uvs[1];
-			topLeft = uvs[2];
-			topRight = uvs[3];
-		}
-	}
-
-	if (!adj.bottom)
-	{
-		normal = glm::vec3(0.0f, -1.0f, 0.0f);
-
-		uv.clear();
-		uv.push_back(bottomLeft);
-		uv.push_back(bottomRight);
-		uv.push_back(topRight);
-		addTriangle(p6, p5, p2, normal, uv);
-
-		uv.clear();
-		uv.push_back(topLeft);
-		uv.push_back(bottomRight);
-		uv.push_back(bottomLeft);
-		addTriangle(p6, p2, p1, normal, uv);
-	}
-	_activeBlocks++;
+	return uv;
 }
 
-void	Chunk::addTriangle(glm::vec3 & p1, glm::vec3 & p2, glm::vec3 & p3, glm::vec3 & normal, std::vector<glm::vec2> & uv) {
+void	Chunk::addTriangle(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, glm::vec3  normal, std::vector<glm::vec2> & uv) {
 	mesh.insert(mesh.end(), { p1.x, p1.y, p1.z, normal.x, normal.y, normal.z, uv[0].x, uv[0].y });
 	mesh.insert(mesh.end(), { p2.x, p2.y, p2.z, normal.x, normal.y, normal.z, uv[1].x, uv[1].y });
 	mesh.insert(mesh.end(), { p3.x, p3.y, p3.z, normal.x, normal.y, normal.z, uv[2].x, uv[2].y });

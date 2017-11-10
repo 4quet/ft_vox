@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/18 16:15:29 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/03 15:32:30 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/09 13:53:59 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,10 @@
 
 namespace Action {
 	enum Enum { NONE, LEFT, RIGHT, FORWARD, BACKWARD, UP, DOWN, DEBUG, ESCAPE };
+}
+
+namespace Faces {
+	enum Enum { FRONT, BACK, RIGHT, LEFT, TOP, BOTTOM };
 }
 
 enum BlockType

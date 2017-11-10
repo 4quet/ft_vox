@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:23:42 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/09 10:38:16 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/10 09:43:17 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,10 @@ class Chunk
 		void	buildMesh();
 		bool	isBuilt() const;
 
-		void	createCube(float, float, float, AdjacentBlocks &, BlockType);
-
-		void	addTriangle(glm::vec3 &, glm::vec3 &, glm::vec3 &, glm::vec3 &, std::vector<glm::vec2> &);
+		void					createCube(float, float, float, AdjacentBlocks &, BlockType);
+		void					createFace(glm::vec3 point, Faces::Enum face, BlockType type);
+		std::vector<glm::vec2>	getTriangleUVs(bool firstTriangle, Faces::Enum face, BlockType t) const;
+		void					addTriangle(glm::vec3 , glm::vec3 , glm::vec3 , glm::vec3 , std::vector<glm::vec2> &);
 
 		glm::vec3	getPosition() const;
 		void		setPosition(glm::vec3);

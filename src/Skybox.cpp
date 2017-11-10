@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 10:37:37 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/09 13:02:33 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/10 10:49:23 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,6 @@ void		Skybox::getFacesPath(std::string directory) {
 void		Skybox::loadTextures() {
 
 	glGenTextures(1, &textureID);
-	std::cout << textureID << std::endl;
 	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 
 	int width, height, nrChannels;
