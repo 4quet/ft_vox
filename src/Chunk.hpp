@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:23:42 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/10 09:43:17 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/10 16:17:12 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ class Chunk
 		void	update();
 		void	render();
 
-		void	setupLandscape();
+		void	activeBlock(int x, int z, float height);
 
 		void	fillMesh();
 		void	buildMesh();
