@@ -6,7 +6,7 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/05 14:48:25 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/05 16:25:44 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/10 15:57:14 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@ class Query
 		GLuint	_id;
 		GLuint	_type;
 		bool	_inUse;
+		GLuint	_ready;
+		GLuint	_result;
 
 		Query();
 
