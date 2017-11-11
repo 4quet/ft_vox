@@ -6,21 +6,20 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:27:26 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/11 17:13:09 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/11 17:34:46 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Chunk.hpp"
 #include "./stb_image.h"
 
-FastNoise	Chunk::sNoise;
-std::vector<glm::vec2> Chunk::uvs;
-unsigned int Chunk::texturesID;
+FastNoise				Chunk::sNoise;
+std::vector<glm::vec2>	Chunk::uvs;
+unsigned int 			Chunk::texturesID;
 
 Chunk::Chunk(glm::vec3 position)
 	: _activeBlocks(0), _totalVertices(0), _position(position),
 		_visible(false), _setup(false), _built(false) { 
-	//std::cout << "--- Creating new chunk ---" << std::endl;
 
 	// Create the blocks
 	_blocks = new Block**[CHUNK_SIZE];
@@ -49,12 +48,7 @@ Chunk::~Chunk() {
 	delete [] _blocks;
 }
 
-void	Chunk::update() {
-	// ...
-}
-
 void	Chunk::render() {
-	//	std::cout << "OPP " << _position.x << "; " << _position.y << "; " << _position.z << std::endl;
 	glActiveTexture(texturesID);
 	glBindTexture(GL_TEXTURE_2D, texturesID);
 	glBindVertexArray(VAO);
@@ -72,8 +66,8 @@ void	Chunk::setup() {
 }
 
 void	Chunk::setupLandscape() {
-	float surfaceFreq = 0.01f;
-	float maxAltitude = 3.0f;
+	float surfaceFreq = 0.02f;
+	float maxAltitude = 2.0f;
 
 	for (int x = 0; x < CHUNK_SIZE; ++x)
 	{
@@ -91,7 +85,6 @@ void	Chunk::setupLandscape() {
 }
 
 void	Chunk::fillMesh() {
-	//	std::cout << "creating chunk mesh" << std::endl;
 	AdjacentBlocks	adj;
 	bool			defaultState = false;
 	BlockType 		t;
@@ -161,14 +154,6 @@ void	Chunk::createCube(float x, float y, float z, AdjacentBlocks & adj, BlockTyp
 	glm::vec3	p6(x - halfBlockSize, y - halfBlockSize, z - halfBlockSize);
 	// glm::vec3	p7(x - halfBlockSize, y + halfBlockSize, z - halfBlockSize);
 	// glm::vec3	p8(x + halfBlockSize, y + halfBlockSize, z - halfBlockSize);
-
-	// std::cout << adj.front << " : ";
-	// std::cout << adj.back << " : ";
-	// std::cout << adj.right << " : ";
-	// std::cout << adj.left << " : ";
-	// std::cout << adj.top << " : ";
-	// std::cout << adj.bottom << std::endl;
-
 
 	if (!adj.front)
 		createFace(p1, Faces::FRONT, t);
@@ -278,17 +263,6 @@ glm::vec3	Chunk::getPosition() const { return _position; }
 void		Chunk::setPosition(glm::vec3 pos) { _position = pos; }
 
 size_t		Chunk::getActiveBlocks() const { return _activeBlocks; }
-
-// void		Chunk::setHeightMap() {
-	// for (int x = 0; x < CHUNK_SIZE; ++x)
-	// {
-	// 	for (int y = 0; y < CHUNK_SIZE; ++y)
-	// 	{
-	// 		for (int z = 0; z < CHUNK_SIZE; ++z)
-	// 			_heightMap[x][y][z] = Chunk::sNoise.GetNoise(_position.x + x, _position.y + y, _position.z + z);
-	// 	}
-	// }
-// }
 
 void		Chunk::setVisibility(bool b) {
 	_visible = b;
