@@ -6,16 +6,25 @@
 /*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/10 16:09:11 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/10 16:45:11 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/11 21:06:01 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Chunk.cpp"
+#include "Chunk.hpp"
+
+bool	Chunk::isBBoxBuilt() const { return _bboxBuilt; }
 
 void	Chunk::renderBoundingBox() {
-	glBindVertexArray(bboxVAO);
-	glDrawArrays(GL_TRIANGLES, 0, 36);
-	glBindVertexArray(0);
+	if (_bboxBuilt)
+	{
+		glColorMask(false, false, false, false); 
+		glDepthMask(GL_FALSE); 
+		glBindVertexArray(bboxVAO);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+		glBindVertexArray(0);
+		glColorMask(true, true, true, true); 
+		glDepthMask(GL_TRUE); 
+	}
 }
 
 void	Chunk::buildBoundingBox() {
@@ -67,5 +76,6 @@ void	Chunk::buildBoundingBox() {
 	glEnableVertexAttribArray(0);
 
 	glBindVertexArray(0);
+	_bboxBuilt = true;
 }
 

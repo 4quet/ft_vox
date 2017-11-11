@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/24 17:27:54 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/09 18:41:35 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/11 21:03:24 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,14 +30,13 @@ class ChunkManager
 
 		std::pair<index3D, Chunk*>	initChunkAt(float, float, float);
 
-		void	render();
-
-		void	update(Shader &, Camera &);
+		void	render(Shader &, Shader &);
+		void	update(Camera &);
 		
 		void	updateLoadList();
 		void	updateSetupList();
 		void	updateUnloadList();
-		void	updateVisibilityList(Camera &);
+		void	updateVisibilityList(glm::vec3 &);
 		void	setRenderList(Camera &);
 
 		void	checkChunkDistance(glm::vec3 &, Chunk &);

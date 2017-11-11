@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:27:26 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/11 17:34:46 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/11 20:11:02 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ unsigned int 			Chunk::texturesID;
 
 Chunk::Chunk(glm::vec3 position)
 	: _activeBlocks(0), _totalVertices(0), _position(position),
-		_visible(false), _setup(false), _built(false) { 
+		_visible(false), _setup(false), _built(false), _bboxBuilt(false) { 
 
 	// Create the blocks
 	_blocks = new Block**[CHUNK_SIZE];

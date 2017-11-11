@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 09:23:13 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/02 12:01:32 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/11 21:10:14 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,9 +36,11 @@ int     main() {
     Action::Enum action = Action::NONE;
 
     Camera          camera;
+	glm::vec3		camPos;
 	ChunkManager	m(camera.getPosition());
 
     Shader	shader("src/shaders/vertex_shader.glvs", "src/shaders/fragment_shader.glfs");
+    Shader	bboxShader("src/shaders/bbox_vertex_shader.glvs", "src/shaders/bbox_fragment_shader.glfs");
     Skybox  skybox("skybox");
     
     start = 0;
@@ -47,9 +49,19 @@ int     main() {
         action = window.eventManager();
         
         camera.move(action, window.getMouseX(), window.getMouseY());
+		camPos = camera.getPosition();
+
+		bboxShader.use();
+        bboxShader.setCamera(camera.getMatrix());
+		bboxShader.setView();
+
+		shader.use();
         shader.setCamera(camera.getMatrix());
+		shader.setView();
+		shader.setVec3("lightPos", camPos.x, camPos.y, camPos.z);
         
-		m.update(shader, camera);
+		m.update(camera);
+		m.render(shader, bboxShader);
         skybox.draw();
         
         end = std::clock();

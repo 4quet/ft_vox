@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:23:42 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/11 17:35:20 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/11 21:03:57 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,14 +36,21 @@ class Chunk
 		void		buildMesh();
 		void		render();
 
+		void		buildBoundingBox();
+		void		renderBoundingBox();
+
 		glm::vec3	getPosition() const;
 		size_t		getActiveBlocks() const;
 		bool		isVisible() const;
 		bool		isSetup() const;
 		bool		isBuilt() const;
+		bool		isBBoxBuilt() const;
 
 		void		setPosition(glm::vec3);
 		void		setVisibility(bool);
+
+		static void		loadTexturesAtlas(std::string file);
+		static void		setUVs(unsigned int width, unsigned int height, unsigned int nbr);
 
 		static 	FastNoise	sNoise;
 
@@ -55,10 +62,14 @@ class Chunk
 		bool							_visible;
 		bool							_setup;
 		bool							_built;
+		bool							_bboxBuilt;
 
 		GLuint							VAO;
 		GLuint							VBO;
 		std::vector<float>				mesh;
+		GLuint							bboxVAO;
+		GLuint							bboxVBO;
+		std::vector<float>				bboxMesh;
 
 		static unsigned int				texturesID;
 		static std::vector<glm::vec2>	uvs;
@@ -72,8 +83,6 @@ class Chunk
 		void					addTriangle(glm::vec3 , glm::vec3 , glm::vec3 , glm::vec3 , std::vector<glm::vec2> &);
 
 		std::vector<glm::vec2>	getTriangleUVs(bool firstTriangle, Faces::Enum face, BlockType t) const;
-		static void				loadTexturesAtlas(std::string file);
-		static void				setUVs(unsigned int width, unsigned int height, unsigned int nbr);
 };
 
 #endif

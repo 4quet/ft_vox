@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/24 17:29:47 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/11 17:16:41 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/11 21:18:01 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,15 +70,11 @@ std::pair<index3D, Chunk*>	ChunkManager::initChunkAt(float xx, float yy, float z
 	}
 }
 
-void	ChunkManager::update(Shader & shader, Camera & camera) {
+void	ChunkManager::update(Camera & camera) {
 
 	glm::vec3	camPos = camera.getPosition();
 
-	shader.use();
-	shader.setView();
-	shader.setVec3("lightPos", camPos.x, camPos.y, camPos.z);
-
-	updateVisibilityList(camera);
+	updateVisibilityList(camPos);
 
 	//std::async( std::launch::async, &ChunkManager::updateLoadList, this );
 	updateLoadList();
@@ -95,8 +91,6 @@ void	ChunkManager::update(Shader & shader, Camera & camera) {
 	//updateUnloadList();
 
 	setRenderList(camera);
-
-	render();
 
 }
 
@@ -222,9 +216,7 @@ void	ChunkManager::checkChunkDistance(glm::vec3 & camPos, Chunk & chunk) {
 	}
 }
 
-void	ChunkManager::updateVisibilityList(Camera & camera) {
-
-	glm::vec3	camPos = camera.getPosition();
+void	ChunkManager::updateVisibilityList(glm::vec3 & camPos) {
 
 	for (std::map<index3D, Chunk*>::iterator it = _chunkMap.begin(); it != _chunkMap.end(); ++it)
 	{
@@ -235,23 +227,25 @@ void	ChunkManager::updateVisibilityList(Camera & camera) {
 }
 
 bool	ChunkManager::isOccluded(Chunk * chunk) {
-	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
-	glDepthMask(GL_FALSE);
 	_query.start();
-		chunk->render();
+	if (chunk->isBBoxBuilt() == false)
+		chunk->buildBoundingBox();
+	chunk->renderBoundingBox();
 	_query.end();
-	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-	glDepthMask(GL_TRUE);
 	return !_query.getResult();
 }
 
-void	ChunkManager::render() {
+void	ChunkManager::render(Shader & shader, Shader & bboxShader) {
+
+	(void)bboxShader;
 
 	_totalActiveBlocks = 0;
 	_totalActiveChunks = 0;
 	for (std::vector<Chunk*>::iterator it = _renderList.begin(); it != _renderList.end(); ++it)
 	{
 		Chunk *	chunk = (*it);
+		
+		shader.use();
 		if (chunk->isBuilt() == false && chunk->isSetup() == true)
 		{
 			chunk->buildMesh();
@@ -259,6 +253,7 @@ void	ChunkManager::render() {
 		chunk->render();
 		_totalActiveChunks += 1;
 		_totalActiveBlocks += chunk->getActiveBlocks();
+
 	}
 }
 
