@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:27:26 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/10 17:23:53 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/11 17:13:09 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,85 +65,29 @@ void	Chunk::render() {
 void	Chunk::setup() {
 	if (_setup == false)
 	{
-		// setupLandscape();
+		setupLandscape();
 		fillMesh();
 		_setup = true;
 	}
 }
 
-void	Chunk::activeBlock(int x, int z, float height) {
+void	Chunk::setupLandscape() {
+	float surfaceFreq = 0.01f;
+	float maxAltitude = 3.0f;
 
-	// float	caveFreq = 0.05f;
-	// float	surfaceFreq = 0.05f;
-
-	// for (int x = 0; x < CHUNK_SIZE; ++x)
-	// {
-	// 	for (int z = 0; z < CHUNK_SIZE; ++z)
-	// 	{
-			// CAVES
-			// if (_position.y < 0.0f)
-			// {
-			// 	Chunk::sNoise.SetFrequency(caveFreq); // Set the desired noise freq
-			// 	for (int y = 0; y < CHUNK_SIZE; ++y)
-			// 	{
-			// 		float density = CHUNK_SIZE *  Chunk::sNoise.GetNoise(_position.x + x, _position.y + y, _position.z + z);
-			// 		if (density > 0.0f)
-			// 		{
-			// 			_blocks[x][y][z].setActive(true);
-			// 			//	_blocks[x][y][z].setBlockType(BLOCKTYPE_STONE);
-			// 		}
-			// 	}
-			// }
-			// // SURFACE
-			// else
-			// {
-				// elevation[y][x] =    1 * noise(1 * nx, 1 * ny);
-                // +  0.5 * noise(2 * nx, 2 * ny);
-                // + 0.25 * noise(4 * nx, 2 * ny);
-
-
-
-
-				// Chunk::sNoise.SetFrequency(surfaceFreq); // Set the desired noise freq
-				// float	hm1 = (Chunk::sNoise.GetNoise(_position.x + x, _position.z + z) + 1);
-				// Chunk::sNoise.SetFrequency(surfaceFreq * 2); // Set the desired noise freq
-				// float	hm2 = (Chunk::sNoise.GetNoise(_position.x + x, _position.z + z) + 1);
-				// Chunk::sNoise.SetFrequency(surfaceFreq  * 4); // Set the desired noise freq
-				// float	hm3 = (Chunk::sNoise.GetNoise(_position.x + x, _position.z + z) + 1);
-				// float hm = 1 * hm1 + 0.5 * hm2 + 0.25 * hm3;
-				// hm *= CHUNK_SIZE / 2 / 1.3f ;
-				// std::cout << "hm1: " << hm1 << "hm: " << hm << std::endl;
-				// if (height > _position.y && height < _position.y + CHUNK_SIZE) {
-					for (int y = 0; y < CHUNK_SIZE; ++y)
-					{
-						// Chunk::sNoise.SetFrequency(caveFreq); // Set the desired noise freq
-						// float density = CHUNK_SIZE *  Chunk::sNoise.GetNoise(_position.x + x, _position.y + y, _position.z + z);
-	
-						// if (density > 0.0f)
-						// {
-							if (_position.y + y < height)
-								_blocks[x][y][z].setActive(true);
-							//	_blocks[x][y][z].setBlockType(BLOCKTYPE_GRASS);
-						// }
-					}
-				// }
-			// }
-			/*
-			// MULTI-CHUNK SURFACE
-			else
-			{
-			Chunk::sNoise.SetFrequency(0.09f); // Set the desired noise freq
-			float	hm = Chunk::sNoise.GetNoise(_position.x + x, _position.z + z) * CHUNK_SIZE;
+	for (int x = 0; x < CHUNK_SIZE; ++x)
+	{
+		for (int z = 0; z < CHUNK_SIZE; ++z)
+		{
+			Chunk::sNoise.SetFrequency(surfaceFreq); // Set the desired noise freq
+			float	height = (Chunk::sNoise.GetNoise(_position.x + x, _position.z + z) + 1) / 2 * (CHUNK_SIZE * maxAltitude);
 			for (int y = 0; y < CHUNK_SIZE; ++y)
-			_blocks[x][y][z].setActive(true);
-			for (int y = 0; y > hm; --y)
 			{
-			_blocks[x][CHUNK_SIZE + y - 1][z].setActive(false);
+				if (_position.y + y < height)
+					_blocks[x][y][z].setActive(true);
 			}
-			}
-			*/
-	// 	}
-	// }
+		}
+	}
 }
 
 void	Chunk::fillMesh() {
