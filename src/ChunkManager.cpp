@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/24 17:29:47 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/13 15:28:30 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/13 16:31:34 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,13 +26,15 @@ ChunkManager::ChunkManager(glm::vec3 camPos) :
 
 	std::vector<std::future<std::pair<index3D, Chunk*>>>	futures;
 
-	int	start = -(MAP_SIZE / 2);
-	int end = MAP_SIZE / 2;
-	for (int x = camPos.x + start; x < camPos.x + end; ++x)
+	int	startWidth = -(VIEW_DISTANCE_WIDTH / 2);
+	int endWidth = VIEW_DISTANCE_WIDTH / 2;
+	int	startHeight = -(VIEW_DISTANCE_HEIGHT / 2);
+	int endHeight = VIEW_DISTANCE_HEIGHT / 2;
+	for (int x = camPos.x + startWidth; x < camPos.x + endWidth; ++x)
 	{
-		for (int y = camPos.y + start; y < camPos.y + end; ++y)
+		for (int y = camPos.y + startHeight; y < camPos.y + endHeight; ++y)
 		{
-			for (int z = camPos.z + start; z < camPos.z + end; ++z)
+			for (int z = camPos.z + startWidth; z < camPos.z + endWidth; ++z)
 			{
 				futures.emplace_back( std::async( &ChunkManager::initChunkAt, this, x, y, z ) );
 			}
@@ -57,7 +59,8 @@ std::pair<index3D, Chunk*>	ChunkManager::initChunkAt(float xx, float yy, float z
 	float	xPos = xx * chunkRenderSize;
 	float	yPos = yy * chunkRenderSize;
 	float	zPos = zz * chunkRenderSize;
-	if (yPos > -WORLD_BOTTOM * CHUNK_SIZE && yPos < CHUNK_SIZE * MAX_ALTITUDE)
+
+	if (yPos <= CHUNK_SIZE * MAX_ALTITUDE)
 	{
 		Chunk *		chunk = new Chunk(glm::vec3(xPos, yPos, zPos));
 		chunk->setup();
@@ -185,27 +188,29 @@ void	ChunkManager::updateUnloadList() {
 
 void	ChunkManager::checkChunkDistance(glm::vec3 & camPos, Chunk & chunk) {
 
-	float		maxDist = ((BLOCK_RENDER_SIZE * CHUNK_SIZE) * (MAP_SIZE)) / 2.0f;
+	float		maxDistWidth = ((BLOCK_RENDER_SIZE * CHUNK_SIZE) * (VIEW_DISTANCE_WIDTH)) / 2.0f;
+	float		maxDistHeight = ((BLOCK_RENDER_SIZE * CHUNK_SIZE) * (VIEW_DISTANCE_HEIGHT)) / 2.0f;
 	glm::vec3	chunkPos = chunk.getPosition();
 	glm::vec3	dist = chunkPos - camPos;
 
 	bool		b = false;
 	glm::vec3	oppositePos;
 
-	if (fabs(dist.x) > maxDist)
+	if (fabs(dist.x) > maxDistWidth)
 	{
-		oppositePos = glm::vec3(chunkPos.x - maxDist * 2.0f * std::copysign(1.0f, dist.x), chunkPos.y, chunkPos.z);
+		oppositePos = glm::vec3(chunkPos.x - maxDistWidth * 2.0f * std::copysign(1.0f, dist.x), chunkPos.y, chunkPos.z);
 		b = true;
 	}
-	else if (fabs(dist.z) > maxDist)
+	else if (fabs(dist.z) > maxDistWidth)
 	{
-		oppositePos = glm::vec3(chunkPos.x, chunkPos.y, chunkPos.z - maxDist * 2.0f * std::copysign(1.0f, dist.z));
+		oppositePos = glm::vec3(chunkPos.x, chunkPos.y, chunkPos.z - maxDistWidth * 2.0f * std::copysign(1.0f, dist.z));
 		b = true;
 	}
-	else if (fabs(dist.y) > maxDist)
+	else if (fabs(dist.y) > maxDistHeight)
 	{
-		oppositePos = glm::vec3(chunkPos.x, chunkPos.y - maxDist * 2.0f * std::copysign(1.0f, dist.y), chunkPos.z);
-		b = true;
+		oppositePos = glm::vec3(chunkPos.x, chunkPos.y - maxDistHeight * 2.0f * std::copysign(1.0f, dist.y), chunkPos.z);
+		if (oppositePos.y > -WORLD_BOTTOM * CHUNK_SIZE)
+			b = true;
 	}
 
 	if (b)
