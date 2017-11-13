@@ -6,7 +6,7 @@
 #    By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/07/21 11:32:23 by tpierron          #+#    #+#              #
-#    Updated: 2017/11/06 11:20:01 by lfourque         ###   ########.fr        #
+#    Updated: 2017/11/13 10:13:50 by lfourque         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,6 +19,7 @@ SRC =	src/Sdl_gl_win.cpp \
 		src/Skybox.cpp \
 		src/Block.cpp \
 		src/Chunk.cpp \
+		src/Chunk.boundingBox.cpp \
 		src/ChunkManager.cpp \
 		src/Skybox.cpp \
 		src/Camera.cpp \
