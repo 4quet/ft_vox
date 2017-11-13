@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/24 17:29:47 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/13 13:57:57 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/13 15:28:30 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ void	ChunkManager::update(Camera & camera) {
 	//std::async( std::launch::async, &ChunkManager::updateLoadList, this );
 	updateLoadList();
 
-	if (_setupList.size() > 0)
+	if (_setupMap.size() > 0)
 	{
 		updateSetupList();
 	}
@@ -110,18 +110,18 @@ void	ChunkManager::updateSetupList() {
 
 	int	setupThisFrame = 0;
 
-	for (std::vector<Chunk*>::iterator it = _setupList.begin(); it != _setupList.end(); ++it)
+	for (std::map<float, Chunk*>::iterator it = _setupMap.begin(); it != _setupMap.end(); ++it)
 	{
 		if (setupThisFrame >= MAX_CHUNK_SETUP_PER_FRAME)
 		{
 			break;
 		}
-		Chunk *		chunk = *it;
+		Chunk *		chunk = it->second;
 		chunk->setup();
 		setupThisFrame++;
 	}
 
-	_setupList.clear();
+	_setupMap.clear();
 
 	/*
 	std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
@@ -138,6 +138,8 @@ void	ChunkManager::setRenderList(Camera & camera) {
 	Frustum	frustum(Shader::perspective);
 	frustum.setView(camera.getMatrix());
 	frustum.setPlanes();
+
+	glm::vec3	camPos = camera.getPosition();
 
 	float		halfChunk = CHUNK_SIZE * BLOCK_RENDER_SIZE / 2.0f;
 	int			setupThisFrame = 0;
@@ -157,7 +159,7 @@ void	ChunkManager::setRenderList(Camera & camera) {
 		// this may move
 		if (chunk->isSetup() == false)
 		{
-			_setupList.push_back(chunk);
+			_setupMap.insert(std::pair<float, Chunk*>(glm::distance(camPos, pos), chunk));
 		}
 	}
 }
@@ -210,7 +212,7 @@ void	ChunkManager::checkChunkDistance(glm::vec3 & camPos, Chunk & chunk) {
 	{
 		Chunk * newChunk = new Chunk(oppositePos);
 		_loadList.push_back(newChunk);
-		_setupList.push_back(newChunk);
+		_setupMap.insert(std::pair<float, Chunk*>(glm::distance(camPos, chunkPos), newChunk));
 		_unloadList.push_back(&chunk);
 	}
 }
@@ -226,12 +228,17 @@ void	ChunkManager::updateVisibilityList(glm::vec3 & camPos) {
 }
 
 bool	ChunkManager::isOccluded(Chunk * chunk) {
-	_query.start();
 	if (chunk->isBBoxBuilt() == false)
 		chunk->buildBoundingBox();
-	chunk->renderBoundingBox();
-	_query.end();
-	return !_query.getResult();
+	if (!_query.isInUse()) {
+		_query.start();
+		chunk->renderBoundingBox();
+		_query.end();
+	}
+	if (_query.isResultReady())
+		return !_query.getResult();
+	else
+		return false;
 }
 
 void	ChunkManager::render(Shader & shader, Shader & bboxShader) {

@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/24 17:27:54 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/11 21:03:24 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/13 15:22:15 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,9 +48,10 @@ class ChunkManager
 
 	private:
 		std::map<index3D, Chunk*>	_chunkMap;
+		std::map<float, Chunk*>		_setupMap;
 
 		std::vector<Chunk*>	_loadList;
-		std::vector<Chunk*>	_setupList;
+		//std::vector<Chunk*>	_setupList;
 		std::vector<Chunk*>	_renderList;
 		std::vector<Chunk*>	_unloadList;
 
