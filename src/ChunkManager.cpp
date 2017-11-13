@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/24 17:29:47 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/11 21:18:01 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/13 13:57:57 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,7 @@ std::pair<index3D, Chunk*>	ChunkManager::initChunkAt(float xx, float yy, float z
 	float	xPos = xx * chunkRenderSize;
 	float	yPos = yy * chunkRenderSize;
 	float	zPos = zz * chunkRenderSize;
-	float surfaceFreq = 0.01;
-	if (yPos > - GROUND_LEVEL)
+	if (yPos > -WORLD_BOTTOM * CHUNK_SIZE && yPos < CHUNK_SIZE * MAX_ALTITUDE)
 	{
 		Chunk *		chunk = new Chunk(glm::vec3(xPos, yPos, zPos));
 		chunk->setup();
@@ -207,7 +206,7 @@ void	ChunkManager::checkChunkDistance(glm::vec3 & camPos, Chunk & chunk) {
 		b = true;
 	}
 
-	if (b && oppositePos.y > -GROUND_LEVEL)
+	if (b)
 	{
 		Chunk * newChunk = new Chunk(oppositePos);
 		_loadList.push_back(newChunk);

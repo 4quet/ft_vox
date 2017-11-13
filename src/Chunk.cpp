@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:27:26 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/11 20:11:02 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/13 13:51:44 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,19 +66,51 @@ void	Chunk::setup() {
 }
 
 void	Chunk::setupLandscape() {
-	float surfaceFreq = 0.02f;
-	float maxAltitude = 2.0f;
+	float surfaceFreq = 0.015f;
+	float caveFreq = 0.015f;
+	bool hasCave = (_position.y <= -GROUND_LEVEL);
+	bool inBetween = (_position.y > -GROUND_LEVEL && _position.y < GROUND_LEVEL);
 
 	for (int x = 0; x < CHUNK_SIZE; ++x)
 	{
 		for (int z = 0; z < CHUNK_SIZE; ++z)
 		{
-			Chunk::sNoise.SetFrequency(surfaceFreq); // Set the desired noise freq
-			float	height = (Chunk::sNoise.GetNoise(_position.x + x, _position.z + z) + 1) / 2 * (CHUNK_SIZE * maxAltitude);
-			for (int y = 0; y < CHUNK_SIZE; ++y)
+			if (hasCave)
 			{
-				if (_position.y + y < height)
-					_blocks[x][y][z].setActive(true);
+				Chunk::sNoise.SetFrequency(caveFreq); // Set the desired noise freq
+				for (int y = 0; y < CHUNK_SIZE; ++y)
+				{
+					float	density = (Chunk::sNoise.GetNoise(_position.x + x, _position.z + z, _position.y + y));
+					if (density > 0.0f)
+					{
+						_blocks[x][y][z].setActive(true);
+					}
+				}
+				
+			}
+			else if (inBetween)
+			{
+				float gradient = 0.0f;
+				Chunk::sNoise.SetFrequency(caveFreq); // Set the desired noise freq
+				for (int y = 0; y < CHUNK_SIZE; ++y)
+				{
+					float	density = (Chunk::sNoise.GetNoise(_position.x + x, _position.z + z, _position.y + y)) + gradient;
+					if (density > 0.0f) //&& height > 0.0f)
+					{
+						_blocks[x][y][z].setActive(true);
+					}
+					gradient += 0.75f / CHUNK_SIZE;
+				}
+			}
+			else
+			{
+				Chunk::sNoise.SetFrequency(surfaceFreq); // Set the desired noise freq
+				float	height = (Chunk::sNoise.GetNoise(_position.x + x, _position.z + z) + 1.0f) / 2.0f * (CHUNK_SIZE * MAX_ALTITUDE);
+				for (int y = 0; y < CHUNK_SIZE; ++y)
+				{
+					if (_position.y + y < height)
+						_blocks[x][y][z].setActive(true);
+				}
 			}
 		}
 	}
