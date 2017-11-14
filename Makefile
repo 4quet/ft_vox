@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+         #
+#    By: thibautpierron <thibautpierron@student.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/07/21 11:32:23 by tpierron          #+#    #+#              #
-#    Updated: 2017/11/13 10:13:50 by lfourque         ###   ########.fr        #
+#    Updated: 2017/11/13 17:10:15 by thibautpier      ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,14 +34,10 @@ SRC =	src/Sdl_gl_win.cpp \
 CFLAGS = -Wall -Wextra -Werror -Wno-unused
 OBJ_PATH = ./obj/
 OBJ_NAME = $(SRC:.cpp=.o)
+PACKAGES = sdl2 freetype2 glm
 
-SDL = -L/Users/$(LOGNAME)/.brew/lib -lSDL2
-SDL_PATH = -I/Users/$(LOGNAME)/.brew/include/SDL2
-
-FREETYPE = -I/Users/$(LOGNAME)/.brew/lib -lfreetype
-FREETYPE_PATH = -I/Users/$(LOGNAME)/.brew/include/freetype2
-
-GLM_PATH = -I/Users/$(LOGNAME)/.brew/include/glm
+PATHS = $(shell pkg-config --cflags $(PACKAGES))
+LIBS = $(shell pkg-config --libs $(PACKAGES))
 
 OPENGL = -framework OpenGl -framework AppKit
 
@@ -51,10 +47,10 @@ all: $(NAME)
 $(OBJ_PATH)%.o: %.cpp
 	@mkdir $(OBJ_PATH) 2> /dev/null || echo "" > /dev/null
 	@mkdir $(OBJ_PATH)/src 2> /dev/null || echo "" > /dev/null
-	$(CC) $(CFLAGS) -o $@ -c -Isrc $(SDL_PATH) $(GLM_PATH) $(FREETYPE_PATH) $< -std=c++11
+	$(CC) $(CFLAGS) -o $@ -c -Isrc $(PATHS) $< -std=c++11
 
 $(NAME): $(OBJ)
-	$(CC) $(SDL) $(GLM) $(FREETYPE) $(OPENGL) $(CFLAGS) -o $@ $^
+	$(CC) $(SDL) $(LIBS) $(OPENGL) $(CFLAGS) -o $@ $^
 
 clean:
 	rm -rf $(OBJ_PATH)

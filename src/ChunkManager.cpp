@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ChunkManager.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
+/*   By: thibautpierron <thibautpierron@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/24 17:29:47 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/13 16:31:34 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/13 21:31:50 by thibautpier      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@ ChunkManager::ChunkManager(glm::vec3 camPos) :
 	_chunkMap(),
 	_query(GL_ANY_SAMPLES_PASSED) {
 
-	Chunk::loadTexturesAtlas("./textures/texturesLowRes.png");
-	Chunk::setUVs(2, 2, 3);
+	Chunk::loadTexturesAtlas("./textures/textures.png");
+	Chunk::setUVs(2, 2, 4);
 	
 	Chunk::sNoise.SetNoiseType(FastNoise::Perlin); // Set the desired noise type
 

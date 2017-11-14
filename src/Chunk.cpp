@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Chunk.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
+/*   By: thibautpierron <thibautpierron@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:27:26 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/13 13:51:44 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/14 10:28:39 by thibautpier      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ void	Chunk::setupLandscape() {
 					float	density = (Chunk::sNoise.GetNoise(_position.x + x, _position.z + z, _position.y + y));
 					if (density > 0.0f)
 					{
-						_blocks[x][y][z].setActive(true);
+						_blocks[x][y][z].setBlockType(BLOCKTYPE_STONE);
 					}
 				}
 				
@@ -97,7 +97,7 @@ void	Chunk::setupLandscape() {
 					float	density = (Chunk::sNoise.GetNoise(_position.x + x, _position.z + z, _position.y + y)) + gradient;
 					if (density > 0.0f) //&& height > 0.0f)
 					{
-						_blocks[x][y][z].setActive(true);
+						_blocks[x][y][z].setBlockType(BLOCKTYPE_STONE);
 					}
 					gradient += 0.75f / CHUNK_SIZE;
 				}
@@ -109,7 +109,9 @@ void	Chunk::setupLandscape() {
 				for (int y = 0; y < CHUNK_SIZE; ++y)
 				{
 					if (_position.y + y < height)
-						_blocks[x][y][z].setActive(true);
+						_blocks[x][y][z].setBlockType(BLOCKTYPE_STONE);
+					else if (_position.y + y < WATER_LEVEL)
+						_blocks[x][y][z].setBlockType(BLOCKTYPE_WATER);
 				}
 			}
 		}
@@ -137,13 +139,26 @@ void	Chunk::fillMesh() {
 					adj.back = (z - 1 >= 0) ? _blocks[x][y][z - 1].isActive() : defaultState;
 
 					if (!adj.everywhere()) {
-						if (adj.top == false)
+						if (adj.top == false && _blocks[x][y][z].getBlockType() == BLOCKTYPE_STONE)
 							t = BLOCKTYPE_GRASS;
 						else
-							t = BLOCKTYPE_STONE;
+							t = _blocks[x][y][z].getBlockType();
+						// 	t = BLOCKTYPE_STONE;
 						_blocks[x][y][z].setBlockType(t);
 						createCube(_position.x + x * BLOCK_RENDER_SIZE, _position.y + y * BLOCK_RENDER_SIZE, _position.z + z * BLOCK_RENDER_SIZE, adj, t);
 					}
+				} else {
+					// adj.right = (x + 1 < CHUNK_SIZE) ? _blocks[x + 1][y][z].isActive() : defaultState;
+					// adj.left = (x - 1 >= 0) ? _blocks[x - 1][y][z].isActive() : defaultState;
+					// adj.top = (y + 1 < CHUNK_SIZE) ? _blocks[x][y + 1][z].isActive() : defaultState;
+					// adj.bottom = (y - 1 >= 0) ? _blocks[x][y - 1][z].isActive() : defaultState;
+					// adj.front = (z + 1 < CHUNK_SIZE) ? _blocks[x][y][z + 1].isActive() : defaultState;
+					// adj.back = (z - 1 >= 0) ? _blocks[x][y][z - 1].isActive() : defaultState;
+
+					// if (_position.y < GROUND_LEVEL) {
+					// 	_blocks[x][y][z].setBlockType(BLOCKTYPE_WATER);
+					// 	createCube(_position.x + x * BLOCK_RENDER_SIZE, _position.y + y * BLOCK_RENDER_SIZE, _position.z + z * BLOCK_RENDER_SIZE, adj, t);
+					// }
 				}
 			}
 		}
@@ -161,13 +176,13 @@ void	Chunk::buildMesh() {
 		glBindBuffer(GL_ARRAY_BUFFER, VBO);
 		glBufferData(GL_ARRAY_BUFFER, mesh.size() * sizeof(float), &mesh[0], GL_STATIC_DRAW);
 
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat), (GLvoid*)0);
 		glEnableVertexAttribArray(0);
 
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
 		glEnableVertexAttribArray(1);
 
-		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(6 * sizeof(GLfloat)));
+		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat), (GLvoid*)(6 * sizeof(GLfloat)));
 		glEnableVertexAttribArray(2);
 
 		glBindVertexArray(0);	
@@ -186,6 +201,12 @@ void	Chunk::createCube(float x, float y, float z, AdjacentBlocks & adj, BlockTyp
 	glm::vec3	p6(x - halfBlockSize, y - halfBlockSize, z - halfBlockSize);
 	// glm::vec3	p7(x - halfBlockSize, y + halfBlockSize, z - halfBlockSize);
 	// glm::vec3	p8(x + halfBlockSize, y + halfBlockSize, z - halfBlockSize);
+
+	if (t == BLOCKTYPE_WATER) {
+		createFace(p4, Faces::TOP, t);
+		_activeBlocks++;
+		return;
+	}
 
 	if (!adj.front)
 		createFace(p1, Faces::FRONT, t);
@@ -208,7 +229,7 @@ void	Chunk::createFace(glm::vec3 point, Faces::Enum face, BlockType type) {
 	glm::vec3 incY = glm::vec3(0, BLOCK_RENDER_SIZE, 0);
 	glm::vec3 incZ = glm::vec3(0, 0, BLOCK_RENDER_SIZE);
 
-	std::vector<glm::vec2>	uv;
+	std::vector<glm::vec3>	uv;
 
 	switch(face) {
 		case Faces::FRONT:
@@ -250,9 +271,9 @@ void	Chunk::createFace(glm::vec3 point, Faces::Enum face, BlockType type) {
 	}
 }
 
-std::vector<glm::vec2>	Chunk::getTriangleUVs(bool firstTriangle, Faces::Enum face, BlockType type) const {
+std::vector<glm::vec3>	Chunk::getTriangleUVs(bool firstTriangle, Faces::Enum face, BlockType type) const {
 	unsigned int	texture;
-	std::vector<glm::vec2>	uv;
+	std::vector<glm::vec3>	uv;
 
 	switch(type) {
 		case BLOCKTYPE_GRASS:
@@ -264,13 +285,17 @@ std::vector<glm::vec2>	Chunk::getTriangleUVs(bool firstTriangle, Faces::Enum fac
 				texture = 0;
 			break;
 		case BLOCKTYPE_STONE: texture = 2; break;
-		case BLOCKTYPE_DEFAULT: texture = 2; break;
+		case BLOCKTYPE_WATER: texture = 3; break;
+		case BLOCKTYPE_INACTIVE: texture = 2; break;
+		// case BLOCKTYPE_DEFAULT: texture = 2; break;
 	}
 	
-	glm::vec2	topLeft = uvs[texture * 4];
-	glm::vec2	topRight = uvs[texture * 4 + 1];
-	glm::vec2	bottomRight = uvs[texture * 4 + 2];
-	glm::vec2	bottomLeft = uvs[texture * 4 + 3];	
+	float alpha = (type == BLOCKTYPE_WATER) ? 0.5f : 1.f;
+	
+	glm::vec3	topLeft = glm::vec3(uvs[texture * 4], alpha);
+	glm::vec3	topRight = glm::vec3(uvs[texture * 4 + 1], alpha);
+	glm::vec3	bottomRight = glm::vec3(uvs[texture * 4 + 2], alpha);
+	glm::vec3	bottomLeft = glm::vec3(uvs[texture * 4 + 3], alpha);	
 	
 	if(firstTriangle) {
 		uv.push_back(bottomRight);
@@ -284,10 +309,10 @@ std::vector<glm::vec2>	Chunk::getTriangleUVs(bool firstTriangle, Faces::Enum fac
 	return uv;
 }
 
-void	Chunk::addTriangle(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, glm::vec3  normal, std::vector<glm::vec2> & uv) {
-	mesh.insert(mesh.end(), { p1.x, p1.y, p1.z, normal.x, normal.y, normal.z, uv[0].x, uv[0].y });
-	mesh.insert(mesh.end(), { p2.x, p2.y, p2.z, normal.x, normal.y, normal.z, uv[1].x, uv[1].y });
-	mesh.insert(mesh.end(), { p3.x, p3.y, p3.z, normal.x, normal.y, normal.z, uv[2].x, uv[2].y });
+void	Chunk::addTriangle(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, glm::vec3  normal, std::vector<glm::vec3> & uv) {
+	mesh.insert(mesh.end(), { p1.x, p1.y, p1.z, normal.x, normal.y, normal.z, uv[0].x, uv[0].y, uv[0].z });
+	mesh.insert(mesh.end(), { p2.x, p2.y, p2.z, normal.x, normal.y, normal.z, uv[1].x, uv[1].y, uv[1].z });
+	mesh.insert(mesh.end(), { p3.x, p3.y, p3.z, normal.x, normal.y, normal.z, uv[2].x, uv[2].y, uv[2].z });
 	_totalVertices += 3;
 }
 

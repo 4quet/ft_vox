@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Block.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
+/*   By: thibautpierron <thibautpierron@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 10:40:00 by lfourque          #+#    #+#             */
-/*   Updated: 2017/10/23 11:02:43 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/13 19:16:41 by thibautpier      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,11 +24,11 @@ class Block
 		bool		isActive() const;
 		BlockType	getBlockType() const;
 
-		void		setActive(bool active);
+		// void		setActive(bool active);
 		void		setBlockType(BlockType blockType);
 
 	private:
-		bool		_active;
+		// bool		_active;
 		BlockType	_blockType;
 };
 
