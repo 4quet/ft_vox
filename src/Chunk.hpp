@@ -6,7 +6,7 @@
 /*   By: thibautpierron <thibautpierron@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:23:42 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/14 09:21:37 by thibautpier      ###   ########.fr       */
+/*   Updated: 2017/11/14 19:35:43 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ class Chunk
 
 		glm::vec3	getPosition() const;
 		size_t		getActiveBlocks() const;
+		Block &		getBlock(int, int, int) const;
 		bool		isVisible() const;
 		bool		isSetup() const;
 		bool		isBuilt() const;
@@ -76,7 +77,6 @@ class Chunk
 
 		Chunk();
 
-		void					setupLandscape();
 		void					fillMesh();
 		void					createCube(float, float, float, AdjacentBlocks &, BlockType);
 		void					createFace(glm::vec3 point, Faces::Enum face, BlockType type);

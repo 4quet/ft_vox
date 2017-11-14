@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/24 17:27:54 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/13 15:22:15 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/14 20:01:29 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include "constants.hpp"
 # include "Chunk.hpp"
 # include "Camera.hpp"
+# include "BiomeManager.hpp"
 # include "Frustum.hpp"
 # include "Query.hpp"
 # include <map>
@@ -54,6 +55,8 @@ class ChunkManager
 		//std::vector<Chunk*>	_setupList;
 		std::vector<Chunk*>	_renderList;
 		std::vector<Chunk*>	_unloadList;
+
+		BiomeManager		bm;
 
 		std::vector<std::future<Chunk*>>	_renderListAsync;
 

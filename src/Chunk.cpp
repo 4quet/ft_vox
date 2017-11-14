@@ -6,7 +6,7 @@
 /*   By: thibautpierron <thibautpierron@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:27:26 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/14 10:28:39 by thibautpier      ###   ########.fr       */
+/*   Updated: 2017/11/14 19:35:35 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,62 +59,9 @@ void	Chunk::render() {
 void	Chunk::setup() {
 	if (_setup == false)
 	{
-		setupLandscape();
+	//	bm.setupLandscape(*this);
 		fillMesh();
 		_setup = true;
-	}
-}
-
-void	Chunk::setupLandscape() {
-	float surfaceFreq = 0.015f;
-	float caveFreq = 0.015f;
-	bool hasCave = (_position.y <= -GROUND_LEVEL);
-	bool inBetween = (_position.y > -GROUND_LEVEL && _position.y < GROUND_LEVEL);
-
-	for (int x = 0; x < CHUNK_SIZE; ++x)
-	{
-		for (int z = 0; z < CHUNK_SIZE; ++z)
-		{
-			if (hasCave)
-			{
-				Chunk::sNoise.SetFrequency(caveFreq); // Set the desired noise freq
-				for (int y = 0; y < CHUNK_SIZE; ++y)
-				{
-					float	density = (Chunk::sNoise.GetNoise(_position.x + x, _position.z + z, _position.y + y));
-					if (density > 0.0f)
-					{
-						_blocks[x][y][z].setBlockType(BLOCKTYPE_STONE);
-					}
-				}
-				
-			}
-			else if (inBetween)
-			{
-				float gradient = 0.0f;
-				Chunk::sNoise.SetFrequency(caveFreq); // Set the desired noise freq
-				for (int y = 0; y < CHUNK_SIZE; ++y)
-				{
-					float	density = (Chunk::sNoise.GetNoise(_position.x + x, _position.z + z, _position.y + y)) + gradient;
-					if (density > 0.0f) //&& height > 0.0f)
-					{
-						_blocks[x][y][z].setBlockType(BLOCKTYPE_STONE);
-					}
-					gradient += 0.75f / CHUNK_SIZE;
-				}
-			}
-			else
-			{
-				Chunk::sNoise.SetFrequency(surfaceFreq); // Set the desired noise freq
-				float	height = (Chunk::sNoise.GetNoise(_position.x + x, _position.z + z) + 1.0f) / 2.0f * (CHUNK_SIZE * MAX_ALTITUDE);
-				for (int y = 0; y < CHUNK_SIZE; ++y)
-				{
-					if (_position.y + y < height)
-						_blocks[x][y][z].setBlockType(BLOCKTYPE_STONE);
-					else if (_position.y + y < WATER_LEVEL)
-						_blocks[x][y][z].setBlockType(BLOCKTYPE_WATER);
-				}
-			}
-		}
 	}
 }
 
@@ -320,6 +267,8 @@ glm::vec3	Chunk::getPosition() const { return _position; }
 void		Chunk::setPosition(glm::vec3 pos) { _position = pos; }
 
 size_t		Chunk::getActiveBlocks() const { return _activeBlocks; }
+
+Block &		Chunk::getBlock(int x, int y, int z) const { return _blocks[x][y][z]; }
 
 void		Chunk::setVisibility(bool b) {
 	_visible = b;

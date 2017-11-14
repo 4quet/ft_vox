@@ -6,7 +6,7 @@
 /*   By: thibautpierron <thibautpierron@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/24 17:29:47 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/13 21:31:50 by thibautpier      ###   ########.fr       */
+/*   Updated: 2017/11/14 18:33:18 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ std::pair<index3D, Chunk*>	ChunkManager::initChunkAt(float xx, float yy, float z
 	if (yPos <= CHUNK_SIZE * MAX_ALTITUDE)
 	{
 		Chunk *		chunk = new Chunk(glm::vec3(xPos, yPos, zPos));
+		bm.setupLandscape(*chunk);
 		chunk->setup();
 		return std::pair<index3D, Chunk*>(index3D(xPos, yPos, zPos), chunk);
 	}
@@ -120,6 +121,7 @@ void	ChunkManager::updateSetupList() {
 			break;
 		}
 		Chunk *		chunk = it->second;
+		bm.setupLandscape(*chunk);
 		chunk->setup();
 		setupThisFrame++;
 	}
