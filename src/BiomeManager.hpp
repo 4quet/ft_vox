@@ -6,7 +6,7 @@
 /*   By: thibautpierron <thibautpierron@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/13 08:46:36 by thibautpier       #+#    #+#             */
-/*   Updated: 2017/11/14 19:32:13 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/15 11:46:50 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,29 +22,24 @@ class BiomeManager
     public:
         BiomeManager();
         ~BiomeManager();
-        float	getHeightAt(float, float, Biomes::Enum) const;
+
 		void	setupLandscape(Chunk &);
 
     private:
-        static 	FastNoise	sNoise;
+       	FastNoise	heightMapNoise;
+		float		caveFreq;
 
-		float	altitudeFreqSelector;
-		float	biomeFreqSelector;
+        float		getHeightAt(float, float);
 
-		float	fieldFreq;
-		float	desertFreq;
-		float	caveFreq;
+       	FastNoise	elevationNoise;
+		float		elevationFrequency;
+		float		maxElevationMult;
+		float		getElevationMult(float, float) const;
 
-		float	fieldMaxAltitude;
-		float	desertMaxAltitude;
-
-        
-        Biomes::Enum    getBiomeAt(float, float) const;
-        
-        float           getFieldHeightAt(float, float) const;
-        float           getDesertHeightAt(float, float) const;
-        float           getSnowHeightAt(float, float) const;
-        float           getCanyonHeightAt(float, float) const;
+       	FastNoise	sharpnessNoise;
+		float		sharpnessFrequency;
+		float		sharpnessDivider;
+		float		getSharpness(float, float) const;
 };
 
 #endif

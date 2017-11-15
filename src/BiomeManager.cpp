@@ -6,25 +6,28 @@
 /*   By: thibautpierron <thibautpierron@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/13 08:56:54 by thibautpier       #+#    #+#             */
-/*   Updated: 2017/11/14 19:34:35 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/15 11:44:46 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "BiomeManager.hpp"
 
-FastNoise	BiomeManager::sNoise;
-
 BiomeManager::BiomeManager() {
-    BiomeManager::sNoise.SetNoiseType(FastNoise::Perlin);
 
-	biomeFreqSelector = 0.001f;
+	elevationFrequency = 0.002f;
+    elevationNoise.SetNoiseType(FastNoise::Perlin);
+    elevationNoise.SetFrequency(elevationFrequency);
 
-	fieldFreq = 0.04f;
-	desertFreq = 0.01f;
+	sharpnessFrequency = 0.001f;
+    sharpnessNoise.SetNoiseType(FastNoise::Perlin);
+    sharpnessNoise.SetFrequency(sharpnessFrequency);
+
+    heightMapNoise.SetNoiseType(FastNoise::Perlin);
+
+	maxElevationMult = 5.f;
+	sharpnessDivider = 25.f;
+
 	caveFreq = 0.09f;
-
-	fieldMaxAltitude = 3.f;
-	desertMaxAltitude = 2.0f;
 
     return;
 }
@@ -33,38 +36,23 @@ BiomeManager::~BiomeManager() {
     return;
 }
 
-float           BiomeManager::getHeightAt(float x, float y, Biomes::Enum biome) const {
-    if (biome == Biomes::FIELD)
-        return getFieldHeightAt(x, y);
-    else
-        return getDesertHeightAt(x, y);
+float			BiomeManager::getElevationMult(float x, float y) const {
+    return ((BiomeManager::elevationNoise.GetNoise(x , y) + 1.f) / 2.f) * maxElevationMult; // 0 to 3
 }
 
-Biomes::Enum    BiomeManager::getBiomeAt(float x, float y) const {
-    BiomeManager::sNoise.SetFrequency(biomeFreqSelector);
-    float	hm = (BiomeManager::sNoise.GetNoise(x , y) + 1) / 2;
-    if (hm < 0.5f)
-        return Biomes::FIELD;
-    else
-        return Biomes::DESERT;
+float			BiomeManager::getSharpness(float x, float y) const {
+    return ((BiomeManager::sharpnessNoise.GetNoise(x , y) + 1.f) / 2.f) / sharpnessDivider;
 }
 
-float           BiomeManager::getFieldHeightAt(float x, float y) const {
-    BiomeManager::sNoise.SetFrequency(fieldFreq);
-    return ((BiomeManager::sNoise.GetNoise(x, y) + 1) / 2) * (CHUNK_SIZE * fieldMaxAltitude);
-}
+float           BiomeManager::getHeightAt(float x, float y) {
 
-float           BiomeManager::getDesertHeightAt(float x, float y) const {
-    BiomeManager::sNoise.SetFrequency(desertFreq);
-    return ((BiomeManager::sNoise.GetNoise(x, y) + 1) / 2) * (CHUNK_SIZE * desertMaxAltitude);
-}
+	float elevation = getElevationMult(x, y);
+	float sharpness = getSharpness(x, y);
 
-float           BiomeManager::getSnowHeightAt(float x, float y) const {
-    return x + y;
-}
+    heightMapNoise.SetFrequency(sharpness);
+    float	height = ((heightMapNoise.GetNoise(x , y) + 1.f) / 2.f) * CHUNK_SIZE;
 
-float           BiomeManager::getCanyonHeightAt(float x, float y) const {
-    return x + y;
+	return elevation * height;
 }
 
 void	BiomeManager::setupLandscape(Chunk & chunk) {
@@ -79,10 +67,10 @@ void	BiomeManager::setupLandscape(Chunk & chunk) {
 		{
 			if (hasCave)
 			{
-				BiomeManager::sNoise.SetFrequency(caveFreq); // Set the desired noise freq
+				heightMapNoise.SetFrequency(caveFreq); // Set the desired noise freq
 				for (int y = 0; y < CHUNK_SIZE; ++y)
 				{
-					float	density = (BiomeManager::sNoise.GetNoise(chunkPos.x + x, chunkPos.z + z, chunkPos.y + y));
+					float	density = (BiomeManager::heightMapNoise.GetNoise(chunkPos.x + x, chunkPos.z + z, chunkPos.y + y));
 					if (density > 0.0f)
 					{
 						chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_STONE);
@@ -93,11 +81,11 @@ void	BiomeManager::setupLandscape(Chunk & chunk) {
 			else if (inBetween)
 			{
 				float gradient = 0.0f;
-				BiomeManager::sNoise.SetFrequency(caveFreq); // Set the desired noise freq
+				heightMapNoise.SetFrequency(caveFreq); // Set the desired noise freq
 				for (int y = 0; y < CHUNK_SIZE; ++y)
 				{
-					float	density = (BiomeManager::sNoise.GetNoise(chunkPos.x + x, chunkPos.z + z, chunkPos.y + y)) + gradient;
-					if (density > 0.0f) //&& height > 0.0f)
+					float	density = (BiomeManager::heightMapNoise.GetNoise(chunkPos.x + x, chunkPos.z + z, chunkPos.y + y)) + gradient;
+					if (density > 0.0f)
 					{
 						chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_STONE);
 					}
@@ -106,9 +94,7 @@ void	BiomeManager::setupLandscape(Chunk & chunk) {
 			}
 			else
 			{
-				Biomes::Enum	biome = getBiomeAt(chunkPos.x + x, chunkPos.z + z);
-				float	height = getHeightAt(chunkPos.x + x, chunkPos.z + z, biome);
-
+				float height = getHeightAt(chunkPos.x + x, chunkPos.z + z);
 				for (int y = 0; y < CHUNK_SIZE; ++y)
 				{
 					if (chunkPos.y + y < height)
@@ -116,7 +102,7 @@ void	BiomeManager::setupLandscape(Chunk & chunk) {
 						chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_STONE);
 					}
 				//	else if (chunkPos.y + y < WATER_LEVEL)
-				//		_blocks[x][y][z].setBlockType(BLOCKTYPE_WATER);
+				//		chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_WATER);
 				}
 			}
 		}
