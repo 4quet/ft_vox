@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/24 17:29:47 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/16 17:00:33 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/16 17:22:22 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,11 +128,11 @@ void	ChunkManager::updateSetupList() {
 
 		if ((_isUnderGround && chunkPos.y < GROUND_LEVEL) || (_isAboveGround && chunkPos.y > CAVE_LEVEL))
 		{
-		bm.setupLandscape(*chunk);
-		chunk->setup();
+			bm.setupLandscape(*chunk);
+			chunk->setup();
+			setupThisFrame++;
 		}
 
-		setupThisFrame++;
 	}
 
 	_setupMap.clear();
@@ -167,19 +167,18 @@ void	ChunkManager::setRenderList(Camera & camera) {
 
 		if ((_isUnderGround && chunkPos.y < GROUND_LEVEL) || (_isAboveGround && chunkPos.y >= CAVE_LEVEL))
 		{
+			float dist = glm::distance(camPos, glm::vec3( chunkPos.x + halfChunk, chunkPos.y + halfChunk, chunkPos.z + halfChunk ));
 
-		float dist = glm::distance(camPos, glm::vec3( chunkPos.x + halfChunk, chunkPos.y + halfChunk, chunkPos.z + halfChunk ));
+			if (frustum.pointIn(chunkPos.x + halfChunk, chunkPos.y + halfChunk, chunkPos.z + halfChunk))
+			{
+				_renderMap.insert(std::pair<float, Chunk*>(dist, chunk));
+			}
 
-		if (frustum.pointIn(chunkPos.x + halfChunk, chunkPos.y + halfChunk, chunkPos.z + halfChunk))
-		{
-			_renderMap.insert(std::pair<float, Chunk*>(dist, chunk));
-		}
-
-		// this may move
-		if (chunk->isSetup() == false)
-		{
-			_setupMap.insert(std::pair<float, Chunk*>(dist, chunk));
-		}
+			// this may move
+			if (chunk->isSetup() == false)
+			{
+				_setupMap.insert(std::pair<float, Chunk*>(dist, chunk));
+			}
 		}
 	}
 }
