@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   BiomeManager.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thibautpierron <thibautpierron@student.    +#+  +:+       +#+        */
+/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/13 08:56:54 by thibautpier       #+#    #+#             */
-/*   Updated: 2017/11/16 12:10:43 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/16 14:44:34 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,14 +97,21 @@ void	BiomeManager::setupLandscape(Chunk & chunk) {
 				float height = getHeightAt(chunkPos.x + x, chunkPos.z + z);
 				for (int y = 0; y < CHUNK_SIZE; ++y)
 				{
-					if (chunkPos.y + y < height)
-					{
-						chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_STONE);
+					if (chunkPos.y + y < height) {
+						if (chunkPos.y + y < ROCK_LEVEL)
+							chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_ROCK);
+						else if (chunkPos.y + y < SAND_LEVEL)
+							chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_SAND);
+						else if (chunkPos.y + y > SNOW_LEVEL)
+							chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_SNOW);
+						else
+							chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_STONE);
+
 					}
 					else if (chunkPos.y + y < WATER_LEVEL)
-					{
 						chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_WATER);
-					}
+					// else if (chunkPos.y + y < SNOW_LEVEL)
+					// 	chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_SNOW);
 				}
 			}
 		}

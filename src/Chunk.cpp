@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:27:26 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/16 12:05:15 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/16 14:06:58 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -225,23 +225,40 @@ void	Chunk::createFace(glm::vec3 point, Faces::Enum face, BlockType type) {
 std::vector<glm::vec3>	Chunk::getTriangleUVs(bool firstTriangle, Faces::Enum face, BlockType type) const {
 	unsigned int	texture;
 	std::vector<glm::vec3>	uv;
+	int r = 0;
 
 	switch(type) {
 		case BLOCKTYPE_GRASS:
 			if (face == Faces::TOP)
-				texture = 1;
+				texture = 8;
 			else if (face == Faces::BOTTOM)
-				texture = 2;
+				texture = 4;
 			else
 				texture = 0;
 			break;
-		case BLOCKTYPE_STONE: texture = 2; break;
-		case BLOCKTYPE_WATER: texture = 3; break;
+		case BLOCKTYPE_SNOW:
+			if (face == Faces::TOP)
+				texture = 7;
+			else if (face == Faces::BOTTOM)
+				texture = 4;
+			else
+				texture = 6;
+			break;
+		case BLOCKTYPE_STONE:
+			r = rand() % 3;
+			if (r == 0)
+				texture = 1;
+			else
+				texture = r + 2;
+			break;
+		case BLOCKTYPE_SAND: texture = 5; break;
+		case BLOCKTYPE_WATER: texture = 9; break;
+		case BLOCKTYPE_ROCK: texture = 2; break;
 		case BLOCKTYPE_INACTIVE: texture = 2; break;
 		// case BLOCKTYPE_DEFAULT: texture = 2; break;
 	}
 	
-	float alpha = (type == BLOCKTYPE_WATER) ? 0.5f : 1.f;
+	float alpha = (type == BLOCKTYPE_WATER) ? 0.7f : 1.f;
 	
 	glm::vec3	topLeft = glm::vec3(uvs[texture * 4], alpha);
 	glm::vec3	topRight = glm::vec3(uvs[texture * 4 + 1], alpha);
