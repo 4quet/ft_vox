@@ -6,14 +6,14 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/27 11:08:28 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/02 13:12:08 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/16 09:28:59 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FRUSTUM_HPP
 # define FRUSTUM_HPP
 
-# include <gtc/matrix_transform.hpp>
+# include <glm/gtc/matrix_transform.hpp>
 # include <vector>
 # include <map>
 # include "Chunk.hpp"

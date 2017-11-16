@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/25 16:36:24 by tpierron          #+#    #+#             */
-/*   Updated: 2017/10/25 16:48:53 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/16 09:28:58 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 
 # include <map>
 # include "Shader.class.hpp"
-# include <gtc/matrix_transform.hpp>
+# include <glm/gtc/matrix_transform.hpp>
 # include <OpenGL/gl3.h>
 # include <ft2build.h>
 # include FT_FREETYPE_H
