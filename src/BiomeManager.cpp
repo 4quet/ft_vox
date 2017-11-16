@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/13 08:56:54 by thibautpier       #+#    #+#             */
-/*   Updated: 2017/11/16 15:20:06 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/16 16:34:33 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ BiomeManager::BiomeManager() {
 
     heightMapNoise.SetNoiseType(FastNoise::Perlin);
 
-	maxElevationMult = 5.f;
+	maxElevationMult = MAX_ALTITUDE;
 	sharpnessDivider = 25.f;
 
 	caveFreq = 0.09f;

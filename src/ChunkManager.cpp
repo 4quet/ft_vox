@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/24 17:29:47 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/16 15:20:27 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/16 17:00:33 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,9 @@ void	ChunkManager::update(Camera & camera) {
 
 	glm::vec3	camPos = camera.getPosition();
 
+	_isUnderGround = (camPos.y < GROUND_LEVEL) ? true: false;
+	_isAboveGround = (camPos.y > CAVE_LEVEL) ? true: false;
+
 	updateVisibilityList(camPos);
 
 	//std::async( std::launch::async, &ChunkManager::updateLoadList, this );
@@ -121,8 +124,14 @@ void	ChunkManager::updateSetupList() {
 			break;
 		}
 		Chunk *		chunk = it->second;
+		glm::vec3	chunkPos = chunk->getPosition();
+
+		if ((_isUnderGround && chunkPos.y < GROUND_LEVEL) || (_isAboveGround && chunkPos.y > CAVE_LEVEL))
+		{
 		bm.setupLandscape(*chunk);
 		chunk->setup();
+		}
+
 		setupThisFrame++;
 	}
 
@@ -146,7 +155,7 @@ void	ChunkManager::setRenderList(Camera & camera) {
 
 	glm::vec3	camPos = camera.getPosition();
 
-	float		halfChunk = CHUNK_SIZE * BLOCK_RENDER_SIZE / 2.0f;
+	float		halfChunk = CHUNK_RENDER_SIZE / 2.0f;
 	int			setupThisFrame = 0;
 
 	_renderMap.clear();
@@ -154,11 +163,14 @@ void	ChunkManager::setRenderList(Camera & camera) {
 	for (std::map<index3D, Chunk*>::iterator it = _chunkMap.begin(); it != _chunkMap.end(); ++it)
 	{
 		Chunk *		chunk = it->second;
-		glm::vec3	pos = chunk->getPosition();
+		glm::vec3	chunkPos = chunk->getPosition();
 
-		float dist = glm::distance(camPos, glm::vec3( pos.x + halfChunk, pos.y + halfChunk, pos.z + halfChunk ));
+		if ((_isUnderGround && chunkPos.y < GROUND_LEVEL) || (_isAboveGround && chunkPos.y >= CAVE_LEVEL))
+		{
 
-		if (frustum.pointIn(pos.x + halfChunk, pos.y + halfChunk, pos.z + halfChunk))
+		float dist = glm::distance(camPos, glm::vec3( chunkPos.x + halfChunk, chunkPos.y + halfChunk, chunkPos.z + halfChunk ));
+
+		if (frustum.pointIn(chunkPos.x + halfChunk, chunkPos.y + halfChunk, chunkPos.z + halfChunk))
 		{
 			_renderMap.insert(std::pair<float, Chunk*>(dist, chunk));
 		}
@@ -167,6 +179,7 @@ void	ChunkManager::setRenderList(Camera & camera) {
 		if (chunk->isSetup() == false)
 		{
 			_setupMap.insert(std::pair<float, Chunk*>(dist, chunk));
+		}
 		}
 	}
 }
@@ -213,10 +226,11 @@ void	ChunkManager::checkChunkDistance(glm::vec3 & camPos, Chunk & chunk) {
 	else if (fabs(dist.y) > maxDistHeight)
 	{
 		oppositePos = glm::vec3(chunkPos.x, chunkPos.y - maxDistHeight * 2.0f * std::copysign(1.0f, dist.y), chunkPos.z);
-		if (oppositePos.y > -WORLD_BOTTOM * CHUNK_SIZE)
+		if (oppositePos.y > -WORLD_BOTTOM * CHUNK_RENDER_SIZE)
 			b = true;
 	}
 
+	//if ((_isUnderGround && chunkPos.y < GROUND_LEVEL) || (_isAboveGround && chunkPos.y >= CAVE_LEVEL))
 	if (b)
 	{
 		Chunk * newChunk = new Chunk(oppositePos);

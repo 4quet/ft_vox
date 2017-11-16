@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/24 17:27:54 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/16 12:13:08 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/16 15:56:41 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,8 @@ class ChunkManager
 
 		size_t		_totalActiveBlocks;
 		size_t		_totalActiveChunks;
+		bool		_isUnderGround;
+		bool		_isAboveGround;
 
 		bool		isOccluded(Chunk *);
 
