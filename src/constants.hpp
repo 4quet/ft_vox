@@ -6,7 +6,7 @@
 /*   By: thibautpierron <thibautpierron@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/18 16:15:29 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/14 10:41:49 by thibautpier      ###   ########.fr       */
+/*   Updated: 2017/11/16 12:07:37 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ enum BlockType: char
 # define BLOCK_RENDER_SIZE	1.0f
 # define CHUNK_SIZE	16
 # define GROUND_LEVEL BLOCK_RENDER_SIZE * CHUNK_SIZE
-# define WATER_LEVEL BLOCK_RENDER_SIZE * CHUNK_SIZE + CHUNK_SIZE
+# define WATER_LEVEL GROUND_LEVEL * 2
 
 // These constants are expressed in terms of chunks amount
 # define VIEW_DISTANCE_WIDTH 12

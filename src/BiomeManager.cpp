@@ -6,7 +6,7 @@
 /*   By: thibautpierron <thibautpierron@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/13 08:56:54 by thibautpier       #+#    #+#             */
-/*   Updated: 2017/11/15 11:44:46 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/16 12:10:43 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ float           BiomeManager::getHeightAt(float x, float y) {
 	float sharpness = getSharpness(x, y);
 
     heightMapNoise.SetFrequency(sharpness);
-    float	height = ((heightMapNoise.GetNoise(x , y) + 1.f) / 2.f) * CHUNK_SIZE;
+    float	height = ((heightMapNoise.GetNoise(x , y) + 1)) * CHUNK_SIZE;
 
 	return elevation * height;
 }
@@ -101,8 +101,10 @@ void	BiomeManager::setupLandscape(Chunk & chunk) {
 					{
 						chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_STONE);
 					}
-				//	else if (chunkPos.y + y < WATER_LEVEL)
-				//		chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_WATER);
+					else if (chunkPos.y + y < WATER_LEVEL)
+					{
+						chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_WATER);
+					}
 				}
 			}
 		}

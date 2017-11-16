@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:27:26 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/16 09:28:28 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/16 12:05:15 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,26 +90,28 @@ void	Chunk::fillMesh() {
 							t = BLOCKTYPE_GRASS;
 						else
 							t = _blocks[x][y][z].getBlockType();
-						// 	t = BLOCKTYPE_STONE;
 						_blocks[x][y][z].setBlockType(t);
 						createCube(_position.x + x * BLOCK_RENDER_SIZE, _position.y + y * BLOCK_RENDER_SIZE, _position.z + z * BLOCK_RENDER_SIZE, adj, t);
 					}
-				} else {
-					// adj.right = (x + 1 < CHUNK_SIZE) ? _blocks[x + 1][y][z].isActive() : defaultState;
-					// adj.left = (x - 1 >= 0) ? _blocks[x - 1][y][z].isActive() : defaultState;
-					// adj.top = (y + 1 < CHUNK_SIZE) ? _blocks[x][y + 1][z].isActive() : defaultState;
-					// adj.bottom = (y - 1 >= 0) ? _blocks[x][y - 1][z].isActive() : defaultState;
-					// adj.front = (z + 1 < CHUNK_SIZE) ? _blocks[x][y][z + 1].isActive() : defaultState;
-					// adj.back = (z - 1 >= 0) ? _blocks[x][y][z - 1].isActive() : defaultState;
-
-					// if (_position.y < GROUND_LEVEL) {
-					// 	_blocks[x][y][z].setBlockType(BLOCKTYPE_WATER);
-					// 	createCube(_position.x + x * BLOCK_RENDER_SIZE, _position.y + y * BLOCK_RENDER_SIZE, _position.z + z * BLOCK_RENDER_SIZE, adj, t);
-					// }
+				}
+				else if (_blocks[x][y][z].getBlockType() == BLOCKTYPE_WATER) {
+					if (y == CHUNK_SIZE - 1)
+					{
+						t = BLOCKTYPE_WATER;
+						adj.top = false;
+						adj.bottom = true;
+						adj.front = true;
+						adj.back = true;
+						adj.left = true;
+						adj.right = true;
+					 	createCube(_position.x + x * BLOCK_RENDER_SIZE, _position.y + y * BLOCK_RENDER_SIZE, _position.z + z * BLOCK_RENDER_SIZE, adj, t);
+					}
 				}
 			}
 		}
 	}
+
+	mesh.insert(mesh.end(), waterMesh.begin(), waterMesh.end());
 }
 
 void	Chunk::buildMesh() {
@@ -149,11 +151,13 @@ void	Chunk::createCube(float x, float y, float z, AdjacentBlocks & adj, BlockTyp
 	// glm::vec3	p7(x - halfBlockSize, y + halfBlockSize, z - halfBlockSize);
 	// glm::vec3	p8(x + halfBlockSize, y + halfBlockSize, z - halfBlockSize);
 
+	/*
 	if (t == BLOCKTYPE_WATER) {
 		createFace(p4, Faces::TOP, t);
 		_activeBlocks++;
 		return;
 	}
+	*/
 
 	if (!adj.front)
 		createFace(p1, Faces::FRONT, t);
@@ -181,39 +185,39 @@ void	Chunk::createFace(glm::vec3 point, Faces::Enum face, BlockType type) {
 	switch(face) {
 		case Faces::FRONT:
 			uv = getTriangleUVs(1, face, type);
-			addTriangle(point, point + incX, point + incX + incY, glm::vec3(0.f, 0.f, 1.f), uv);
+			addTriangle(point, point + incX, point + incX + incY, glm::vec3(0.f, 0.f, 1.f), uv, type);
 			uv = getTriangleUVs(0, face, type);
-			addTriangle(point, point + incX + incY, point + incY, glm::vec3(0.f, 0.f, 1.f), uv);
+			addTriangle(point, point + incX + incY, point + incY, glm::vec3(0.f, 0.f, 1.f), uv, type);
 			return;
 		case Faces::BACK:
 			uv = getTriangleUVs(1, face, type);
-			addTriangle(point, point - incX, point - incX + incY, glm::vec3(0.f, 0.f, -1.f), uv);
+			addTriangle(point, point - incX, point - incX + incY, glm::vec3(0.f, 0.f, -1.f), uv, type);
 			uv = getTriangleUVs(0, face, type);
-			addTriangle(point, point - incX + incY, point + incY, glm::vec3(0.f, 0.f, -1.f), uv);
+			addTriangle(point, point - incX + incY, point + incY, glm::vec3(0.f, 0.f, -1.f), uv, type);
 			return;
 		case Faces::RIGHT:
 			uv = getTriangleUVs(1, face, type);
-			addTriangle(point, point - incZ, point - incZ + incY, glm::vec3(1.f, 0.f, 0.f), uv);
+			addTriangle(point, point - incZ, point - incZ + incY, glm::vec3(1.f, 0.f, 0.f), uv, type);
 			uv = getTriangleUVs(0, face, type);
-			addTriangle(point, point - incZ + incY, point + incY, glm::vec3(1.f, 0.f, 0.f), uv);
+			addTriangle(point, point - incZ + incY, point + incY, glm::vec3(1.f, 0.f, 0.f), uv, type);
 			return;
 		case Faces::LEFT:
 			uv = getTriangleUVs(1, face, type);
-			addTriangle(point, point + incZ, point + incZ + incY, glm::vec3(-1.f, 0.f, 0.f), uv);
+			addTriangle(point, point + incZ, point + incZ + incY, glm::vec3(-1.f, 0.f, 0.f), uv, type);
 			uv = getTriangleUVs(0, face, type);
-			addTriangle(point, point + incZ + incY, point + incY, glm::vec3(-1.f, 0.f, 0.f), uv);
+			addTriangle(point, point + incZ + incY, point + incY, glm::vec3(-1.f, 0.f, 0.f), uv, type);
 			return;
 		case Faces::TOP:
 			uv = getTriangleUVs(1, face, type);
-			addTriangle(point, point + incX, point + incX - incZ, glm::vec3(0.f, 1.f, 0.f), uv);
+			addTriangle(point, point + incX, point + incX - incZ, glm::vec3(0.f, 1.f, 0.f), uv, type);
 			uv = getTriangleUVs(0, face, type);
-			addTriangle(point, point + incX - incZ, point - incZ, glm::vec3(0.f, 1.f, 0.f), uv);
+			addTriangle(point, point + incX - incZ, point - incZ, glm::vec3(0.f, 1.f, 0.f), uv, type);
 			return;
 		case Faces::BOTTOM:
 			uv = getTriangleUVs(1, face, type);
-			addTriangle(point, point + incX, point + incX + incZ, glm::vec3(0.f, -1.f, 0.f), uv);
+			addTriangle(point, point + incX, point + incX + incZ, glm::vec3(0.f, -1.f, 0.f), uv, type);
 			uv = getTriangleUVs(0, face, type);
-			addTriangle(point, point + incX + incZ, point + incZ, glm::vec3(0.f, -1.f, 0.f), uv);
+			addTriangle(point, point + incX + incZ, point + incZ, glm::vec3(0.f, -1.f, 0.f), uv, type);
 			return;
 	}
 }
@@ -256,10 +260,11 @@ std::vector<glm::vec3>	Chunk::getTriangleUVs(bool firstTriangle, Faces::Enum fac
 	return uv;
 }
 
-void	Chunk::addTriangle(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, glm::vec3  normal, std::vector<glm::vec3> & uv) {
-	mesh.insert(mesh.end(), { p1.x, p1.y, p1.z, normal.x, normal.y, normal.z, uv[0].x, uv[0].y, uv[0].z });
-	mesh.insert(mesh.end(), { p2.x, p2.y, p2.z, normal.x, normal.y, normal.z, uv[1].x, uv[1].y, uv[1].z });
-	mesh.insert(mesh.end(), { p3.x, p3.y, p3.z, normal.x, normal.y, normal.z, uv[2].x, uv[2].y, uv[2].z });
+void	Chunk::addTriangle(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, glm::vec3  normal, std::vector<glm::vec3> & uv, BlockType type) {
+	std::vector<float> &	rmesh = (type == BLOCKTYPE_WATER) ? waterMesh : mesh;
+	rmesh.insert(rmesh.end(), { p1.x, p1.y, p1.z, normal.x, normal.y, normal.z, uv[0].x, uv[0].y, uv[0].z });
+	rmesh.insert(rmesh.end(), { p2.x, p2.y, p2.z, normal.x, normal.y, normal.z, uv[1].x, uv[1].y, uv[1].z });
+	rmesh.insert(rmesh.end(), { p3.x, p3.y, p3.z, normal.x, normal.y, normal.z, uv[2].x, uv[2].y, uv[2].z });
 	_totalVertices += 3;
 }
 

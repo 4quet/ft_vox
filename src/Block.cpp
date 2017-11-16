@@ -6,7 +6,7 @@
 /*   By: thibautpierron <thibautpierron@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 10:47:04 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/14 10:25:30 by thibautpier      ###   ########.fr       */
+/*   Updated: 2017/11/16 10:36:45 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ Block::Block() : _blockType(BLOCKTYPE_INACTIVE) { }
 Block::~Block() { }
 
 bool		Block::isActive() const {
-    if (this->_blockType == BLOCKTYPE_INACTIVE )
+    if (this->_blockType == BLOCKTYPE_INACTIVE || this->_blockType == BLOCKTYPE_WATER)
         return false;
     return true;
 }

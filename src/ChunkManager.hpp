@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/24 17:27:54 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/14 20:01:29 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/16 12:13:08 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,15 +50,13 @@ class ChunkManager
 	private:
 		std::map<index3D, Chunk*>	_chunkMap;
 		std::map<float, Chunk*>		_setupMap;
+		std::map<float, Chunk*>		_renderMap;
 
 		std::vector<Chunk*>	_loadList;
 		//std::vector<Chunk*>	_setupList;
-		std::vector<Chunk*>	_renderList;
 		std::vector<Chunk*>	_unloadList;
 
 		BiomeManager		bm;
-
-		std::vector<std::future<Chunk*>>	_renderListAsync;
 
 		size_t		_totalActiveBlocks;
 		size_t		_totalActiveChunks;

@@ -6,7 +6,7 @@
 /*   By: thibautpierron <thibautpierron@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:23:42 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/14 19:35:43 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/16 11:34:20 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ class Chunk
 		GLuint							VAO;
 		GLuint							VBO;
 		std::vector<float>				mesh;
+		std::vector<float>				waterMesh;
 		GLuint							bboxVAO;
 		GLuint							bboxVBO;
 		std::vector<float>				bboxMesh;
@@ -80,7 +81,7 @@ class Chunk
 		void					fillMesh();
 		void					createCube(float, float, float, AdjacentBlocks &, BlockType);
 		void					createFace(glm::vec3 point, Faces::Enum face, BlockType type);
-		void					addTriangle(glm::vec3 , glm::vec3 , glm::vec3 , glm::vec3 , std::vector<glm::vec3> &);
+		void					addTriangle(glm::vec3 , glm::vec3 , glm::vec3 , glm::vec3 , std::vector<glm::vec3> &, BlockType);
 
 		std::vector<glm::vec3>	getTriangleUVs(bool firstTriangle, Faces::Enum face, BlockType t) const;
 };

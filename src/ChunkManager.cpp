@@ -6,7 +6,7 @@
 /*   By: thibautpierron <thibautpierron@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/24 17:29:47 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/14 18:33:18 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/16 11:57:03 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,22 +149,24 @@ void	ChunkManager::setRenderList(Camera & camera) {
 	float		halfChunk = CHUNK_SIZE * BLOCK_RENDER_SIZE / 2.0f;
 	int			setupThisFrame = 0;
 
-	_renderList.clear();
+	_renderMap.clear();
 
 	for (std::map<index3D, Chunk*>::iterator it = _chunkMap.begin(); it != _chunkMap.end(); ++it)
 	{
 		Chunk *		chunk = it->second;
 		glm::vec3	pos = chunk->getPosition();
 
+		float dist = glm::distance(camPos, glm::vec3( pos.x + halfChunk, pos.y + halfChunk, pos.z + halfChunk ));
+
 		if (frustum.pointIn(pos.x + halfChunk, pos.y + halfChunk, pos.z + halfChunk))
 		{
-			_renderList.push_back(chunk);
+			_renderMap.insert(std::pair<float, Chunk*>(dist, chunk));
 		}
 
 		// this may move
 		if (chunk->isSetup() == false)
 		{
-			_setupMap.insert(std::pair<float, Chunk*>(glm::distance(camPos, pos), chunk));
+			_setupMap.insert(std::pair<float, Chunk*>(dist, chunk));
 		}
 	}
 }
@@ -252,13 +254,13 @@ void	ChunkManager::render(Shader & shader, Shader & bboxShader) {
 
 	(void)bboxShader;
 
+	shader.use();
+
 	_totalActiveBlocks = 0;
 	_totalActiveChunks = 0;
-	for (std::vector<Chunk*>::iterator it = _renderList.begin(); it != _renderList.end(); ++it)
+	for (std::map<float, Chunk*>::iterator it = --_renderMap.end(); it != _renderMap.begin(); --it)
 	{
-		Chunk *	chunk = (*it);
-		
-		shader.use();
+		Chunk *	chunk = it->second;
 		if (chunk->isBuilt() == false && chunk->isSetup() == true)
 		{
 			chunk->buildMesh();
@@ -266,7 +268,6 @@ void	ChunkManager::render(Shader & shader, Shader & bboxShader) {
 		chunk->render();
 		_totalActiveChunks += 1;
 		_totalActiveBlocks += chunk->getActiveBlocks();
-
 	}
 }
 
