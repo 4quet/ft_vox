@@ -6,7 +6,7 @@
 /*   By: thibautpierron <thibautpierron@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/13 08:46:36 by thibautpier       #+#    #+#             */
-/*   Updated: 2017/11/15 11:46:50 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/16 18:50:29 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,19 +27,25 @@ class BiomeManager
 
     private:
        	FastNoise	heightMapNoise;
-		float		caveFreq;
+		float		surfaceFreq;
 
         float		getHeightAt(float, float);
 
        	FastNoise	elevationNoise;
-		float		elevationFrequency;
-		float		maxElevationMult;
-		float		getElevationMult(float, float) const;
+		float		elevationFreq;
+		float		elevationMultiplier;
+		float		getElevation(float, float);
 
-       	FastNoise	sharpnessNoise;
-		float		sharpnessFrequency;
-		float		sharpnessDivider;
-		float		getSharpness(float, float) const;
+       	FastNoise	moistureNoise;
+		float		moistureFreq;
+		float		getMoisture(float, float);
+
+       	FastNoise	offsetNoise;
+		float		offsetFreq;
+		float		getOffset(float, float);
+
+       	FastNoise	caveNoise;
+		float		caveFreq;
 };
 
 #endif
