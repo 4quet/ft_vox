@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/13 08:56:54 by thibautpier       #+#    #+#             */
-/*   Updated: 2017/11/16 14:44:34 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/16 15:20:06 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,8 +58,8 @@ float           BiomeManager::getHeightAt(float x, float y) {
 void	BiomeManager::setupLandscape(Chunk & chunk) {
 
 	glm::vec3	chunkPos = chunk.getPosition();
-	bool hasCave = (chunkPos.y <= -GROUND_LEVEL);
-	bool inBetween = (chunkPos.y > -GROUND_LEVEL && chunkPos.y < GROUND_LEVEL);
+	bool hasCave = (chunkPos.y < CAVE_LEVEL);
+	bool inBetween = (chunkPos.y >= CAVE_LEVEL && chunkPos.y < GROUND_LEVEL);
 
 	for (int x = 0; x < CHUNK_SIZE; ++x)
 	{

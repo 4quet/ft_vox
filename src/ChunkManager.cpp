@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/24 17:29:47 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/16 13:16:56 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/16 15:20:27 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -258,7 +258,7 @@ void	ChunkManager::render(Shader & shader, Shader & bboxShader) {
 
 	_totalActiveBlocks = 0;
 	_totalActiveChunks = 0;
-	for (std::map<float, Chunk*>::iterator it = --_renderMap.end(); it != _renderMap.begin(); --it)
+	for (std::map<float, Chunk*>::reverse_iterator it = _renderMap.rbegin(); it != _renderMap.rend(); ++it)
 	{
 		Chunk *	chunk = it->second;
 		if (chunk->isBuilt() == false && chunk->isSetup() == true)
