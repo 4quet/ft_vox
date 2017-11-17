@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/24 17:29:47 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/17 18:23:23 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/17 18:42:28 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,8 @@ void	ChunkManager::update(Camera & camera) {
 
 	_isUnderGround = (_camPos.y < GROUND_LEVEL) ? true: false;
 	_isAboveGround = (_camPos.y > CAVE_LEVEL) ? true: false;
+//	std::cout << "underGround: " << _isUnderGround << std::endl;
+//	std::cout << "aboveGround: " << _isAboveGround << std::endl << std::endl;
 
 	updateVisibilityList();
 
@@ -136,10 +138,12 @@ void	ChunkManager::updateSetupList() {
 
 bool	ChunkManager::shouldBeRendered(glm::vec3 & chunkPos) const {
 
-//	float	dist = glm::distance(_camPos, chunkPos);
+	float	dist = glm::distance(_camPos, chunkPos);
 	if (_isUnderGround && chunkPos.y > GROUND_LEVEL)
 	   return false;
-	if (_isAboveGround && chunkPos.y <= CAVE_LEVEL)
+	if (_isAboveGround && chunkPos.y < CAVE_LEVEL)
+		return false;
+	if (_isUnderGround && dist > CHUNK_RENDER_SIZE * 3.0f)
 		return false;
 	return true;
 }
