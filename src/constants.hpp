@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/18 16:15:29 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/16 15:54:57 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/17 10:31:29 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,19 +36,23 @@ enum BlockType: char
 	BLOCKTYPE_ROCK
 };
 
-# define BLOCK_RENDER_SIZE	1.0f
 # define CHUNK_SIZE	16
-# define GROUND_LEVEL BLOCK_RENDER_SIZE * CHUNK_SIZE
-# define WATER_LEVEL GROUND_LEVEL * 2
-# define ROCK_LEVEL GROUND_LEVEL * 2 - 2
-# define SAND_LEVEL GROUND_LEVEL * 2 + 2
-# define SNOW_LEVEL GROUND_LEVEL * 4
+# define BLOCK_RENDER_SIZE	1.0f
+# define CHUNK_RENDER_SIZE BLOCK_RENDER_SIZE * CHUNK_SIZE
+
+# define GROUND_LEVEL 0.0f
+# define CAVE_LEVEL	GROUND_LEVEL - CHUNK_RENDER_SIZE
+# define WATER_LEVEL GROUND_LEVEL + CHUNK_RENDER_SIZE
+
+# define SAND_LEVEL WATER_LEVEL + 2 * BLOCK_RENDER_SIZE
+# define ROCK_LEVEL GROUND_LEVEL + 3 * CHUNK_RENDER_SIZE
+# define SNOW_LEVEL GROUND_LEVEL + CHUNK_RENDER_SIZE * 4
 
 // These constants are expressed in terms of chunks amount
-# define VIEW_DISTANCE_WIDTH 12
+# define VIEW_DISTANCE_WIDTH 24
 # define VIEW_DISTANCE_HEIGHT 8
-# define MAX_ALTITUDE 4
+# define MAX_ALTITUDE 20
 # define WORLD_BOTTOM 16
-# define MAX_CHUNK_SETUP_PER_FRAME 12
+# define MAX_CHUNK_SETUP_PER_FRAME 8
 
 #endif
