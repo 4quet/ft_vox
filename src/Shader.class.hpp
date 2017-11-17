@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/16 14:11:32 by thibautpier       #+#    #+#             */
-/*   Updated: 2017/11/16 09:28:58 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/17 19:00:09 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include <OpenGL/gl3.h>
 # include <glm/gtc/matrix_transform.hpp>
 # include <glm/gtc/type_ptr.hpp>
+# include "constants.hpp"
 
 class Shader {
 

@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/25 13:39:17 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/17 10:30:44 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/17 19:02:52 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ glm::vec3		Camera::getRay() const {
     norm.x = mousePosition.x / (1024 * 0.5f) - 1.f;
     norm.y = mousePosition.y / (1024 * 0.5f) - 1.f;
     
-    glm::mat4 proj = glm::perspective(45.f, 1.f, 0.1f, 4000.f);
+    glm::mat4 proj = glm::perspective(glm::radians(FOV), WINDOW_WIDTH / WINDOW_HEIGHT, Z_NEAR, Z_FAR);
 
     glm::vec4 screenPos = glm::vec4(norm.x, -norm.y, 1.f, 1.f);
     glm::mat4 invMat = glm::inverse(proj * matrix);

@@ -6,12 +6,18 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/18 16:15:29 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/17 15:59:39 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/17 19:01:27 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CONSTANTS_HPP
 # define CONSTANTS_HPP
+
+# define WINDOW_WIDTH 2560.f
+# define WINDOW_HEIGHT 1440.f
+# define FOV 80.f
+# define Z_NEAR 0.1f
+# define Z_FAR 4000.f
 
 namespace Action {
 	enum Enum { NONE, LEFT, RIGHT, FORWARD, BACKWARD, UP, DOWN, DEBUG, ESCAPE, TOGGLESPEED, ERASE};
@@ -49,7 +55,7 @@ enum BlockType: char
 # define SNOW_LEVEL GROUND_LEVEL + CHUNK_RENDER_SIZE * 4
 
 // These constants are expressed in terms of chunks amount
-# define VIEW_DISTANCE_WIDTH 42
+# define VIEW_DISTANCE_WIDTH 20
 # define VIEW_DISTANCE_HEIGHT 8
 # define MAX_ALTITUDE 20
 # define WORLD_BOTTOM 16
