@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 09:23:13 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/17 10:15:53 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/17 17:57:00 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,11 +36,10 @@ int     main() {
     Action::Enum action = Action::NONE;
 
     Camera          camera;
-	glm::vec3		camPos;
-	ChunkManager	m(camera.getPosition());
+	glm::vec3		camPos = camera.getPosition();
+	ChunkManager	m(camPos);
     
     Shader	shader("src/shaders/vertex_shader.glvs", "src/shaders/fragment_shader.glfs");
-    Shader	bboxShader("src/shaders/bbox_vertex_shader.glvs", "src/shaders/bbox_fragment_shader.glfs");
     Skybox  skybox("skybox");
     
     start = 0;
@@ -55,10 +54,6 @@ int     main() {
         
         if (action == Action::ERASE)
             camera.getPointedChunk(m.getRenderMap());
-        
-		bboxShader.use();
-        bboxShader.setCamera(camera.getMatrix());
-		bboxShader.setView();
 
 		shader.use();
         shader.setCamera(camera.getMatrix());
@@ -66,7 +61,7 @@ int     main() {
 		shader.setVec3("lightPos", camPos.x, camPos.y, camPos.z);
         
         m.update(camera);
-		m.render(shader, bboxShader);
+		m.render(shader);
         skybox.draw();
         
         end = std::clock();

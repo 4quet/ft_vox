@@ -6,24 +6,18 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/24 17:29:47 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/17 14:56:07 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/17 17:55:52 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ChunkManager.hpp"
 #include <chrono>
 
-std::mutex	ChunkManager::mutex;
-
-ChunkManager::ChunkManager(glm::vec3 camPos) :
-	_chunkMap(),
-	_query(GL_ANY_SAMPLES_PASSED) {
+ChunkManager::ChunkManager(glm::vec3 camPos) {
 
 	Chunk::loadTexturesAtlas("./textures/textures.png");
 	Chunk::setUVs(3, 4, 10);
 	
-	Chunk::sNoise.SetNoiseType(FastNoise::Perlin); // Set the desired noise type
-
 	std::vector<std::future<std::pair<index3D, Chunk*>>>	futures;
 
 	int	startWidth = -(VIEW_DISTANCE_WIDTH / 2);
@@ -82,7 +76,6 @@ void	ChunkManager::update(Camera & camera) {
 
 	updateVisibilityList(camPos);
 
-	//std::async( std::launch::async, &ChunkManager::updateLoadList, this );
 	updateLoadList();
 
 	if (_setupMap.size() > 0)
@@ -90,14 +83,9 @@ void	ChunkManager::update(Camera & camera) {
 		updateSetupList();
 	}
 
-	//std::async( std::launch::async, &ChunkManager::updateUnloadList, this );
 	updateUnloadList();
 
-	//updateLoadList();
-	//updateUnloadList();
-
 	setRenderList(camera);
-
 }
 
 void	ChunkManager::updateLoadList() {
@@ -249,23 +237,7 @@ void	ChunkManager::updateVisibilityList(glm::vec3 & camPos) {
 	}
 }
 
-bool	ChunkManager::isOccluded(Chunk * chunk) {
-	if (chunk->isBBoxBuilt() == false)
-		chunk->buildBoundingBox();
-	if (!_query.isInUse()) {
-		_query.start();
-		chunk->renderBoundingBox();
-		_query.end();
-	}
-	if (_query.isResultReady())
-		return !_query.getResult();
-	else
-		return false;
-}
-
-void	ChunkManager::render(Shader & shader, Shader & bboxShader) {
-
-	(void)bboxShader;
+void	ChunkManager::render(Shader & shader) {
 
 	shader.use();
 

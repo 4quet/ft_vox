@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/24 17:27:54 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/17 10:31:54 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/17 17:55:10 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@
 # include "Camera.hpp"
 # include "BiomeManager.hpp"
 # include "Frustum.hpp"
-# include "Query.hpp"
 # include <map>
 # include <future>
 
@@ -31,7 +30,7 @@ class ChunkManager
 
 		std::pair<index3D, Chunk*>	initChunkAt(float, float, float);
 
-		void	render(Shader &, Shader &);
+		void	render(Shader &);
 		void	update(Camera &);
 		
 		void	updateLoadList();
@@ -54,7 +53,6 @@ class ChunkManager
 		std::map<float, Chunk*>		_renderMap;
 
 		std::vector<Chunk*>	_loadList;
-		//std::vector<Chunk*>	_setupList;
 		std::vector<Chunk*>	_unloadList;
 
 		BiomeManager		bm;
@@ -63,12 +61,6 @@ class ChunkManager
 		size_t		_totalActiveChunks;
 		bool		_isUnderGround;
 		bool		_isAboveGround;
-
-		bool		isOccluded(Chunk *);
-
-		Query		_query;
-
-		static		std::mutex	mutex;
 };
 
 
