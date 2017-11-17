@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:27:26 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/17 16:29:16 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/17 18:21:16 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -257,7 +257,7 @@ void	Chunk::addFace(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, glm::vec3 p4, glm:
 	_totalVertices += 6;
 }
 
-glm::vec3	Chunk::getPosition() const { return _position; }
+glm::vec3 const &	Chunk::getPosition() const { return _position; }
 void		Chunk::setPosition(glm::vec3 pos) { _position = pos; }
 
 size_t		Chunk::getActiveBlocks() const { return _activeBlocks; }

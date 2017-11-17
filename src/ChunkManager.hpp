@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/24 17:27:54 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/17 17:55:10 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/17 18:22:53 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,11 +36,11 @@ class ChunkManager
 		void	updateLoadList();
 		void	updateSetupList();
 		void	updateUnloadList();
-		void	updateVisibilityList(glm::vec3 &);
+		void	updateVisibilityList();
 		void	setRenderList(Camera &);
 		std::map<float, Chunk*> & getRenderMap();
 
-		void	checkChunkDistance(glm::vec3 &, Chunk &);
+		void	checkChunkDistance(Chunk &);
 
 		std::map<index3D, Chunk*> & getChunks();
 
@@ -55,12 +55,16 @@ class ChunkManager
 		std::vector<Chunk*>	_loadList;
 		std::vector<Chunk*>	_unloadList;
 
+		glm::vec3			_camPos;
+
 		BiomeManager		bm;
 
 		size_t		_totalActiveBlocks;
 		size_t		_totalActiveChunks;
 		bool		_isUnderGround;
 		bool		_isAboveGround;
+
+		bool		shouldBeRendered(glm::vec3 &) const;
 };
 
 

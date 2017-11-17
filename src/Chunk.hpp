@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:23:42 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/17 16:23:39 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/17 18:21:06 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ class Chunk
 		void		buildBoundingBox();
 		void		renderBoundingBox();
 
-		glm::vec3	getPosition() const;
+		glm::vec3 const &	getPosition() const;
 		size_t		getActiveBlocks() const;
 		Block &		getBlock(int, int, int) const;
 		bool		isVisible() const;
