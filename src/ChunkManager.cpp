@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/24 17:29:47 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/17 10:32:09 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/17 14:56:07 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,7 @@ void	ChunkManager::updateLoadList() {
 }
 
 void	ChunkManager::updateSetupList() {
-	//std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
+	std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
 
 	int	setupThisFrame = 0;
 
@@ -137,12 +137,12 @@ void	ChunkManager::updateSetupList() {
 
 	_setupMap.clear();
 
-	/*
 	std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
 	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>( t2 - t1 ).count();
 
 	if (duration)
 		std::cout << " duration: " << duration << " ms - " << setupThisFrame << " setup this frame" << std::endl;
+	/*
 		*/
 }
 

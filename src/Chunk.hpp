@@ -6,7 +6,7 @@
 /*   By: thibautpierron <thibautpierron@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:23:42 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/16 11:34:20 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/17 15:11:52 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ class Chunk
 		bool							_setup;
 		bool							_built;
 		bool							_bboxBuilt;
+		float							_halfBlockSize;
 
 		GLuint							VAO;
 		GLuint							VBO;

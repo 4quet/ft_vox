@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:27:26 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/16 14:06:58 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/17 15:18:43 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@ unsigned int 			Chunk::texturesID;
 Chunk::Chunk(glm::vec3 position)
 	: _activeBlocks(0), _totalVertices(0), _position(position),
 		_visible(false), _setup(false), _built(false), _bboxBuilt(false) { 
+
+	_halfBlockSize = BLOCK_RENDER_SIZE / 2.0f;
 
 	// Create the blocks
 	_blocks = new Block**[CHUNK_SIZE];
@@ -140,37 +142,24 @@ void	Chunk::buildMesh() {
 }
 
 void	Chunk::createCube(float x, float y, float z, AdjacentBlocks & adj, BlockType t) {
-	float halfBlockSize = BLOCK_RENDER_SIZE / 2.0f;
-	
-	glm::vec3	p1(x - halfBlockSize, y - halfBlockSize, z + halfBlockSize);
-	glm::vec3	p2(x + halfBlockSize, y - halfBlockSize, z + halfBlockSize);
-	// glm::vec3	p3(x + halfBlockSize, y + halfBlockSize, z + halfBlockSize);
-	glm::vec3	p4(x - halfBlockSize, y + halfBlockSize, z + halfBlockSize);
-	glm::vec3	p5(x + halfBlockSize, y - halfBlockSize, z - halfBlockSize);
-	glm::vec3	p6(x - halfBlockSize, y - halfBlockSize, z - halfBlockSize);
-	// glm::vec3	p7(x - halfBlockSize, y + halfBlockSize, z - halfBlockSize);
-	// glm::vec3	p8(x + halfBlockSize, y + halfBlockSize, z - halfBlockSize);
-
-	/*
-	if (t == BLOCKTYPE_WATER) {
-		createFace(p4, Faces::TOP, t);
-		_activeBlocks++;
-		return;
-	}
-	*/
+//	glm::vec3	p1(x - _halfBlockSize, y - _halfBlockSize, z + _halfBlockSize);
+//	glm::vec3	p2(x + _halfBlockSize, y - _halfBlockSize, z + _halfBlockSize);
+//	glm::vec3	p4(x - _halfBlockSize, y + _halfBlockSize, z + _halfBlockSize);
+//	glm::vec3	p5(x + _halfBlockSize, y - _halfBlockSize, z - _halfBlockSize);
+//	glm::vec3	p6(x - _halfBlockSize, y - _halfBlockSize, z - _halfBlockSize);
 
 	if (!adj.front)
-		createFace(p1, Faces::FRONT, t);
+		createFace( glm::vec3(x - _halfBlockSize, y - _halfBlockSize, z + _halfBlockSize) , Faces::FRONT, t);
 	if (!adj.back)
-		createFace(p5, Faces::BACK, t);
+		createFace( glm::vec3(x + _halfBlockSize, y - _halfBlockSize, z - _halfBlockSize) , Faces::BACK, t);
 	if (!adj.right)
-		createFace(p2, Faces::RIGHT, t);
+		createFace( glm::vec3(x + _halfBlockSize, y - _halfBlockSize, z + _halfBlockSize) , Faces::RIGHT, t);
 	if (!adj.left)
-		createFace(p6, Faces::LEFT, t);
+		createFace( glm::vec3(x - _halfBlockSize, y - _halfBlockSize, z - _halfBlockSize) , Faces::LEFT, t);
 	if (!adj.top)
-		createFace(p4, Faces::TOP, t);
+		createFace( glm::vec3(x - _halfBlockSize, y + _halfBlockSize, z + _halfBlockSize) , Faces::TOP, t);
 	if (!adj.bottom)
-		createFace(p6, Faces::BOTTOM, t);
+		createFace( glm::vec3(x - _halfBlockSize, y - _halfBlockSize, z - _halfBlockSize) , Faces::BOTTOM, t);
 
 	_activeBlocks++;
 }
@@ -266,22 +255,24 @@ std::vector<glm::vec3>	Chunk::getTriangleUVs(bool firstTriangle, Faces::Enum fac
 	glm::vec3	bottomLeft = glm::vec3(uvs[texture * 4 + 3], alpha);	
 	
 	if(firstTriangle) {
-		uv.push_back(bottomRight);
-		uv.push_back(bottomLeft);
-		uv.push_back(topLeft);
+		uv.insert(uv.begin(), { bottomRight, bottomLeft, topLeft });
+//		uv.push_back(bottomRight);
+//		uv.push_back(bottomLeft);
+//		uv.push_back(topLeft);
 	} else {
-		uv.push_back(bottomRight);
-		uv.push_back(topLeft);
-		uv.push_back(topRight);
+		uv.insert(uv.begin(), { bottomRight, topLeft, topRight });
+//		uv.push_back(bottomRight);
+//		uv.push_back(topLeft);
+//		uv.push_back(topRight);
 	}
 	return uv;
 }
 
 void	Chunk::addTriangle(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, glm::vec3  normal, std::vector<glm::vec3> & uv, BlockType type) {
 	std::vector<float> &	rmesh = (type == BLOCKTYPE_WATER) ? waterMesh : mesh;
-	rmesh.insert(rmesh.end(), { p1.x, p1.y, p1.z, normal.x, normal.y, normal.z, uv[0].x, uv[0].y, uv[0].z });
-	rmesh.insert(rmesh.end(), { p2.x, p2.y, p2.z, normal.x, normal.y, normal.z, uv[1].x, uv[1].y, uv[1].z });
-	rmesh.insert(rmesh.end(), { p3.x, p3.y, p3.z, normal.x, normal.y, normal.z, uv[2].x, uv[2].y, uv[2].z });
+	rmesh.insert(rmesh.end(), { p1.x, p1.y, p1.z, normal.x, normal.y, normal.z, uv[0].x, uv[0].y, uv[0].z,
+		p2.x, p2.y, p2.z, normal.x, normal.y, normal.z, uv[1].x, uv[1].y, uv[1].z,
+		p3.x, p3.y, p3.z, normal.x, normal.y, normal.z, uv[2].x, uv[2].y, uv[2].z });
 	_totalVertices += 3;
 }
 
