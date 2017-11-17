@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:27:26 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/17 15:18:43 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/17 15:47:10 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,47 +173,47 @@ void	Chunk::createFace(glm::vec3 point, Faces::Enum face, BlockType type) {
 
 	switch(face) {
 		case Faces::FRONT:
-			uv = getTriangleUVs(1, face, type);
+			getTriangleUVs(1, face, type, uv);
 			addTriangle(point, point + incX, point + incX + incY, glm::vec3(0.f, 0.f, 1.f), uv, type);
-			uv = getTriangleUVs(0, face, type);
+			getTriangleUVs(0, face, type, uv);
 			addTriangle(point, point + incX + incY, point + incY, glm::vec3(0.f, 0.f, 1.f), uv, type);
 			return;
 		case Faces::BACK:
-			uv = getTriangleUVs(1, face, type);
+			getTriangleUVs(1, face, type, uv);
 			addTriangle(point, point - incX, point - incX + incY, glm::vec3(0.f, 0.f, -1.f), uv, type);
-			uv = getTriangleUVs(0, face, type);
+			getTriangleUVs(0, face, type, uv);
 			addTriangle(point, point - incX + incY, point + incY, glm::vec3(0.f, 0.f, -1.f), uv, type);
 			return;
 		case Faces::RIGHT:
-			uv = getTriangleUVs(1, face, type);
+			getTriangleUVs(1, face, type, uv);
 			addTriangle(point, point - incZ, point - incZ + incY, glm::vec3(1.f, 0.f, 0.f), uv, type);
-			uv = getTriangleUVs(0, face, type);
+			getTriangleUVs(0, face, type, uv);
 			addTriangle(point, point - incZ + incY, point + incY, glm::vec3(1.f, 0.f, 0.f), uv, type);
 			return;
 		case Faces::LEFT:
-			uv = getTriangleUVs(1, face, type);
+			getTriangleUVs(1, face, type, uv);
 			addTriangle(point, point + incZ, point + incZ + incY, glm::vec3(-1.f, 0.f, 0.f), uv, type);
-			uv = getTriangleUVs(0, face, type);
+			getTriangleUVs(0, face, type, uv);
 			addTriangle(point, point + incZ + incY, point + incY, glm::vec3(-1.f, 0.f, 0.f), uv, type);
 			return;
 		case Faces::TOP:
-			uv = getTriangleUVs(1, face, type);
+			getTriangleUVs(1, face, type, uv);
 			addTriangle(point, point + incX, point + incX - incZ, glm::vec3(0.f, 1.f, 0.f), uv, type);
-			uv = getTriangleUVs(0, face, type);
+			getTriangleUVs(0, face, type, uv);
 			addTriangle(point, point + incX - incZ, point - incZ, glm::vec3(0.f, 1.f, 0.f), uv, type);
 			return;
 		case Faces::BOTTOM:
-			uv = getTriangleUVs(1, face, type);
+			getTriangleUVs(1, face, type, uv);
 			addTriangle(point, point + incX, point + incX + incZ, glm::vec3(0.f, -1.f, 0.f), uv, type);
-			uv = getTriangleUVs(0, face, type);
+			getTriangleUVs(0, face, type, uv);
 			addTriangle(point, point + incX + incZ, point + incZ, glm::vec3(0.f, -1.f, 0.f), uv, type);
 			return;
 	}
 }
 
-std::vector<glm::vec3>	Chunk::getTriangleUVs(bool firstTriangle, Faces::Enum face, BlockType type) const {
+void	Chunk::getTriangleUVs(bool firstTriangle, Faces::Enum face, BlockType type, std::vector<glm::vec3> & uv) const {
 	unsigned int	texture;
-	std::vector<glm::vec3>	uv;
+	uv.clear();
 	int r = 0;
 
 	switch(type) {
@@ -265,7 +265,6 @@ std::vector<glm::vec3>	Chunk::getTriangleUVs(bool firstTriangle, Faces::Enum fac
 //		uv.push_back(topLeft);
 //		uv.push_back(topRight);
 	}
-	return uv;
 }
 
 void	Chunk::addTriangle(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, glm::vec3  normal, std::vector<glm::vec3> & uv, BlockType type) {

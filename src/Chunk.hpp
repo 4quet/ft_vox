@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Chunk.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thibautpierron <thibautpierron@student.    +#+  +:+       +#+        */
+/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:23:42 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/17 15:11:52 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/17 15:46:17 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ class Chunk
 		void					createFace(glm::vec3 point, Faces::Enum face, BlockType type);
 		void					addTriangle(glm::vec3 , glm::vec3 , glm::vec3 , glm::vec3 , std::vector<glm::vec3> &, BlockType);
 
-		std::vector<glm::vec3>	getTriangleUVs(bool firstTriangle, Faces::Enum face, BlockType t) const;
+		void	getTriangleUVs(bool firstTriangle, Faces::Enum face, BlockType t, std::vector<glm::vec3> &) const;
 };
 
 #endif
