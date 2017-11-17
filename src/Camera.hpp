@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/25 13:39:37 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/16 09:29:22 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/16 15:58:39 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,9 @@
 # include <glm/gtx/rotate_vector.hpp>
 # include <glm/gtx/matrix_interpolation.hpp>
 # include <iostream>
+# include <map>
 # include "constants.hpp"
+# include "Chunk.hpp"
 
 class Camera {
 	public:
@@ -28,10 +30,12 @@ class Camera {
 		glm::mat4	getMatrix() const;
 		glm::vec3   getPosition() const;
 		void		move(Action::Enum, int, int);
-
+		void        getPointedChunk(std::map<float, Chunk*> & chunks);
+		
 	private:
 		void				updateMatrix();
 		void				manageMouse(glm::vec2);
+		glm::vec3			getRay() const;
 
 		glm::mat4			matrix;
 		glm::vec3			eyeVec;

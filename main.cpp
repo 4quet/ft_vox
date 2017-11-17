@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 09:23:13 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/11 21:10:14 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/17 10:15:53 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ int     main() {
     Camera          camera;
 	glm::vec3		camPos;
 	ChunkManager	m(camera.getPosition());
-
+    
     Shader	shader("src/shaders/vertex_shader.glvs", "src/shaders/fragment_shader.glfs");
     Shader	bboxShader("src/shaders/bbox_vertex_shader.glvs", "src/shaders/bbox_fragment_shader.glfs");
     Skybox  skybox("skybox");
@@ -49,8 +49,13 @@ int     main() {
         action = window.eventManager();
         
         camera.move(action, window.getMouseX(), window.getMouseY());
+        // std::cout << window.getMouseX() << " : " << window.getMouseY() << std::endl;
+        // camera.normalizeMouse();
 		camPos = camera.getPosition();
-
+        
+        if (action == Action::ERASE)
+            camera.getPointedChunk(m.getRenderMap());
+        
 		bboxShader.use();
         bboxShader.setCamera(camera.getMatrix());
 		bboxShader.setView();
@@ -60,7 +65,7 @@ int     main() {
 		shader.setView();
 		shader.setVec3("lightPos", camPos.x, camPos.y, camPos.z);
         
-		m.update(camera);
+        m.update(camera);
 		m.render(shader, bboxShader);
         skybox.draw();
         

@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/24 17:27:54 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/16 12:13:08 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/16 15:39:31 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ class ChunkManager
 		void	updateUnloadList();
 		void	updateVisibilityList(glm::vec3 &);
 		void	setRenderList(Camera &);
+		std::map<float, Chunk*> & getRenderMap();
 
 		void	checkChunkDistance(glm::vec3 &, Chunk &);
 

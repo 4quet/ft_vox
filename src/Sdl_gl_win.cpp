@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 09:34:29 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/10 14:33:41 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/16 15:55:20 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ Action::Enum    Sdl_gl_win::eventManager() {
                 case SDLK_SPACE: return Action::UP; break;
                 case SDLK_TAB: return Action::DEBUG; break;
                 case SDLK_LSHIFT: return Action::TOGGLESPEED; break;
+                case SDLK_f: return Action::ERASE; break;
             }
         }
     }

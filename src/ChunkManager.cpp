@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/24 17:29:47 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/16 13:16:56 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/16 15:40:25 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -273,6 +273,10 @@ void	ChunkManager::render(Shader & shader, Shader & bboxShader) {
 
 std::map<index3D, Chunk*> & ChunkManager::getChunks() {
 	return _chunkMap;
+}
+
+std::map<float, Chunk*> & ChunkManager::getRenderMap() {
+	return _renderMap;
 }
 
 size_t	ChunkManager::getTotalActiveBlocks() const { return _totalActiveBlocks; }
