@@ -6,20 +6,19 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:27:26 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/17 18:21:16 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/17 19:38:54 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Chunk.hpp"
 #include "./stb_image.h"
 
-FastNoise				Chunk::sNoise;
 std::vector<glm::vec2>	Chunk::uvs;
 unsigned int 			Chunk::texturesID;
 
 Chunk::Chunk(glm::vec3 position)
 	: _activeBlocks(0), _totalVertices(0), _position(position),
-		_visible(false), _setup(false), _built(false), _bboxBuilt(false) { 
+	 _setup(false), _built(false) { 
 
 	_halfBlockSize = BLOCK_RENDER_SIZE / 2.0f;
 
@@ -132,6 +131,8 @@ void	Chunk::buildMesh() {
 
 		glBindVertexArray(0);	
 		_built = true;
+		mesh.clear();
+		waterMesh.clear();
 	}
 }
 
@@ -200,8 +201,8 @@ void	Chunk::createFace(glm::vec3 point, Faces::Enum face, BlockType type) {
 
 void	Chunk::getFaceUVs(Faces::Enum face, BlockType type, std::vector<glm::vec3> & uv) const {
 	unsigned int	texture;
-	uv.clear();
 	int r = 0;
+	uv.clear();
 
 	switch(type) {
 		case BLOCKTYPE_GRASS:
@@ -234,13 +235,14 @@ void	Chunk::getFaceUVs(Faces::Enum face, BlockType type, std::vector<glm::vec3> 
 	}
 	
 	float alpha = (type == BLOCKTYPE_WATER) ? 0.7f : 1.f;
+	texture *= 4;
 	
-	glm::vec3	topLeft = glm::vec3(uvs[texture * 4], alpha);
-	glm::vec3	topRight = glm::vec3(uvs[texture * 4 + 1], alpha);
-	glm::vec3	bottomRight = glm::vec3(uvs[texture * 4 + 2], alpha);
-	glm::vec3	bottomLeft = glm::vec3(uvs[texture * 4 + 3], alpha);	
+	glm::vec3	topLeft = glm::vec3(uvs[texture], alpha);
+	glm::vec3	topRight = glm::vec3(uvs[texture + 1], alpha);
+	glm::vec3	bottomRight = glm::vec3(uvs[texture + 2], alpha);
+	glm::vec3	bottomLeft = glm::vec3(uvs[texture + 3], alpha);	
 
-	uv.insert(uv.begin(), { bottomRight, bottomLeft, topLeft, bottomRight, topLeft, topRight });
+	uv.insert(uv.end(), { bottomRight, bottomLeft, topLeft, bottomRight, topLeft, topRight });
 }
 
 void	Chunk::addFace(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, glm::vec3 p4, glm::vec3  normal, std::vector<glm::vec3> & uv, BlockType type) {
@@ -263,14 +265,6 @@ void		Chunk::setPosition(glm::vec3 pos) { _position = pos; }
 size_t		Chunk::getActiveBlocks() const { return _activeBlocks; }
 
 Block &		Chunk::getBlock(int x, int y, int z) const { return _blocks[x][y][z]; }
-
-void		Chunk::setVisibility(bool b) {
-	_visible = b;
-}
-
-bool		Chunk::isVisible() const {
-	return _visible;
-}
 
 bool		Chunk::isSetup() const {
 	return _setup;

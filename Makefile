@@ -6,7 +6,7 @@
 #    By: thibautpierron <thibautpierron@student.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/07/21 11:32:23 by tpierron          #+#    #+#              #
-#    Updated: 2017/11/17 17:59:33 by lfourque         ###   ########.fr        #
+#    Updated: 2017/11/17 19:37:47 by lfourque         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,7 +19,6 @@ SRC =	src/Sdl_gl_win.cpp \
 		src/Skybox.cpp \
 		src/Block.cpp \
 		src/Chunk.cpp \
-		src/Chunk.boundingBox.cpp \
 		src/ChunkManager.cpp \
 		src/BiomeManager.cpp \
 		src/Skybox.cpp \
