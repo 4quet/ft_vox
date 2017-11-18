@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/24 17:27:54 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/17 18:22:53 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/18 18:01:09 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ class ChunkManager
 		std::map<float, Chunk*>		_renderMap;
 
 		std::vector<Chunk*>	_loadList;
-		std::vector<Chunk*>	_unloadList;
+		std::vector<index3D>	_unloadList;
 
 		glm::vec3			_camPos;
 

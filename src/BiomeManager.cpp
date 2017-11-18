@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/13 08:56:54 by thibautpier       #+#    #+#             */
-/*   Updated: 2017/11/17 18:04:13 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/18 11:07:18 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,8 @@ void	BiomeManager::setupLandscape(Chunk & chunk) {
 					{
 						chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_STONE);
 					}
+					else
+						chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_INACTIVE);
 				}
 				
 			}
@@ -99,6 +101,8 @@ void	BiomeManager::setupLandscape(Chunk & chunk) {
 					{
 						chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_STONE);
 					}
+					else
+						chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_INACTIVE);
 					gradient += 0.75f / CHUNK_SIZE;
 				}
 			}
@@ -136,6 +140,8 @@ void	BiomeManager::setupLandscape(Chunk & chunk) {
 					}
 					else if (chunkPos.y + y < WATER_LEVEL)
 						chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_WATER);
+					else
+						chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_INACTIVE);
 				}
 			}
 		}

@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/24 17:29:47 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/17 18:42:28 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/18 17:56:52 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,17 +54,10 @@ std::pair<index3D, Chunk*>	ChunkManager::initChunkAt(float xx, float yy, float z
 	float	yPos = yy * chunkRenderSize;
 	float	zPos = zz * chunkRenderSize;
 
-	if (yPos <= CHUNK_SIZE * MAX_ALTITUDE)
-	{
-		Chunk *		chunk = new Chunk(glm::vec3(xPos, yPos, zPos));
-		bm.setupLandscape(*chunk);
-		chunk->setup();
-		return std::pair<index3D, Chunk*>(index3D(xPos, yPos, zPos), chunk);
-	}
-	else
-	{
-		return std::pair<index3D, Chunk*>(index3D(0, 0, 0), NULL);
-	}
+	Chunk *		chunk = new Chunk(glm::vec3(xPos, yPos, zPos));
+	bm.setupLandscape(*chunk);
+	chunk->setup();
+	return std::pair<index3D, Chunk*>(index3D(xPos, yPos, zPos), chunk);
 }
 
 void	ChunkManager::update(Camera & camera) {
@@ -78,14 +71,15 @@ void	ChunkManager::update(Camera & camera) {
 
 	updateVisibilityList();
 
-	updateLoadList();
+	if (_unloadList.size())
+		updateUnloadList();
 
-	if (_setupMap.size() > 0)
-	{
+	if (_loadList.size())
+		updateLoadList();
+
+	if (_setupMap.size())
 		updateSetupList();
-	}
 
-	updateUnloadList();
 
 	setRenderList(camera);
 }
@@ -103,7 +97,7 @@ void	ChunkManager::updateLoadList() {
 }
 
 void	ChunkManager::updateSetupList() {
-	std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
+//	std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
 
 	int	setupThisFrame = 0;
 
@@ -127,12 +121,12 @@ void	ChunkManager::updateSetupList() {
 
 	_setupMap.clear();
 
+	/*
 	std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
 	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>( t2 - t1 ).count();
 
 	if (duration)
 		std::cout << " duration: " << duration << " ms - " << setupThisFrame << " setup this frame" << std::endl;
-	/*
 		*/
 }
 
@@ -166,37 +160,28 @@ void	ChunkManager::setRenderList(Camera & camera) {
 
 		if (shouldBeRendered(chunkPos))
 		{
-			float dist = glm::distance(_camPos, glm::vec3( chunkPos.x + halfChunk, chunkPos.y + halfChunk, chunkPos.z + halfChunk ));
+			// improvable
+			float renderDist = glm::distance(_camPos, glm::vec3( chunkPos.x + halfChunk, chunkPos.y + halfChunk, chunkPos.z + halfChunk ));
+			float setupDist = glm::distance(_camPos, chunkPos);
 
 			if (frustum.pointIn(chunkPos.x + halfChunk, chunkPos.y + halfChunk, chunkPos.z + halfChunk))
 			{
-				_renderMap.insert(std::pair<float, Chunk*>(dist, chunk));
+				_renderMap.insert(std::pair<float, Chunk*>(renderDist, chunk));
 			}
 
 			// this may move
 			if (chunk->isSetup() == false)
 			{
-				_setupMap.insert(std::pair<float, Chunk*>(dist, chunk));
+				_setupMap.insert(std::pair<float, Chunk*>(setupDist, chunk));
 			}
 		}
 	}
 }
 
 void	ChunkManager::updateUnloadList() {
-	for (std::vector<Chunk*>::iterator it = _unloadList.begin(); it != _unloadList.end(); ++it)
+	for (std::vector<index3D>::iterator it = _unloadList.begin(); it != _unloadList.end(); ++it)
 	{
-		Chunk *		chunk = *it;
-		glm::vec3	chunkPos = chunk->getPosition();
-		index3D		chunkIndex(chunkPos.x, chunkPos.y, chunkPos.z);
-
-		try {
-			delete _chunkMap.at(chunkIndex);
-		}
-		catch (std::exception & e)
-		{
-			std::cout << e.what() << ": " << chunkPos.x << ", " << chunkPos.y << ", " << chunkPos.z <<  std::endl;
-		}
-		_chunkMap.erase(chunkIndex);
+		_chunkMap.erase(*it);
 	}
 	_unloadList.clear();
 }
@@ -228,13 +213,17 @@ void	ChunkManager::checkChunkDistance(Chunk & chunk) {
 			b = true;
 	}
 
-	//if ((_isUnderGround && chunkPos.y < GROUND_LEVEL) || (_isAboveGround && chunkPos.y >= CAVE_LEVEL))
 	if (b)
 	{
-		Chunk * newChunk = new Chunk(oppositePos);
-		_loadList.push_back(newChunk);
-		_setupMap.insert(std::pair<float, Chunk*>(glm::distance(_camPos, chunkPos), newChunk));
-		_unloadList.push_back(&chunk);
+		index3D	currentIndex(chunkPos.x, chunkPos.y, chunkPos.z);
+
+		chunk.reset();
+		chunk.setPosition(oppositePos);
+
+		_loadList.push_back(&chunk);
+		_unloadList.push_back(currentIndex);
+
+		_setupMap.insert(std::pair<float, Chunk*>(glm::distance(_camPos, oppositePos), &chunk));
 	}
 }
 

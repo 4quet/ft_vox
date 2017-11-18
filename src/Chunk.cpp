@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:27:26 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/17 19:38:54 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/18 17:58:40 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ unsigned int 			Chunk::texturesID;
 
 Chunk::Chunk(glm::vec3 position)
 	: _activeBlocks(0), _totalVertices(0), _position(position),
-	 _setup(false), _built(false) { 
+	 _setup(false), _built(false), VAO(0), VBO(0) { 
 
 	_halfBlockSize = BLOCK_RENDER_SIZE / 2.0f;
 
@@ -50,20 +50,31 @@ Chunk::~Chunk() {
 }
 
 void	Chunk::render() {
-	glActiveTexture(texturesID);
-	glBindTexture(GL_TEXTURE_2D, texturesID);
-	glBindVertexArray(VAO);
-	glDrawArrays(GL_TRIANGLES, 0, _totalVertices);
-	glBindVertexArray(0);
+	if (_totalVertices > 0)
+	{
+		glActiveTexture(texturesID);
+		glBindTexture(GL_TEXTURE_2D, texturesID);
+		glBindVertexArray(VAO);
+		glDrawArrays(GL_TRIANGLES, 0, _totalVertices);
+		glBindVertexArray(0);
+	}
 }
 
 void	Chunk::setup() {
 	if (_setup == false)
 	{
-	//	bm.setupLandscape(*this);
 		fillMesh();
 		_setup = true;
 	}
+}
+
+void	Chunk::reset() {
+	_setup = false;
+	_built = false;
+	_activeBlocks = 0;
+	_totalVertices = 0;
+	if (mesh.size())
+		mesh.clear();
 }
 
 void	Chunk::fillMesh() {
@@ -106,14 +117,20 @@ void	Chunk::fillMesh() {
 		}
 	}
 
-	mesh.insert(mesh.end(), waterMesh.begin(), waterMesh.end());
+	if (waterMesh.size())
+	{
+		mesh.insert(mesh.end(), waterMesh.begin(), waterMesh.end());
+		waterMesh.clear();
+	}
 }
 
 void	Chunk::buildMesh() {
 	if (_built == false)
 	{
-		glGenVertexArrays(1, &VAO);
-		glGenBuffers(1, &VBO);
+		if (!VAO)
+			glGenVertexArrays(1, &VAO);
+		if (!VBO)
+			glGenBuffers(1, &VBO);
 
 		glBindVertexArray(VAO);
 

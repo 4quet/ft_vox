@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:23:42 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/17 19:38:40 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/18 10:47:50 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ class Chunk
 		void		setup();
 		void		buildMesh();
 		void		render();
+		void		reset();
 
 		glm::vec3 const &	getPosition() const;
 		size_t		getActiveBlocks() const;
