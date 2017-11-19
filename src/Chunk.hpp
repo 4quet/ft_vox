@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:23:42 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/18 10:47:50 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/19 21:53:14 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,6 @@
 # include <vector>
 
 typedef	std::tuple<float, float, float>	index3D;
-
-struct AdjacentBlocks
-{
-	bool	right, left, top, bottom, front, back;
-	bool	everywhere() { return (right && left && top && bottom && front && back); }
-};
 
 class Chunk
 {
@@ -59,7 +53,7 @@ class Chunk
 
 		GLuint							VAO;
 		GLuint							VBO;
-		std::vector<float>				mesh;
+		std::vector<float> 				mesh;
 		std::vector<float>				waterMesh;
 
 		static unsigned int				texturesID;
@@ -68,11 +62,10 @@ class Chunk
 		Chunk();
 
 		void	fillMesh();
-		void	createCube(float, float, float, AdjacentBlocks &, BlockType);
 		void	createFace(glm::vec3 point, Faces::Enum face, BlockType type);
-		void	addFace(glm::vec3, glm::vec3, glm::vec3, glm::vec3, glm::vec3 ,std::vector<glm::vec3> &, BlockType);
+		void	addFace(glm::vec3, glm::vec3, glm::vec3, glm::vec3, glm::vec3, std::vector<glm::vec2> &, BlockType);
 
-		void	getFaceUVs(Faces::Enum face, BlockType t, std::vector<glm::vec3> &) const;
+		void	getFaceUVs(Faces::Enum face, BlockType t, std::vector<glm::vec2> &) const;
 };
 
 #endif

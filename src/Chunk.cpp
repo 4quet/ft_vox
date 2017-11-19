@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:27:26 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/18 17:58:40 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/19 21:47:00 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,8 +78,6 @@ void	Chunk::reset() {
 }
 
 void	Chunk::fillMesh() {
-	AdjacentBlocks	adj;
-	bool			defaultState = false;
 	BlockType 		t;
 
 	for (int x = 0; x < CHUNK_SIZE; x++)
@@ -88,30 +86,66 @@ void	Chunk::fillMesh() {
 		{
 			for (int z = 0; z < CHUNK_SIZE; z++)
 			{
-				if (_blocks[x][y][z].isActive() == true)
+				if (_blocks[x][y][z].isActive())
 				{
-					adj.right = (x + 1 < CHUNK_SIZE) ? _blocks[x + 1][y][z].isActive() : defaultState;
-					adj.left = (x - 1 >= 0) ? _blocks[x - 1][y][z].isActive() : defaultState;
-					adj.top = (y + 1 < CHUNK_SIZE) ? _blocks[x][y + 1][z].isActive() : defaultState;
-					adj.bottom = (y - 1 >= 0) ? _blocks[x][y - 1][z].isActive() : defaultState;
-					adj.front = (z + 1 < CHUNK_SIZE) ? _blocks[x][y][z + 1].isActive() : defaultState;
-					adj.back = (z - 1 >= 0) ? _blocks[x][y][z - 1].isActive() : defaultState;
-
-					if (!adj.everywhere()) {
-						if (adj.top == false && _blocks[x][y][z].getBlockType() == BLOCKTYPE_STONE)
-							t = BLOCKTYPE_GRASS;
-						else
-							t = _blocks[x][y][z].getBlockType();
-						_blocks[x][y][z].setBlockType(t);
-						createCube(_position.x + x * BLOCK_RENDER_SIZE, _position.y + y * BLOCK_RENDER_SIZE, _position.z + z * BLOCK_RENDER_SIZE, adj, t);
+					t = _blocks[x][y][z].getBlockType();
+					if ((x + 1 == CHUNK_SIZE) || (x + 1 < CHUNK_SIZE && _blocks[x + 1][y][z].isActive() == false))
+					{
+						createFace( glm::vec3(	(_position.x + x * BLOCK_RENDER_SIZE) + _halfBlockSize,
+												(_position.y + y * BLOCK_RENDER_SIZE) - _halfBlockSize,
+												(_position.z + z * BLOCK_RENDER_SIZE) + _halfBlockSize),
+									Faces::RIGHT, t);
 					}
+					if ((x - 1 < 0) || (x - 1 >= 0 && _blocks[x - 1][y][z].isActive() == false))
+					{
+						createFace( glm::vec3(	(_position.x + x * BLOCK_RENDER_SIZE) - _halfBlockSize,
+												(_position.y + y * BLOCK_RENDER_SIZE) - _halfBlockSize,
+												(_position.z + z * BLOCK_RENDER_SIZE) - _halfBlockSize),
+									Faces::LEFT, t);
+					}
+					if ((z + 1 == CHUNK_SIZE) || (z + 1 < CHUNK_SIZE && _blocks[x][y][z + 1].isActive() == false))
+					{
+						createFace( glm::vec3(	(_position.x + x * BLOCK_RENDER_SIZE) - _halfBlockSize,
+												(_position.y + y * BLOCK_RENDER_SIZE) - _halfBlockSize,
+												(_position.z + z * BLOCK_RENDER_SIZE) + _halfBlockSize),
+									Faces::FRONT, t);
+					}
+					if ((z - 1 < 0) || (z - 1 >= 0 && _blocks[x][y][z - 1].isActive() == false))
+					{
+						createFace( glm::vec3(	(_position.x + x * BLOCK_RENDER_SIZE) + _halfBlockSize,
+												(_position.y + y * BLOCK_RENDER_SIZE) - _halfBlockSize,
+												(_position.z + z * BLOCK_RENDER_SIZE) - _halfBlockSize),
+									Faces::BACK, t);
+					}
+					if ((y - 1 < 0) || (y - 1 >= 0 && _blocks[x][y - 1][z].isActive() == false))
+					{
+						createFace( glm::vec3(	(_position.x + x * BLOCK_RENDER_SIZE) - _halfBlockSize,
+												(_position.y + y * BLOCK_RENDER_SIZE) - _halfBlockSize,
+												(_position.z + z * BLOCK_RENDER_SIZE) - _halfBlockSize),
+									Faces::BOTTOM, t);
+					}
+					if ((y + 1 == CHUNK_SIZE) || (y + 1 < CHUNK_SIZE && _blocks[x][y + 1][z].isActive() == false))
+					{
+						if (t == BLOCKTYPE_STONE)
+							t = BLOCKTYPE_GRASS;
+						createFace( glm::vec3(	(_position.x + x * BLOCK_RENDER_SIZE) - _halfBlockSize,
+												(_position.y + y * BLOCK_RENDER_SIZE) + _halfBlockSize,
+												(_position.z + z * BLOCK_RENDER_SIZE) + _halfBlockSize),
+									Faces::TOP, t);
+					}
+					_activeBlocks++;
 				}
-				else if (_blocks[x][y][z].getBlockType() == BLOCKTYPE_WATER) {
+				else if (_blocks[x][y][z].getBlockType() == BLOCKTYPE_WATER)
+				{
 					if (y == CHUNK_SIZE - 1)
 					{
-						t = BLOCKTYPE_WATER;
-					 	createCube(_position.x + x * BLOCK_RENDER_SIZE, _position.y + y * BLOCK_RENDER_SIZE, _position.z + z * BLOCK_RENDER_SIZE, adj, t);
+						createFace( glm::vec3(	(_position.x + x * BLOCK_RENDER_SIZE) - _halfBlockSize,
+												(_position.y + y * BLOCK_RENDER_SIZE) + _halfBlockSize,
+												(_position.z + z * BLOCK_RENDER_SIZE) + _halfBlockSize),
+									Faces::TOP, BLOCKTYPE_WATER);
 					}
+					_activeBlocks++;
+
 				}
 			}
 		}
@@ -137,13 +171,13 @@ void	Chunk::buildMesh() {
 		glBindBuffer(GL_ARRAY_BUFFER, VBO);
 		glBufferData(GL_ARRAY_BUFFER, mesh.size() * sizeof(float), &mesh[0], GL_STATIC_DRAW);
 
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat), (GLvoid*)0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)0);
 		glEnableVertexAttribArray(0);
 
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
 		glEnableVertexAttribArray(1);
 
-		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat), (GLvoid*)(6 * sizeof(GLfloat)));
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(6 * sizeof(GLfloat)));
 		glEnableVertexAttribArray(2);
 
 		glBindVertexArray(0);	
@@ -153,40 +187,12 @@ void	Chunk::buildMesh() {
 	}
 }
 
-void	Chunk::createCube(float x, float y, float z, AdjacentBlocks & adj, BlockType t) {
-//	glm::vec3	p1(x - _halfBlockSize, y - _halfBlockSize, z + _halfBlockSize);
-//	glm::vec3	p2(x + _halfBlockSize, y - _halfBlockSize, z + _halfBlockSize);
-//	glm::vec3	p4(x - _halfBlockSize, y + _halfBlockSize, z + _halfBlockSize);
-//	glm::vec3	p5(x + _halfBlockSize, y - _halfBlockSize, z - _halfBlockSize);
-//	glm::vec3	p6(x - _halfBlockSize, y - _halfBlockSize, z - _halfBlockSize);
-
-	if (t == BLOCKTYPE_WATER) {
-		createFace( glm::vec3(x - _halfBlockSize, y + _halfBlockSize, z + _halfBlockSize) , Faces::TOP, t);
-		return;
-	}
-		
-	if (!adj.front)
-		createFace( glm::vec3(x - _halfBlockSize, y - _halfBlockSize, z + _halfBlockSize) , Faces::FRONT, t);
-	if (!adj.back)
-		createFace( glm::vec3(x + _halfBlockSize, y - _halfBlockSize, z - _halfBlockSize) , Faces::BACK, t);
-	if (!adj.right)
-		createFace( glm::vec3(x + _halfBlockSize, y - _halfBlockSize, z + _halfBlockSize) , Faces::RIGHT, t);
-	if (!adj.left)
-		createFace( glm::vec3(x - _halfBlockSize, y - _halfBlockSize, z - _halfBlockSize) , Faces::LEFT, t);
-	if (!adj.top)
-		createFace( glm::vec3(x - _halfBlockSize, y + _halfBlockSize, z + _halfBlockSize) , Faces::TOP, t);
-	if (!adj.bottom)
-		createFace( glm::vec3(x - _halfBlockSize, y - _halfBlockSize, z - _halfBlockSize) , Faces::BOTTOM, t);
-
-	_activeBlocks++;
-}
-
 void	Chunk::createFace(glm::vec3 point, Faces::Enum face, BlockType type) {
 	glm::vec3 incX = glm::vec3(BLOCK_RENDER_SIZE, 0, 0);
 	glm::vec3 incY = glm::vec3(0, BLOCK_RENDER_SIZE, 0);
 	glm::vec3 incZ = glm::vec3(0, 0, BLOCK_RENDER_SIZE);
 
-	std::vector<glm::vec3>	uv;
+	std::vector<glm::vec2>	uv;
 
 	switch(face) {
 		case Faces::FRONT:
@@ -216,7 +222,7 @@ void	Chunk::createFace(glm::vec3 point, Faces::Enum face, BlockType type) {
 	}
 }
 
-void	Chunk::getFaceUVs(Faces::Enum face, BlockType type, std::vector<glm::vec3> & uv) const {
+void	Chunk::getFaceUVs(Faces::Enum face, BlockType type, std::vector<glm::vec2> & uv) const {
 	unsigned int	texture;
 	int r = 0;
 	uv.clear();
@@ -251,27 +257,21 @@ void	Chunk::getFaceUVs(Faces::Enum face, BlockType type, std::vector<glm::vec3> 
 		case BLOCKTYPE_INACTIVE: texture = 2; break;
 	}
 	
-	float alpha = (type == BLOCKTYPE_WATER) ? 0.7f : 1.f;
 	texture *= 4;
 	
-	glm::vec3	topLeft = glm::vec3(uvs[texture], alpha);
-	glm::vec3	topRight = glm::vec3(uvs[texture + 1], alpha);
-	glm::vec3	bottomRight = glm::vec3(uvs[texture + 2], alpha);
-	glm::vec3	bottomLeft = glm::vec3(uvs[texture + 3], alpha);	
-
-	uv.insert(uv.end(), { bottomRight, bottomLeft, topLeft, bottomRight, topLeft, topRight });
+	uv.insert(uv.end(), { uvs[texture + 2], uvs[texture + 3], uvs[texture], uvs[texture + 2], uvs[texture], uvs[texture + 1] });
 }
 
-void	Chunk::addFace(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, glm::vec3 p4, glm::vec3  normal, std::vector<glm::vec3> & uv, BlockType type) {
+void	Chunk::addFace(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, glm::vec3 p4, glm::vec3  normal, std::vector<glm::vec2> & uv, BlockType type) {
 	std::vector<float> &	rmesh = (type == BLOCKTYPE_WATER) ? waterMesh : mesh;
 	rmesh.insert(rmesh.end(), {
-		p1.x, p1.y, p1.z, normal.x, normal.y, normal.z, uv[0].x, uv[0].y, uv[0].z,
-		p2.x, p2.y, p2.z, normal.x, normal.y, normal.z, uv[1].x, uv[1].y, uv[1].z,
-		p3.x, p3.y, p3.z, normal.x, normal.y, normal.z, uv[2].x, uv[2].y, uv[2].z,
+		p1.x, p1.y, p1.z, normal.x, normal.y, normal.z, uv[0].x, uv[0].y,
+		p2.x, p2.y, p2.z, normal.x, normal.y, normal.z, uv[1].x, uv[1].y,
+		p3.x, p3.y, p3.z, normal.x, normal.y, normal.z, uv[2].x, uv[2].y,
 
-		p1.x, p1.y, p1.z, normal.x, normal.y, normal.z, uv[3].x, uv[3].y, uv[3].z,
-		p3.x, p3.y, p3.z, normal.x, normal.y, normal.z, uv[4].x, uv[4].y, uv[4].z,
-		p4.x, p4.y, p4.z, normal.x, normal.y, normal.z, uv[5].x, uv[5].y, uv[5].z
+		p1.x, p1.y, p1.z, normal.x, normal.y, normal.z, uv[3].x, uv[3].y,
+		p3.x, p3.y, p3.z, normal.x, normal.y, normal.z, uv[4].x, uv[4].y,
+		p4.x, p4.y, p4.z, normal.x, normal.y, normal.z, uv[5].x, uv[5].y
 	});
 	_totalVertices += 6;
 }

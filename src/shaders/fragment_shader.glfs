@@ -1,6 +1,6 @@
 #version 400
 
-in vec3 uv;
+in vec2 uv;
 in vec3 fragPos;
 in vec3 normal;
 
@@ -25,6 +25,6 @@ void main() {
 	vec2    uvec = vec2(uv.x, uv.y);
 	vec4	tex = texture(text, uvec);
 
-	outputColor = tex * vec4(result, uv.z);
+	outputColor = tex * vec4(result, 1.0);
 
 }
