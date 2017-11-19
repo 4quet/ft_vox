@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/24 17:29:47 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/18 17:56:52 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/20 00:15:41 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,13 @@ ChunkManager::ChunkManager(glm::vec3 camPos) {
 			_chunkMap.insert(p);
 		}
 	}
+
+	for (std::map<index3D, Chunk*>::iterator it = _chunkMap.begin(); it != _chunkMap.end(); ++it)
+	{
+		Chunk * c = it->second;
+		setNeighbors(*c);
+		c->setup();
+	}
 }
 
 ChunkManager::~ChunkManager() { }
@@ -56,7 +63,7 @@ std::pair<index3D, Chunk*>	ChunkManager::initChunkAt(float xx, float yy, float z
 
 	Chunk *		chunk = new Chunk(glm::vec3(xPos, yPos, zPos));
 	bm.setupLandscape(*chunk);
-	chunk->setup();
+//	chunk->setup();
 	return std::pair<index3D, Chunk*>(index3D(xPos, yPos, zPos), chunk);
 }
 
@@ -76,10 +83,9 @@ void	ChunkManager::update(Camera & camera) {
 
 	if (_loadList.size())
 		updateLoadList();
-
+	
 	if (_setupMap.size())
 		updateSetupList();
-
 
 	setRenderList(camera);
 }
@@ -93,7 +99,38 @@ void	ChunkManager::updateLoadList() {
 
 		_chunkMap.insert( std::pair<index3D, Chunk*>(chunkIndex, chunk) );
 	}
+
+	for (std::vector<Chunk*>::iterator it = _loadList.begin(); it != _loadList.end(); ++it)
+	{
+		setNeighbors(*(*it));
+	}
+
 	_loadList.clear();
+}
+
+void	ChunkManager::setNeighbors(Chunk & chunk) {
+	glm::vec3							chunkPos = chunk.getPosition();
+	float								chunkRenderSize = CHUNK_RENDER_SIZE;
+	std::map<index3D, Chunk*>::iterator	it;
+
+	it = _chunkMap.find( index3D( chunkPos.x - chunkRenderSize, chunkPos.y, chunkPos.z ));
+	chunk.left = (it != _chunkMap.end()) ? it->second : NULL;
+
+	it = _chunkMap.find( index3D( chunkPos.x + chunkRenderSize, chunkPos.y, chunkPos.z ));
+	chunk.right = (it != _chunkMap.end()) ? it->second : NULL;
+
+	it = _chunkMap.find( index3D( chunkPos.x, chunkPos.y + chunkRenderSize, chunkPos.z ));
+	chunk.top = (it != _chunkMap.end()) ? it->second : NULL;
+
+	it = _chunkMap.find( index3D( chunkPos.x, chunkPos.y - chunkRenderSize, chunkPos.z ));
+	chunk.bottom = (it != _chunkMap.end()) ? it->second : NULL;
+
+	it = _chunkMap.find( index3D( chunkPos.x, chunkPos.y, chunkPos.z + chunkRenderSize ));
+	chunk.front = (it != _chunkMap.end()) ? it->second : NULL;
+
+	it = _chunkMap.find( index3D( chunkPos.x, chunkPos.y, chunkPos.z - chunkRenderSize ));
+	chunk.back = (it != _chunkMap.end()) ? it->second : NULL;
+
 }
 
 void	ChunkManager::updateSetupList() {
@@ -112,6 +149,7 @@ void	ChunkManager::updateSetupList() {
 
 		if (shouldBeRendered(chunkPos))
 		{
+			setNeighbors(*chunk);
 			bm.setupLandscape(*chunk);
 			chunk->setup();
 			setupThisFrame++;

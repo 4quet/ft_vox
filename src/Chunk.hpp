@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:23:42 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/19 21:53:14 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/19 23:26:09 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,13 @@ class Chunk
 		static void		loadTexturesAtlas(std::string file);
 		static void		setUVs(unsigned int width, unsigned int height, unsigned int nbr);
 
+		Chunk *	left;
+		Chunk *	right;
+		Chunk *	top;
+		Chunk *	bottom;
+		Chunk *	front;
+		Chunk *	back;
+
 	private:
 		Block***						_blocks;
 		size_t							_activeBlocks;
@@ -50,6 +57,7 @@ class Chunk
 		bool							_setup;
 		bool							_built;
 		float							_halfBlockSize;
+
 
 		GLuint							VAO;
 		GLuint							VBO;
@@ -60,6 +68,8 @@ class Chunk
 		static std::vector<glm::vec2>	uvs;
 
 		Chunk();
+
+		bool		isNeighborActive(Chunk *, int, int, int) const;
 
 		void	fillMesh();
 		void	createFace(glm::vec3 point, Faces::Enum face, BlockType type);

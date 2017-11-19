@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/24 17:27:54 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/18 18:01:09 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/19 23:25:37 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,8 @@ class ChunkManager
 		void	checkChunkDistance(Chunk &);
 
 		std::map<index3D, Chunk*> & getChunks();
+
+		void	setNeighbors(Chunk &);
 
 		size_t	getTotalActiveBlocks() const;
 		size_t	getTotalActiveChunks() const;

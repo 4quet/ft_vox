@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:27:26 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/19 21:47:00 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/20 00:18:13 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,9 @@ std::vector<glm::vec2>	Chunk::uvs;
 unsigned int 			Chunk::texturesID;
 
 Chunk::Chunk(glm::vec3 position)
-	: _activeBlocks(0), _totalVertices(0), _position(position),
-	 _setup(false), _built(false), VAO(0), VBO(0) { 
+	: left(NULL), right(NULL), top(NULL), bottom(NULL), front(NULL), back(NULL),
+	_activeBlocks(0), _totalVertices(0), _position(position),
+	_setup(false), _built(false), VAO(0), VBO(0) {
 
 	_halfBlockSize = BLOCK_RENDER_SIZE / 2.0f;
 
@@ -77,6 +78,12 @@ void	Chunk::reset() {
 		mesh.clear();
 }
 
+bool	Chunk::isNeighborActive(Chunk * n, int x, int y, int z) const {
+	if (n == NULL)
+		return false;
+	return (n->getBlock(x, y, z).isActive());
+}
+
 void	Chunk::fillMesh() {
 	BlockType 		t;
 
@@ -89,42 +96,48 @@ void	Chunk::fillMesh() {
 				if (_blocks[x][y][z].isActive())
 				{
 					t = _blocks[x][y][z].getBlockType();
-					if ((x + 1 == CHUNK_SIZE) || (x + 1 < CHUNK_SIZE && _blocks[x + 1][y][z].isActive() == false))
+					if ((x + 1 == CHUNK_SIZE && !isNeighborActive(right, 0, y, z)) ||
+							(x + 1 < CHUNK_SIZE && _blocks[x + 1][y][z].isActive() == false))
 					{
 						createFace( glm::vec3(	(_position.x + x * BLOCK_RENDER_SIZE) + _halfBlockSize,
 												(_position.y + y * BLOCK_RENDER_SIZE) - _halfBlockSize,
 												(_position.z + z * BLOCK_RENDER_SIZE) + _halfBlockSize),
 									Faces::RIGHT, t);
 					}
-					if ((x - 1 < 0) || (x - 1 >= 0 && _blocks[x - 1][y][z].isActive() == false))
+					if ((x - 1 < 0 && !isNeighborActive(left, CHUNK_SIZE - 1, y, z)) ||
+							(x - 1 >= 0 && _blocks[x - 1][y][z].isActive() == false))
 					{
 						createFace( glm::vec3(	(_position.x + x * BLOCK_RENDER_SIZE) - _halfBlockSize,
 												(_position.y + y * BLOCK_RENDER_SIZE) - _halfBlockSize,
 												(_position.z + z * BLOCK_RENDER_SIZE) - _halfBlockSize),
 									Faces::LEFT, t);
 					}
-					if ((z + 1 == CHUNK_SIZE) || (z + 1 < CHUNK_SIZE && _blocks[x][y][z + 1].isActive() == false))
+					if ((z + 1 == CHUNK_SIZE && !isNeighborActive(front, x, y, 0)) ||
+							(z + 1 < CHUNK_SIZE && _blocks[x][y][z + 1].isActive() == false))
 					{
 						createFace( glm::vec3(	(_position.x + x * BLOCK_RENDER_SIZE) - _halfBlockSize,
 												(_position.y + y * BLOCK_RENDER_SIZE) - _halfBlockSize,
 												(_position.z + z * BLOCK_RENDER_SIZE) + _halfBlockSize),
 									Faces::FRONT, t);
 					}
-					if ((z - 1 < 0) || (z - 1 >= 0 && _blocks[x][y][z - 1].isActive() == false))
+					if ((z - 1 < 0 && !isNeighborActive(back, x, y, CHUNK_SIZE - 1)) ||
+							(z - 1 >= 0 && _blocks[x][y][z - 1].isActive() == false))
 					{
 						createFace( glm::vec3(	(_position.x + x * BLOCK_RENDER_SIZE) + _halfBlockSize,
 												(_position.y + y * BLOCK_RENDER_SIZE) - _halfBlockSize,
 												(_position.z + z * BLOCK_RENDER_SIZE) - _halfBlockSize),
 									Faces::BACK, t);
 					}
-					if ((y - 1 < 0) || (y - 1 >= 0 && _blocks[x][y - 1][z].isActive() == false))
+					if ((y - 1 < 0 && !isNeighborActive(bottom, x, CHUNK_SIZE - 1, z)) ||
+							(y - 1 >= 0 && _blocks[x][y - 1][z].isActive() == false))
 					{
 						createFace( glm::vec3(	(_position.x + x * BLOCK_RENDER_SIZE) - _halfBlockSize,
 												(_position.y + y * BLOCK_RENDER_SIZE) - _halfBlockSize,
 												(_position.z + z * BLOCK_RENDER_SIZE) - _halfBlockSize),
 									Faces::BOTTOM, t);
 					}
-					if ((y + 1 == CHUNK_SIZE) || (y + 1 < CHUNK_SIZE && _blocks[x][y + 1][z].isActive() == false))
+					if ((y + 1 == CHUNK_SIZE && !isNeighborActive(top, x, 0, z)) ||
+							(y + 1 < CHUNK_SIZE && _blocks[x][y + 1][z].isActive() == false))
 					{
 						if (t == BLOCKTYPE_STONE)
 							t = BLOCKTYPE_GRASS;
