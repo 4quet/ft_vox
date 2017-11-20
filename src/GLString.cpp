@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   GLString.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thibautpierron <thibautpierron@student.    +#+  +:+       +#+        */
+/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/25 16:36:07 by tpierron          #+#    #+#             */
-/*   Updated: 2017/10/26 09:06:13 by thibautpier      ###   ########.fr       */
+/*   Updated: 2017/11/20 15:21:36 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ void	GLString::setupGl() {
 
 void	GLString::renderText(std::string text, float x, float y, glm::vec3 color) const {
     this->shader->use();
-	this->shader->setOrthoView(1024.f, 1024.f);
+	this->shader->setOrthoView(WINDOW_WIDTH, WINDOW_HEIGHT);
     glUniform3f(glGetUniformLocation(this->shader->getProgramID(), "textColor"), color.x, color.y, color.z);
     glActiveTexture(GL_TEXTURE0);
 	glBindVertexArray(this->VAO);

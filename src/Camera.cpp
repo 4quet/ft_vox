@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/25 13:39:17 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/20 15:04:12 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/20 15:12:27 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,18 +107,18 @@ void     Camera::findBlockInchunk(glm::vec3 ray, float n, Chunk & chunk) {
                     // t = _blocks[x][y][z].getBlockType();
                     
                     // std::cout  << "c" << std::endl;
-                    // std::cout  << chunkPos.x + x * BLOCK_RENDER_SIZE << " : " << chunkPos.y + y * BLOCK_RENDER_SIZE << " : " << chunkPos.z + z * BLOCK_RENDER_SIZE << " || " 
                     //             << posCheck.x << " : " << posCheck.y << " : " << posCheck.z << std::endl;
                     if (posCheck.x > chunkPos.x + x * BLOCK_RENDER_SIZE && posCheck.x < chunkPos.x + x * BLOCK_RENDER_SIZE + BLOCK_RENDER_SIZE &&
                     	posCheck.y > chunkPos.y + y * BLOCK_RENDER_SIZE && posCheck.y < chunkPos.y + y * BLOCK_RENDER_SIZE + BLOCK_RENDER_SIZE &&
-                        posCheck.z > chunkPos.z + z * BLOCK_RENDER_SIZE && posCheck.z < chunkPos.z + z * BLOCK_RENDER_SIZE + BLOCK_RENDER_SIZE) {
-                            // chunk.getBlock(x, y, z).getBlockType() != BLOCKTYPE_INACTIVE)
+                        posCheck.z > chunkPos.z + z * BLOCK_RENDER_SIZE && posCheck.z < chunkPos.z + z * BLOCK_RENDER_SIZE + BLOCK_RENDER_SIZE &&
+                        chunk.getBlock(x, y, z).getBlockType() != BLOCKTYPE_INACTIVE) {
                             
+                            std::cout  << chunkPos.x + x * BLOCK_RENDER_SIZE << " : " << chunkPos.y + y * BLOCK_RENDER_SIZE << " : " << chunkPos.z + z * BLOCK_RENDER_SIZE << std::endl;
                             // std::cout  << x << " : " << y << " : " << z << std::endl;
-                            std::cout << chunk.getBlock(x, y, z).getBlockType() << std::endl;
+                            // std::cout << chunk.getBlock(x, y, z).getBlockType() << std::endl;
                             // std::cout  << "e" << std::endl;
-                            // chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_INACTIVE)
-
+                            chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_INACTIVE);
+                            chunk.rebuild();
                         }
                     // std::cout  << "f" << std::endl;
                 }

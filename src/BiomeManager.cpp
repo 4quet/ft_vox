@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/13 08:56:54 by thibautpier       #+#    #+#             */
-/*   Updated: 2017/11/18 11:07:18 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/20 15:30:05 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ void	BiomeManager::setupLandscape(Chunk & chunk) {
 					float	density = (caveNoise.GetNoise(chunkPos.x + x, chunkPos.z + z, chunkPos.y + y));
 					if (density > 0.0f)
 					{
-						chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_STONE);
+						chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_DIRT);
 					}
 					else
 						chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_INACTIVE);
@@ -99,7 +99,7 @@ void	BiomeManager::setupLandscape(Chunk & chunk) {
 					float	density = (caveNoise.GetNoise(chunkPos.x + x, chunkPos.z + z, chunkPos.y + y)) + gradient;
 					if (density > 0.0f)
 					{
-						chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_STONE);
+						chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_DIRT);
 					}
 					else
 						chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_INACTIVE);
@@ -122,7 +122,7 @@ void	BiomeManager::setupLandscape(Chunk & chunk) {
 							if (m < 0.33f) 
 								chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_SAND);
 							else if (m < 0.66f) 
-								chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_STONE);
+								chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_DIRT);
 							else
 								chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_ROCK);
 						}

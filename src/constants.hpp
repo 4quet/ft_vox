@@ -6,15 +6,15 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/18 16:15:29 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/20 11:29:29 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/20 15:30:06 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CONSTANTS_HPP
 # define CONSTANTS_HPP
 
-# define WINDOW_WIDTH 2560.f / 2
-# define WINDOW_HEIGHT 1440.f / 2
+# define WINDOW_WIDTH 2560.f
+# define WINDOW_HEIGHT 1440.f
 # define FOV 80.f
 # define Z_NEAR 0.1f
 # define Z_FAR 4000.f
@@ -35,7 +35,7 @@ enum BlockType: char
 {
 	BLOCKTYPE_INACTIVE = 0,
 	BLOCKTYPE_GRASS,
-	BLOCKTYPE_STONE,
+	BLOCKTYPE_DIRT,
 	BLOCKTYPE_WATER,
 	BLOCKTYPE_SAND,
 	BLOCKTYPE_SNOW,

@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:27:26 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/20 14:06:02 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/20 15:34:39 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,11 @@ void	Chunk::setup() {
 	}
 }
 
+void	Chunk::rebuild() {
+	reset();
+	fillMesh();
+}
+
 void	Chunk::reset() {
 	_setup = false;
 	_built = false;
@@ -102,6 +107,16 @@ void	Chunk::fillMesh() {
 				if (_blocks[x][y][z].isActive())
 				{
 					t = _blocks[x][y][z].getBlockType();
+					if ((y + 1 == CHUNK_SIZE && !isNeighborActive(top, x, 0, z)) ||
+						(y + 1 < CHUNK_SIZE && _blocks[x][y + 1][z].isActive() == false))
+					{
+						if (t == BLOCKTYPE_DIRT)
+							t = BLOCKTYPE_GRASS;
+						createFace( glm::vec3(	(_position.x + x * BLOCK_RENDER_SIZE) - _halfBlockSize,
+												(_position.y + y * BLOCK_RENDER_SIZE) + _halfBlockSize,
+												(_position.z + z * BLOCK_RENDER_SIZE) + _halfBlockSize),
+									Faces::TOP, t);
+					}
 					if ((x + 1 == CHUNK_SIZE && !isNeighborActive(right, 0, y, z)) ||
 							(x + 1 < CHUNK_SIZE && _blocks[x + 1][y][z].isActive() == false))
 					{
@@ -141,16 +156,6 @@ void	Chunk::fillMesh() {
 												(_position.y + y * BLOCK_RENDER_SIZE) - _halfBlockSize,
 												(_position.z + z * BLOCK_RENDER_SIZE) - _halfBlockSize),
 									Faces::BOTTOM, t);
-					}
-					if ((y + 1 == CHUNK_SIZE && !isNeighborActive(top, x, 0, z)) ||
-							(y + 1 < CHUNK_SIZE && _blocks[x][y + 1][z].isActive() == false))
-					{
-						if (t == BLOCKTYPE_STONE)
-							t = BLOCKTYPE_GRASS;
-						createFace( glm::vec3(	(_position.x + x * BLOCK_RENDER_SIZE) - _halfBlockSize,
-												(_position.y + y * BLOCK_RENDER_SIZE) + _halfBlockSize,
-												(_position.z + z * BLOCK_RENDER_SIZE) + _halfBlockSize),
-									Faces::TOP, t);
 					}
 					_activeBlocks++;
 				}
@@ -242,7 +247,7 @@ void	Chunk::createFace(glm::vec3 point, Faces::Enum face, BlockType type) {
 }
 
 void	Chunk::getFaceUVs(Faces::Enum face, BlockType type, std::vector<glm::vec2> & uv) const {
-	unsigned int	texture;
+	unsigned int	texture = 0;
 	int r = 0;
 	uv.clear();
 
@@ -263,7 +268,7 @@ void	Chunk::getFaceUVs(Faces::Enum face, BlockType type, std::vector<glm::vec2> 
 			else
 				texture = 6;
 			break;
-		case BLOCKTYPE_STONE:
+		case BLOCKTYPE_DIRT:
 			r = rand() % 3;
 			if (r == 0)
 				texture = 1;
@@ -273,7 +278,7 @@ void	Chunk::getFaceUVs(Faces::Enum face, BlockType type, std::vector<glm::vec2> 
 		case BLOCKTYPE_SAND: texture = 5; break;
 		case BLOCKTYPE_WATER: texture = 9; break;
 		case BLOCKTYPE_ROCK: texture = 2; break;
-		case BLOCKTYPE_INACTIVE: texture = 2; break;
+		case BLOCKTYPE_INACTIVE: break;
 	}
 	
 	texture *= 4;

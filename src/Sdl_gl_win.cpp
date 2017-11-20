@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 09:34:29 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/20 11:28:59 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/20 15:19:05 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	Sdl_gl_win::initSDL() {
                                         SDL_WINDOWPOS_UNDEFINED,
                                         SDL_WINDOWPOS_UNDEFINED,
                                         WINDOW_WIDTH, WINDOW_HEIGHT,
-                                        SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
+                                        SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN);
     ctx = SDL_GL_CreateContext(win);
     if(ctx == 0) {
         std::cout << SDL_GetError() << std::endl;

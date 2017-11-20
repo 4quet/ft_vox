@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:23:42 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/19 23:26:09 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/20 15:09:59 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ class Chunk
 
 		void		setup();
 		void		buildMesh();
+		void		rebuild();
 		void		render();
 		void		reset();
 
