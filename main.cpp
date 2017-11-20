@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 09:23:13 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/17 17:57:00 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/20 15:04:24 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,15 +52,14 @@ int     main() {
         // camera.normalizeMouse();
 		camPos = camera.getPosition();
         
-        if (action == Action::ERASE)
-            camera.getPointedChunk(m.getRenderMap());
-
 		shader.use();
         shader.setCamera(camera.getMatrix());
 		shader.setView();
 		shader.setVec3("lightPos", camPos.x, camPos.y, camPos.z);
         
         m.update(camera);
+        if (action == Action::ERASE)
+            camera.getPointedChunk(m.getRenderMap());
 		m.render(shader);
         skybox.draw();
         

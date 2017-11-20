@@ -6,15 +6,15 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/18 16:15:29 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/17 19:01:27 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/20 11:29:29 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CONSTANTS_HPP
 # define CONSTANTS_HPP
 
-# define WINDOW_WIDTH 2560.f
-# define WINDOW_HEIGHT 1440.f
+# define WINDOW_WIDTH 2560.f / 2
+# define WINDOW_HEIGHT 1440.f / 2
 # define FOV 80.f
 # define Z_NEAR 0.1f
 # define Z_FAR 4000.f
