@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:23:42 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/20 15:09:59 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/20 16:15:29 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,9 +36,11 @@ class Chunk
 		size_t		getActiveBlocks() const;
 		Block &		getBlock(int, int, int) const;
 		bool		isSetup() const;
+		bool		isLandscapeSetup() const;
 		bool		isBuilt() const;
 
 		void		setPosition(glm::vec3);
+		void		setLandscapeSetup(bool);
 
 		static void		loadTexturesAtlas(std::string file);
 		static void		setUVs(unsigned int width, unsigned int height, unsigned int nbr);
@@ -56,6 +58,7 @@ class Chunk
 		size_t							_totalVertices;
 		glm::vec3						_position;
 		bool							_setup;
+		bool							_landscapeSetup;
 		bool							_built;
 		float							_halfBlockSize;
 

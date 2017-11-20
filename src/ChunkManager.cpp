@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/24 17:29:47 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/20 17:16:24 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/20 17:51:09 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,6 @@ void	ChunkManager::update(Camera & camera) {
 }
 
 void	ChunkManager::updateLoadList() {
-	//std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
 	for (std::vector<Chunk*>::iterator it = _loadList.begin(); it != _loadList.end(); ++it)
 	{
 		Chunk *		chunk = *it;
@@ -105,14 +104,7 @@ void	ChunkManager::updateLoadList() {
 	{
 		Chunk *		chunk = *it;
 		setNeighbors(*chunk);
-		bm.setupLandscape(*chunk);
 	}
-
-	/*
-	std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
-	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>( t2 - t1 ).count();
-	std::cout << " LOAD duration: " << duration << " ms - " << _loadList.size() << " loads" << std::endl;
-	*/
 
 	_loadList.clear();
 }
@@ -156,6 +148,25 @@ void	ChunkManager::updateSetupList() {
 
 		if (shouldBeRendered(chunkPos))
 		{
+			if (chunk->right && chunk->right->isLandscapeSetup() == false)
+				bm.setupLandscape(*chunk->right);
+
+			if (chunk->left && chunk->left->isLandscapeSetup() == false)
+				bm.setupLandscape(*chunk->left);
+
+			if (chunk->top && chunk->top->isLandscapeSetup() == false)
+				bm.setupLandscape(*chunk->top);
+
+			if (chunk->bottom && chunk->bottom->isLandscapeSetup() == false)
+				bm.setupLandscape(*chunk->bottom);
+
+			if (chunk->front && chunk->front->isLandscapeSetup() == false)
+				bm.setupLandscape(*chunk->front);
+
+			if (chunk->back && chunk->back->isLandscapeSetup() == false)
+				bm.setupLandscape(*chunk->back);
+
+			bm.setupLandscape(*chunk);
 			chunk->setup();
 			setupThisFrame++;
 		}
