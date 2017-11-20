@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/13 08:56:54 by thibautpier       #+#    #+#             */
-/*   Updated: 2017/11/20 15:30:05 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/20 16:16:16 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,8 @@ void	BiomeManager::setupLandscape(Chunk & chunk) {
 	glm::vec3	chunkPos = chunk.getPosition();
 	bool hasCave = (chunkPos.y < CAVE_LEVEL);
 	bool inBetween = (chunkPos.y >= CAVE_LEVEL && chunkPos.y < GROUND_LEVEL);
+
+	chunk.setLandscapeSetup(true);
 
 	for (int x = 0; x < CHUNK_SIZE; ++x)
 	{
