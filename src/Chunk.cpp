@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:27:26 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/20 16:17:54 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/20 18:31:26 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ void	Chunk::reset() {
 
 bool	Chunk::isNeighborActive(Chunk * n, int x, int y, int z) const {
 	if (n == NULL)
-		return false;
+		return true;
 	return (n->getBlock(x, y, z).isActive());
 }
 
