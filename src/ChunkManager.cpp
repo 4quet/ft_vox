@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/24 17:29:47 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/20 15:04:39 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/20 17:16:24 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -201,11 +201,11 @@ void	ChunkManager::setRenderList(Camera & camera) {
 		Chunk *		chunk = it->second;
 		glm::vec3	chunkPos = chunk->getPosition();
 
-		if (shouldBeRendered(chunkPos))
+		float setupDist = glm::distance(_camPos, chunkPos);
+		if (shouldBeRendered(chunkPos) && chunk->getActiveBlocks() > 0)
 		{
 			// improvable
 			float renderDist = glm::distance(_camPos, glm::vec3( chunkPos.x + halfChunk, chunkPos.y + halfChunk, chunkPos.z + halfChunk ));
-			float setupDist = glm::distance(_camPos, chunkPos);
 
 			if (frustum.pointIn(chunkPos.x + halfChunk, chunkPos.y + halfChunk, chunkPos.z + halfChunk))
 			{
@@ -213,10 +213,10 @@ void	ChunkManager::setRenderList(Camera & camera) {
 			}
 
 			// this may move
-			if (chunk->isSetup() == false)
-			{
-				_setupMap.insert(std::pair<float, Chunk*>(setupDist, chunk));
-			}
+		}
+		if (chunk->isSetup() == false)
+		{
+			_setupMap.insert(std::pair<float, Chunk*>(setupDist, chunk));
 		}
 	}
 }
