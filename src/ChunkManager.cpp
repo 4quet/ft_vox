@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/24 17:29:47 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/20 00:15:41 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/20 15:04:39 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,7 @@ void	ChunkManager::update(Camera & camera) {
 }
 
 void	ChunkManager::updateLoadList() {
+	//std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
 	for (std::vector<Chunk*>::iterator it = _loadList.begin(); it != _loadList.end(); ++it)
 	{
 		Chunk *		chunk = *it;
@@ -102,8 +103,16 @@ void	ChunkManager::updateLoadList() {
 
 	for (std::vector<Chunk*>::iterator it = _loadList.begin(); it != _loadList.end(); ++it)
 	{
-		setNeighbors(*(*it));
+		Chunk *		chunk = *it;
+		setNeighbors(*chunk);
+		bm.setupLandscape(*chunk);
 	}
+
+	/*
+	std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
+	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>( t2 - t1 ).count();
+	std::cout << " LOAD duration: " << duration << " ms - " << _loadList.size() << " loads" << std::endl;
+	*/
 
 	_loadList.clear();
 }
@@ -134,23 +143,19 @@ void	ChunkManager::setNeighbors(Chunk & chunk) {
 }
 
 void	ChunkManager::updateSetupList() {
-//	std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
+	//std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
 
 	int	setupThisFrame = 0;
 
 	for (std::map<float, Chunk*>::iterator it = _setupMap.begin(); it != _setupMap.end(); ++it)
 	{
 		if (setupThisFrame >= MAX_CHUNK_SETUP_PER_FRAME)
-		{
 			break;
-		}
 		Chunk *		chunk = it->second;
 		glm::vec3	chunkPos = chunk->getPosition();
 
 		if (shouldBeRendered(chunkPos))
 		{
-			setNeighbors(*chunk);
-			bm.setupLandscape(*chunk);
 			chunk->setup();
 			setupThisFrame++;
 		}
