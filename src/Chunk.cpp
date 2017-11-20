@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:27:26 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/20 00:18:13 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/20 14:06:02 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,12 @@ void	Chunk::reset() {
 	_built = false;
 	_activeBlocks = 0;
 	_totalVertices = 0;
+	left = NULL;
+	right = NULL;
+	top = NULL;
+	bottom = NULL;
+	front = NULL;
+	back = NULL;
 	if (mesh.size())
 		mesh.clear();
 }

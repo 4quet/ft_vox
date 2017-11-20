@@ -6,13 +6,13 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 09:23:13 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/17 17:57:00 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/20 12:00:59 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_vox.hpp"
 
-static void     UIManager(Action::Enum action, int frameDuration, ChunkManager & chunkManager) {
+static void     UIManager(Action::Enum action, int frameDuration, ChunkManager & chunkManager, glm::vec3 & camPos) {
     static bool debugSwitch = false;
     GLString info;
     
@@ -23,9 +23,12 @@ static void     UIManager(Action::Enum action, int frameDuration, ChunkManager &
         std::string totalBlock = std::to_string(chunkManager.getTotalActiveBlocks());
         std::string totalChunk = std::to_string(chunkManager.getTotalActiveChunks());
 
-        info.renderText("frameDuration: " + std::to_string(frameDuration), 50, 150, glm::vec3(0.2f, 0.7f, 1.f));
-        info.renderText("Total chunks: " + totalChunk, 50, 100, glm::vec3(0.2f, 0.7f, 1.f));
-        info.renderText("Total blocks: " + totalBlock, 50, 50, glm::vec3(0.2f, 0.7f, 1.f));
+        info.renderText("x: " + std::to_string(camPos.x), 50, 300, glm::vec3(1.f, 1.f, 1.f));
+        info.renderText("y: " + std::to_string(camPos.y), 50, 250, glm::vec3(1.f, 1.f, 1.f));
+        info.renderText("z: " + std::to_string(camPos.z), 50, 200, glm::vec3(1.f, 1.f, 1.f));
+        info.renderText("frameDuration: " + std::to_string(frameDuration), 50, 150, glm::vec3(1.f, 1.f, 1.f));
+        info.renderText("Total chunks: " + totalChunk, 50, 100, glm::vec3(1.f, 1.f, 1.f));
+        info.renderText("Total blocks: " + totalBlock, 50, 50, glm::vec3(1.f, 1.f, 1.f));
     }
 }
 
@@ -65,7 +68,7 @@ int     main() {
         skybox.draw();
         
         end = std::clock();
-        UIManager(action, difftime( end, start ), m);
+        UIManager(action, difftime( end, start ), m, camPos);
         SDL_GL_SwapWindow(window.getWin());
         start = std::clock();
     }
