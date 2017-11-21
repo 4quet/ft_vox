@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/18 16:15:29 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/21 15:57:33 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/21 17:28:19 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,9 +57,9 @@ enum BlockType: char
 # define SNOW_LEVEL GROUND_LEVEL + 6 * CHUNK_RENDER_SIZE
 
 // These constants are expressed in terms of chunks amount
-# define VIEW_DISTANCE_WIDTH 22
-# define VIEW_DISTANCE_HEIGHT 22
-# define WORLD_BOTTOM 32
-# define MAX_CHUNK_SETUP_PER_FRAME 22
+# define VIEW_DISTANCE_WIDTH 24
+# define VIEW_DISTANCE_HEIGHT 12
+# define WORLD_BOTTOM 24
+# define MAX_CHUNK_SETUP_PER_FRAME 12
 
 #endif

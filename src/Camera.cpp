@@ -6,19 +6,16 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/25 13:39:17 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/21 15:35:00 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/21 17:27:06 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include"./Camera.hpp"
 
-Camera::Camera() {
-    eyeVec = glm::vec3(1.f);
-    eyeVec += glm::vec3(23.5f, 45.789f, 38.9f);
-    matrix = glm::mat4(1.f);
-    yaw = 0.f;
-    roll = 0.f;
-    mousePosition = glm::vec2(0.f);
+Camera::Camera() : 
+	eyeVec(12.234f, 23.712f, -11.444f),
+	yaw(0.f), roll(0.f), mousePosition(0.f)
+{
     updateMatrix();
 }
 
@@ -28,7 +25,7 @@ void		Camera::move(std::vector<Action::Enum> & actions, int mouseX, int mouseY) 
     float dx = 0.f;
     float dy = 0.f;
     float dz = 0.f;
-    float speed = 0.25f;
+    float speed = 0.05f;
     bool moveUp = false;
     bool moveDown = false;
 
@@ -40,7 +37,7 @@ void		Camera::move(std::vector<Action::Enum> & actions, int mouseX, int mouseY) 
             case Action::RIGHT: dx++; break;
             case Action::UP: moveUp = true; break;
             case Action::DOWN: moveDown = true; break;
-            case Action::TOGGLESPEED: speed = 5.f; break;
+            case Action::TOGGLESPEED: speed *= 20.f; break;
             default: break;
         }
     }
