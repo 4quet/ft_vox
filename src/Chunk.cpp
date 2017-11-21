@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:27:26 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/21 14:17:14 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/21 15:10:59 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,7 @@ void	Chunk::fillMesh() {
 					if ((y + 1 == CHUNK_SIZE && !isNeighborActive(top, x, 0, z)) ||
 						(y + 1 < CHUNK_SIZE && _blocks[x][y + 1][z].isActive() == false))
 					{
-						if (t == BLOCKTYPE_DIRT)
+						if (t == BLOCKTYPE_DIRT && _position.y >= GROUND_LEVEL)
 							t = BLOCKTYPE_GRASS;
 						createFace( glm::vec3(	(_position.x + x * BLOCK_RENDER_SIZE) - _halfBlockSize,
 												(_position.y + y * BLOCK_RENDER_SIZE) + _halfBlockSize,
