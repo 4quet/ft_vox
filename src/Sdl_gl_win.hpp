@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/19 13:18:30 by tpierron          #+#    #+#             */
-/*   Updated: 2017/10/25 15:11:09 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/21 12:16:38 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include <OpenGL/gl3.h>
 # include <SDL.h>
 # include <iostream>
+# include <vector>
 
 # include "constants.hpp"
 
@@ -24,7 +25,7 @@ class Sdl_gl_win {
 		Sdl_gl_win();
 		~Sdl_gl_win();
 
-		Action::Enum	eventManager();
+		void			eventManager(std::vector<Action::Enum> &);
 		int				getMouseX() const;
 		int				getMouseY() const;
 		SDL_Window		*getWin() const;
