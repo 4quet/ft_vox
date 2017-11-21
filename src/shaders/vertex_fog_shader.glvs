@@ -10,6 +10,7 @@ uniform mat4 viewMatrix;
 out vec3 fragPos;
 out vec3 normal;
 out vec2 uv;
+out vec4 eyePos;
 
 void main()
 {
@@ -18,4 +19,5 @@ void main()
 	fragPos = position;
 	normal = normalIn;
 	uv = textureUV;
+	eyePos = viewMatrix * vec4(position, 1.0);
 }
