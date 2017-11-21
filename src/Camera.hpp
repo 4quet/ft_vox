@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/25 13:39:37 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/21 12:22:51 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/21 13:56:58 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ class Camera {
 		void				updateMatrix();
 		void				manageMouse(glm::vec2);
 		glm::vec3			getRay() const;
-		bool     	findBlockInchunk(glm::vec3 ray, float n, Chunk & chunk);
+		bool     	findBlockInchunk(glm::vec3 ray, glm::vec3 startPoint, Chunk & chunk);
 
 		glm::mat4			matrix;
 		glm::vec3			eyeVec;

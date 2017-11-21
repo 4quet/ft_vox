@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:27:26 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/21 11:20:33 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/21 14:17:14 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ void	Chunk::setup() {
 
 void	Chunk::rebuild() {
 	reset();
+	_landscapeSetup = true;
 	fillMesh();
 }
 
@@ -270,11 +271,7 @@ void	Chunk::getFaceUVs(Faces::Enum face, BlockType type, std::vector<glm::vec2> 
 				texture = 6;
 			break;
 		case BLOCKTYPE_DIRT:
-			r = rand() % 3;
-			if (r == 0)
-				texture = 1;
-			else
-				texture = r + 2;
+			texture = 4;
 			break;
 		case BLOCKTYPE_SAND: texture = 5; break;
 		case BLOCKTYPE_WATER: texture = 9; break;

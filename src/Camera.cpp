@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/25 13:39:17 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/21 13:19:03 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/21 14:26:31 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,27 +88,24 @@ glm::mat4	Camera::getMatrix() const {
 }
 
 glm::vec3   Camera::getPosition() const {
-  //  std::cout << eyeVec.x << " : " << eyeVec.y << " : " << eyeVec.z << std::endl;
   return  eyeVec;
 }
 
 glm::vec3		Camera::getRay() const {
     glm::vec3 ray(matrix[0][2], matrix[1][2], matrix[2][2]);
-    // std::cout << ray.x << " " << ray.y << " " << ray.z << " " << std::endl;
     return ray;
 }
 
 
-bool     Camera::findBlockInchunk(glm::vec3 ray, float n, Chunk & chunk) {
+bool     Camera::findBlockInchunk(glm::vec3 ray, glm::vec3 startPoint, Chunk & chunk) {
     glm::vec3 chunkPos = chunk.getPosition();
-    for (float i = n; i < CHUNK_RENDER_SIZE * 2; i += BLOCK_RENDER_SIZE) {
-        glm::vec3 posCheck = eyeVec + ray * -i;
+    for (float i = 0; i < CHUNK_RENDER_SIZE; i += BLOCK_RENDER_SIZE) {
+        glm::vec3 posCheck = startPoint + ray * -i;
         if (posCheck.x < chunkPos.x && posCheck.x > chunkPos.x + CHUNK_RENDER_SIZE &&
             posCheck.y < chunkPos.y && posCheck.y > chunkPos.y + CHUNK_RENDER_SIZE &&
             posCheck.z < chunkPos.z && posCheck.z > chunkPos.z + CHUNK_RENDER_SIZE) {
                 return false;
         }
-
         for (int x = 0; x < CHUNK_SIZE; x++)
         {
             for (int y = 0; y < CHUNK_SIZE; y++)
@@ -122,15 +119,12 @@ bool     Camera::findBlockInchunk(glm::vec3 ray, float n, Chunk & chunk) {
                             
                         std::cout  << chunkPos.x + x * BLOCK_RENDER_SIZE << " : " << chunkPos.y + y * BLOCK_RENDER_SIZE << " : " << chunkPos.z + z * BLOCK_RENDER_SIZE << std::endl;
                         chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_INACTIVE);
-                        std::cout  << "b" << std::endl;
                         chunk.rebuild();
-                        std::cout  << "c" << std::endl;
                         return true;
                     }
                 }
             }
         }
-        return false;
     }
     return false;
 }
@@ -139,25 +133,15 @@ void        Camera::getPointedChunk(std::map<float, Chunk*> & chunks) {
     glm::vec3 ray = getRay();
     glm::vec3 startPoint = eyeVec;
     
-    // glm::vec3 step = ray * static_cast<float>(CHUNK_RENDER_SIZE);
-    // std::cout << chunks.size() << std::endl;
-    for (float i = 0.f; i < 10.f * CHUNK_RENDER_SIZE; i += CHUNK_RENDER_SIZE) {
-        glm::vec3 posCheck = startPoint + ray * -i;
-        // std::cout  << "posCheck: " posCheck.x << " : " << posCheck.y << " : " << posCheck.z << std::endl;
-        // std::cout << i << std::endl;
+    for (float i = 0.f; i < 2.f * CHUNK_RENDER_SIZE; i += BLOCK_RENDER_SIZE) {
+        glm::vec3 posCheck = startPoint + (ray * -i);
         for (std::map<float, Chunk*>::iterator it = chunks.begin(); it != chunks.end(); ++it) {
-            // std::cout << it->second->getActiveBlocks() << std::endl;
             glm::vec3 chunkPos = it->second->getPosition();
-            // std::cout << "|" << std::endl;
             if (posCheck.x > chunkPos.x && posCheck.x < chunkPos.x + CHUNK_RENDER_SIZE &&
                 posCheck.y > chunkPos.y && posCheck.y < chunkPos.y + CHUNK_RENDER_SIZE &&
                 posCheck.z > chunkPos.z && posCheck.z < chunkPos.z + CHUNK_RENDER_SIZE) {
                     
-                // std::cout << "chunk: " << chunkPos.x << " : " << chunkPos.y << " : " << chunkPos.z << std::endl;
-                // std::cout << "pos: " << posCheck.x << " : " << posCheck.y << " : " << posCheck.z << std::endl;
-                // float dist = glm::distance(posCheck, chunkPos);
-                // std::cout  << "IN"  << std::endl;
-                bool b = findBlockInchunk(ray, i - 1, *it->second);
+                bool b = findBlockInchunk(ray, startPoint + ray * -(i - static_cast<float>(BLOCK_RENDER_SIZE)), *it->second);
                 if (b)
                     return;
                 else
