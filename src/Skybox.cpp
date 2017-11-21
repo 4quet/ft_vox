@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 10:37:37 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/10 10:49:23 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/21 13:22:53 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,6 +104,14 @@ void		Skybox::setBuffers() {
 }
 
 void		Skybox::getFacesPath(std::string directory) {
+
+//	textures_faces.push_back(directory + "/rightFog.jpg" );
+//	textures_faces.push_back(directory + "/leftFog.jpg" );
+//	textures_faces.push_back(directory + "/top.jpg" );
+//	textures_faces.push_back(directory + "/bottomFog.jpg" );
+//	textures_faces.push_back(directory + "/backFog.jpg" );
+//	textures_faces.push_back(directory + "/frontFog.jpg" );
+
 	textures_faces.push_back(directory + "/right.jpg" );
 	textures_faces.push_back(directory + "/left.jpg" );
 	textures_faces.push_back(directory + "/top.jpg" );

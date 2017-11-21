@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 09:23:13 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/21 10:54:01 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/21 13:20:57 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ int     main() {
 	ChunkManager	m(camPos);
     
     Shader	shader("src/shaders/vertex_shader.glvs", "src/shaders/fragment_shader.glfs");
+    //Shader	shader("src/shaders/vertex_fog_shader.glvs", "src/shaders/fragment_fog_shader.glfs");
     Skybox  skybox("skybox");
     
     start = 0;
