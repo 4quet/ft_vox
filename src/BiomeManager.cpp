@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/13 08:56:54 by thibautpier       #+#    #+#             */
-/*   Updated: 2017/11/21 15:36:06 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/21 17:55:22 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,14 +93,14 @@ void	BiomeManager::setupLandscape(Chunk & chunk) {
 					if (density > 0.0f)
 					{
 						if (type < 0.33f) 
-							chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_SAND);
+							chunk.getBlock(x, y, z) = BLOCKTYPE_SAND;
 						else if (type < 0.5f) 
-							chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_DIRT);
+							chunk.getBlock(x, y, z) = BLOCKTYPE_DIRT;
 						else
-							chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_ROCK);
+							chunk.getBlock(x, y, z) = BLOCKTYPE_ROCK;
 					}
 					else
-						chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_INACTIVE);
+						chunk.getBlock(x, y, z) = BLOCKTYPE_INACTIVE;
 				}
 				
 			}
@@ -114,14 +114,14 @@ void	BiomeManager::setupLandscape(Chunk & chunk) {
 					if (density > 0.0f)
 					{
 						if (type < 0.33f) 
-							chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_SAND);
+							chunk.getBlock(x, y, z) = BLOCKTYPE_SAND;
 						else if (type < 0.5f) 
-							chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_DIRT);
+							chunk.getBlock(x, y, z) = BLOCKTYPE_DIRT;
 						else
-							chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_ROCK);
+							chunk.getBlock(x, y, z) = BLOCKTYPE_ROCK;
 					}
 					else
-						chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_INACTIVE);
+						chunk.getBlock(x, y, z) = BLOCKTYPE_INACTIVE;
 					gradient += 0.9f / CHUNK_SIZE;
 				}
 			}
@@ -134,33 +134,33 @@ void	BiomeManager::setupLandscape(Chunk & chunk) {
 					if (chunkPos.y + y < height) {
 
 						if (height < SAND_LEVEL)
-							chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_SAND);
+							chunk.getBlock(x, y, z) = BLOCKTYPE_SAND;
 						
 						else if (height < ROCK_LEVEL)
 						{
 							if (m < 0.4f) 
-								chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_SAND);
+								chunk.getBlock(x, y, z) = BLOCKTYPE_SAND;
 							else if (m < 0.6f) 
-								chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_DIRT);
+								chunk.getBlock(x, y, z) = BLOCKTYPE_DIRT;
 							else
-								chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_ROCK);
+								chunk.getBlock(x, y, z) = BLOCKTYPE_ROCK;
 						}
 
 						else if (height < SNOW_LEVEL)
 						{
 							if (m < 0.5f) 
-								chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_ROCK);
+								chunk.getBlock(x, y, z) = BLOCKTYPE_ROCK;
 							else
-								chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_SNOW);
+								chunk.getBlock(x, y, z) = BLOCKTYPE_SNOW;
 						}
 						else
-							chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_SNOW);
+							chunk.getBlock(x, y, z) = BLOCKTYPE_SNOW;
 
 					}
 					else if (chunkPos.y + y < WATER_LEVEL)
-						chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_WATER);
+						chunk.getBlock(x, y, z) = BLOCKTYPE_WATER;
 					else
-						chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_INACTIVE);
+						chunk.getBlock(x, y, z) = BLOCKTYPE_INACTIVE;
 				}
 			}
 		}

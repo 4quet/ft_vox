@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:27:26 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/21 15:10:59 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/21 17:53:49 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,14 +24,14 @@ Chunk::Chunk(glm::vec3 position)
 	_halfBlockSize = BLOCK_RENDER_SIZE / 2.0f;
 
 	// Create the blocks
-	_blocks = new Block**[CHUNK_SIZE];
+	_blocks = new BlockType**[CHUNK_SIZE];
 	for(int i = 0; i < CHUNK_SIZE; i++)
 	{
-		_blocks[i] = new Block*[CHUNK_SIZE];
+		_blocks[i] = new BlockType*[CHUNK_SIZE];
 
 		for(int j = 0; j < CHUNK_SIZE; j++)
 		{
-			_blocks[i][j] = new Block[CHUNK_SIZE];
+			_blocks[i][j] = new BlockType[CHUNK_SIZE];
 		}
 	}
 }
@@ -94,7 +94,7 @@ void	Chunk::reset() {
 bool	Chunk::isNeighborActive(Chunk * n, int x, int y, int z) const {
 	if (n == NULL)
 		return true;
-	return (n->getBlock(x, y, z).isActive());
+	return (n->getBlock(x, y, z) > BLOCKTYPE_WATER);
 }
 
 void	Chunk::fillMesh() {
@@ -106,11 +106,11 @@ void	Chunk::fillMesh() {
 		{
 			for (int z = 0; z < CHUNK_SIZE; z++)
 			{
-				if (_blocks[x][y][z].isActive())
+				if (_blocks[x][y][z] > BLOCKTYPE_WATER)
 				{
-					t = _blocks[x][y][z].getBlockType();
+					t = _blocks[x][y][z];
 					if ((y + 1 == CHUNK_SIZE && !isNeighborActive(top, x, 0, z)) ||
-						(y + 1 < CHUNK_SIZE && _blocks[x][y + 1][z].isActive() == false))
+						(y + 1 < CHUNK_SIZE && _blocks[x][y + 1][z] <= BLOCKTYPE_WATER))
 					{
 						if (t == BLOCKTYPE_DIRT && _position.y >= GROUND_LEVEL)
 							t = BLOCKTYPE_GRASS;
@@ -120,7 +120,7 @@ void	Chunk::fillMesh() {
 									Faces::TOP, t);
 					}
 					if ((x + 1 == CHUNK_SIZE && !isNeighborActive(right, 0, y, z)) ||
-							(x + 1 < CHUNK_SIZE && _blocks[x + 1][y][z].isActive() == false))
+							(x + 1 < CHUNK_SIZE && _blocks[x + 1][y][z] <= BLOCKTYPE_WATER))
 					{
 						createFace( glm::vec3(	(_position.x + x * BLOCK_RENDER_SIZE) + _halfBlockSize,
 												(_position.y + y * BLOCK_RENDER_SIZE) - _halfBlockSize,
@@ -128,7 +128,7 @@ void	Chunk::fillMesh() {
 									Faces::RIGHT, t);
 					}
 					if ((x - 1 < 0 && !isNeighborActive(left, CHUNK_SIZE - 1, y, z)) ||
-							(x - 1 >= 0 && _blocks[x - 1][y][z].isActive() == false))
+							(x - 1 >= 0 && _blocks[x - 1][y][z] <= BLOCKTYPE_WATER))
 					{
 						createFace( glm::vec3(	(_position.x + x * BLOCK_RENDER_SIZE) - _halfBlockSize,
 												(_position.y + y * BLOCK_RENDER_SIZE) - _halfBlockSize,
@@ -136,7 +136,7 @@ void	Chunk::fillMesh() {
 									Faces::LEFT, t);
 					}
 					if ((z + 1 == CHUNK_SIZE && !isNeighborActive(front, x, y, 0)) ||
-							(z + 1 < CHUNK_SIZE && _blocks[x][y][z + 1].isActive() == false))
+							(z + 1 < CHUNK_SIZE && _blocks[x][y][z + 1] <= BLOCKTYPE_WATER))
 					{
 						createFace( glm::vec3(	(_position.x + x * BLOCK_RENDER_SIZE) - _halfBlockSize,
 												(_position.y + y * BLOCK_RENDER_SIZE) - _halfBlockSize,
@@ -144,7 +144,7 @@ void	Chunk::fillMesh() {
 									Faces::FRONT, t);
 					}
 					if ((z - 1 < 0 && !isNeighborActive(back, x, y, CHUNK_SIZE - 1)) ||
-							(z - 1 >= 0 && _blocks[x][y][z - 1].isActive() == false))
+							(z - 1 >= 0 && _blocks[x][y][z - 1] <= BLOCKTYPE_WATER))
 					{
 						createFace( glm::vec3(	(_position.x + x * BLOCK_RENDER_SIZE) + _halfBlockSize,
 												(_position.y + y * BLOCK_RENDER_SIZE) - _halfBlockSize,
@@ -152,7 +152,7 @@ void	Chunk::fillMesh() {
 									Faces::BACK, t);
 					}
 					if ((y - 1 < 0 && !isNeighborActive(bottom, x, CHUNK_SIZE - 1, z)) ||
-							(y - 1 >= 0 && _blocks[x][y - 1][z].isActive() == false))
+							(y - 1 >= 0 && _blocks[x][y - 1][z] <= BLOCKTYPE_WATER))
 					{
 						createFace( glm::vec3(	(_position.x + x * BLOCK_RENDER_SIZE) - _halfBlockSize,
 												(_position.y + y * BLOCK_RENDER_SIZE) - _halfBlockSize,
@@ -161,7 +161,7 @@ void	Chunk::fillMesh() {
 					}
 					_activeBlocks++;
 				}
-				else if (_blocks[x][y][z].getBlockType() == BLOCKTYPE_WATER)
+				else if (_blocks[x][y][z] == BLOCKTYPE_WATER)
 				{
 					if (y == CHUNK_SIZE - 1)
 					{
@@ -303,7 +303,7 @@ void		Chunk::setPosition(glm::vec3 pos) { _position = pos; }
 
 size_t		Chunk::getActiveBlocks() const { return _activeBlocks; }
 
-Block &		Chunk::getBlock(int x, int y, int z) const { return _blocks[x][y][z]; }
+BlockType &		Chunk::getBlock(int x, int y, int z) const { return _blocks[x][y][z]; }
 
 bool		Chunk::isSetup() const {
 	return _setup;

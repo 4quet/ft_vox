@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/25 13:39:17 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/21 17:27:06 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/21 17:59:28 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,10 +111,10 @@ bool     Camera::findBlockInchunk(glm::vec3 ray, glm::vec3 startPoint, Chunk & c
                     if (posCheck.x > chunkPos.x + x * BLOCK_RENDER_SIZE && posCheck.x < chunkPos.x + x * BLOCK_RENDER_SIZE + BLOCK_RENDER_SIZE &&
                     	posCheck.y > chunkPos.y + y * BLOCK_RENDER_SIZE && posCheck.y < chunkPos.y + y * BLOCK_RENDER_SIZE + BLOCK_RENDER_SIZE &&
                         posCheck.z > chunkPos.z + z * BLOCK_RENDER_SIZE && posCheck.z < chunkPos.z + z * BLOCK_RENDER_SIZE + BLOCK_RENDER_SIZE &&
-                        chunk.getBlock(x, y, z).getBlockType() != BLOCKTYPE_INACTIVE) {
+                        chunk.getBlock(x, y, z) != BLOCKTYPE_INACTIVE) {
                             
                         // std::cout  << chunkPos.x + x * BLOCK_RENDER_SIZE << " : " << chunkPos.y + y * BLOCK_RENDER_SIZE << " : " << chunkPos.z + z * BLOCK_RENDER_SIZE << std::endl;
-                        chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_INACTIVE);
+                        chunk.getBlock(x, y, z) = BLOCKTYPE_INACTIVE;
                         chunk.rebuild();
                         return true;
                     }

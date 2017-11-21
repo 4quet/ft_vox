@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/18 16:15:29 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/21 17:28:19 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/21 17:38:36 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,9 @@ namespace Biomes {
 enum BlockType: char
 {
 	BLOCKTYPE_INACTIVE = 0,
+	BLOCKTYPE_WATER,
 	BLOCKTYPE_GRASS,
 	BLOCKTYPE_DIRT,
-	BLOCKTYPE_WATER,
 	BLOCKTYPE_SAND,
 	BLOCKTYPE_SNOW,
 	BLOCKTYPE_ROCK

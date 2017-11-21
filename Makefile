@@ -6,7 +6,7 @@
 #    By: thibautpierron <thibautpierron@student.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/07/21 11:32:23 by tpierron          #+#    #+#              #
-#    Updated: 2017/11/17 19:37:47 by lfourque         ###   ########.fr        #
+#    Updated: 2017/11/21 17:57:52 by lfourque         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,6 @@ NAME = ft_vox
 CC = clang++
 SRC =	src/Sdl_gl_win.cpp \
 		src/Skybox.cpp \
-		src/Block.cpp \
 		src/Chunk.cpp \
 		src/ChunkManager.cpp \
 		src/BiomeManager.cpp \

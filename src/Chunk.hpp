@@ -6,17 +6,20 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:23:42 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/20 16:15:29 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/21 17:54:55 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CHUNK_HPP
 # define CHUNK_HPP
 
-# include "FastNoise.h"
-# include "Shader.class.hpp"
-# include "Block.hpp"
+# include <iostream>
+# include <fstream>
 # include <vector>
+# include <OpenGL/gl3.h>
+# include <glm/gtc/matrix_transform.hpp>
+# include <glm/gtc/type_ptr.hpp>
+# include "constants.hpp"
 
 typedef	std::tuple<float, float, float>	index3D;
 
@@ -34,7 +37,7 @@ class Chunk
 
 		glm::vec3 const &	getPosition() const;
 		size_t		getActiveBlocks() const;
-		Block &		getBlock(int, int, int) const;
+		BlockType &		getBlock(int, int, int) const;
 		bool		isSetup() const;
 		bool		isLandscapeSetup() const;
 		bool		isBuilt() const;
@@ -53,7 +56,7 @@ class Chunk
 		Chunk *	back;
 
 	private:
-		Block***						_blocks;
+		BlockType***					_blocks;
 		size_t							_activeBlocks;
 		size_t							_totalVertices;
 		glm::vec3						_position;

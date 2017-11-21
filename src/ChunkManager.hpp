@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/24 17:27:54 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/19 23:25:37 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/21 17:58:34 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define CHUNK_MANAGER_HPP
 
 # include "constants.hpp"
+# include "Shader.class.hpp"
 # include "Chunk.hpp"
 # include "Camera.hpp"
 # include "BiomeManager.hpp"
