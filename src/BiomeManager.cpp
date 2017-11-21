@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/13 08:56:54 by thibautpier       #+#    #+#             */
-/*   Updated: 2017/11/20 16:16:16 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/21 15:36:06 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,22 +15,27 @@
 BiomeManager::BiomeManager() {
 
 	elevationFreq = 0.003f;
+	elevationNoise.SetSeed(SEED);
     elevationNoise.SetNoiseType(FastNoise::Perlin);
     elevationNoise.SetFrequency(elevationFreq);
 
 	surfaceFreq = 0.025f;
+	heightMapNoise.SetSeed(SEED);
     heightMapNoise.SetNoiseType(FastNoise::Perlin);
     heightMapNoise.SetFrequency(surfaceFreq);
 
 	caveFreq = 0.09f;
+	caveNoise.SetSeed(SEED);
     caveNoise.SetNoiseType(FastNoise::Perlin);
     caveNoise.SetFrequency(caveFreq);
 
 	moistureFreq = 0.01f;
+	moistureNoise.SetSeed(SEED);
     moistureNoise.SetNoiseType(FastNoise::Perlin);
     moistureNoise.SetFrequency(moistureFreq);
 
 	offsetFreq = 0.015f;
+	offsetNoise.SetSeed(SEED);
     offsetNoise.SetNoiseType(FastNoise::Perlin);
     offsetNoise.SetFrequency(offsetFreq);
 
@@ -84,9 +89,15 @@ void	BiomeManager::setupLandscape(Chunk & chunk) {
 				for (int y = 0; y < CHUNK_SIZE; ++y)
 				{
 					float	density = (caveNoise.GetNoise(chunkPos.x + x, chunkPos.z + z, chunkPos.y + y));
+					float	type = (caveNoise.GetNoise(chunkPos.x + x, chunkPos.z + z) + 1.f) / 2.f;
 					if (density > 0.0f)
 					{
-						chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_DIRT);
+						if (type < 0.33f) 
+							chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_SAND);
+						else if (type < 0.5f) 
+							chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_DIRT);
+						else
+							chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_ROCK);
 					}
 					else
 						chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_INACTIVE);
@@ -99,13 +110,19 @@ void	BiomeManager::setupLandscape(Chunk & chunk) {
 				for (int y = 0; y < CHUNK_SIZE; ++y)
 				{
 					float	density = (caveNoise.GetNoise(chunkPos.x + x, chunkPos.z + z, chunkPos.y + y)) + gradient;
+					float	type = (caveNoise.GetNoise(chunkPos.x + x, chunkPos.z + z) + 1.f) / 2.f;
 					if (density > 0.0f)
 					{
-						chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_DIRT);
+						if (type < 0.33f) 
+							chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_SAND);
+						else if (type < 0.5f) 
+							chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_DIRT);
+						else
+							chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_ROCK);
 					}
 					else
 						chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_INACTIVE);
-					gradient += 0.75f / CHUNK_SIZE;
+					gradient += 0.9f / CHUNK_SIZE;
 				}
 			}
 			else
@@ -121,9 +138,9 @@ void	BiomeManager::setupLandscape(Chunk & chunk) {
 						
 						else if (height < ROCK_LEVEL)
 						{
-							if (m < 0.33f) 
+							if (m < 0.4f) 
 								chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_SAND);
-							else if (m < 0.66f) 
+							else if (m < 0.6f) 
 								chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_DIRT);
 							else
 								chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_ROCK);
