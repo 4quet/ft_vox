@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 09:23:13 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/21 13:20:57 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/21 15:34:49 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ int     main() {
     Skybox  skybox("skybox");
     
     start = 0;
+    static unsigned int trigger = 0;
     while(actions.size() == 0 || actions[0] != Action::ESCAPE) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         window.eventManager(actions);
@@ -68,8 +69,13 @@ int     main() {
 		shader.setVec3("lightPos", camPos.x, camPos.y, camPos.z);
         
         m.update(camera);
-        if (findAction(actions, Action::ERASE))
-            camera.getPointedChunk(m.getRenderMap());
+        if (findAction(actions, Action::ERASE)) {
+            trigger++;
+            if (trigger > 100) {
+                camera.deleteBlock(m.getRenderMap());
+                trigger = 0;
+            }
+        }
 		m.render(shader);
         skybox.draw();
         

@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 09:34:29 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/21 12:26:00 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/21 15:40:48 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,17 +62,6 @@ void	Sdl_gl_win::initGL() const {
 void    Sdl_gl_win::eventManager(std::vector<Action::Enum> & actions) {
     SDL_GetRelativeMouseState(&mouseX,&mouseY);
     while (SDL_PollEvent(&events)) {
-        // if(events.type == SDL_MOUSEMOTION)
-            // mouseX = events.motion.xrel;
-            // mouseY = events.motion.yrel;
-            // std::cout << mouseX << " : " << mouseY << std::endl;
-        // } else {
-        //     // std::cout << "A" << std::endl;
-        //     mouseX = 0;
-        //     mouseY = 0;
-        // }
-            // SDL_GetMouseState(&mouseX, &mouseY);
-    
         if (events.window.event == SDL_WINDOWEVENT_CLOSE ||
             (events.type == SDL_KEYDOWN && events.key.keysym.sym == SDLK_ESCAPE)) {
                 actions.clear();

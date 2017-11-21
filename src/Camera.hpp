@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/25 13:39:37 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/21 13:56:58 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/21 15:36:04 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ class Camera {
 		glm::mat4	getMatrix() const;
 		glm::vec3   getPosition() const;
 		void		move(std::vector<Action::Enum> &, int, int);
-		void        getPointedChunk(std::map<float, Chunk*> & chunks);
+		void        deleteBlock(std::map<float, Chunk*> & chunks);
 		
 	private:
 		void				updateMatrix();

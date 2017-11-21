@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/25 13:39:17 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/21 14:26:31 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/21 15:35:00 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,8 @@
 
 Camera::Camera() {
     eyeVec = glm::vec3(1.f);
-    // eyeVec += glm::vec3(0.f, 16.f, 0.f);
+    eyeVec += glm::vec3(23.5f, 45.789f, 38.9f);
     matrix = glm::mat4(1.f);
-    // matrix = glm::translate(matrix, glm::vec3(0.f, 50.f, 0.f));
     yaw = 0.f;
     roll = 0.f;
     mousePosition = glm::vec2(0.f);
@@ -117,7 +116,7 @@ bool     Camera::findBlockInchunk(glm::vec3 ray, glm::vec3 startPoint, Chunk & c
                         posCheck.z > chunkPos.z + z * BLOCK_RENDER_SIZE && posCheck.z < chunkPos.z + z * BLOCK_RENDER_SIZE + BLOCK_RENDER_SIZE &&
                         chunk.getBlock(x, y, z).getBlockType() != BLOCKTYPE_INACTIVE) {
                             
-                        std::cout  << chunkPos.x + x * BLOCK_RENDER_SIZE << " : " << chunkPos.y + y * BLOCK_RENDER_SIZE << " : " << chunkPos.z + z * BLOCK_RENDER_SIZE << std::endl;
+                        // std::cout  << chunkPos.x + x * BLOCK_RENDER_SIZE << " : " << chunkPos.y + y * BLOCK_RENDER_SIZE << " : " << chunkPos.z + z * BLOCK_RENDER_SIZE << std::endl;
                         chunk.getBlock(x, y, z).setBlockType(BLOCKTYPE_INACTIVE);
                         chunk.rebuild();
                         return true;
@@ -129,11 +128,11 @@ bool     Camera::findBlockInchunk(glm::vec3 ray, glm::vec3 startPoint, Chunk & c
     return false;
 }
 
-void        Camera::getPointedChunk(std::map<float, Chunk*> & chunks) {
+void        Camera::deleteBlock(std::map<float, Chunk*> & chunks) {
     glm::vec3 ray = getRay();
     glm::vec3 startPoint = eyeVec;
     
-    for (float i = 0.f; i < 2.f * CHUNK_RENDER_SIZE; i += BLOCK_RENDER_SIZE) {
+    for (float i = 0.f; i < 2.f * CHUNK_RENDER_SIZE; i += BLOCK_RENDER_SIZE / 2) {
         glm::vec3 posCheck = startPoint + (ray * -i);
         for (std::map<float, Chunk*>::iterator it = chunks.begin(); it != chunks.end(); ++it) {
             glm::vec3 chunkPos = it->second->getPosition();
