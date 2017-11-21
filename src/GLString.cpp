@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/25 16:36:07 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/20 15:21:36 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/21 16:05:37 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ std::map<GLchar, Character> GLString::characters;
 GLString::GLString() {
 	this->shader = new Shader("src/shaders/glstring.glvs", "src/shaders/glstring.glfs");
 	if(GLString::characters.size() == 0)
-		this->initFont("src/Arial.TTF");
+		this->initFont("src/PressStart2P.ttf");
 	this->setupGl();
 }
 

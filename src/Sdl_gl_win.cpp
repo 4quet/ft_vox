@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 09:34:29 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/21 15:40:48 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/21 16:41:16 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,13 +81,10 @@ void    Sdl_gl_win::eventManager(std::vector<Action::Enum> & actions) {
                 case SDLK_LSHIFT: a = Action::TOGGLESPEED; break;
                 case SDLK_f: a = Action::ERASE; break;
             }
-            bool exist = false;
-            for(unsigned int i = 0; i < actions.size(); i++) {
-                if (actions[i] == a)
-                    exist = true;
-            }
-            if (!exist)
+			if (find(actions.begin(), actions.end(), a) == actions.end())
                 actions.push_back(a);
+			else
+				actions.erase(std::remove(actions.begin(), actions.end(), a), actions.end());
         } 
         if (events.type == SDL_KEYUP) {
             Action::Enum a;
@@ -98,15 +95,9 @@ void    Sdl_gl_win::eventManager(std::vector<Action::Enum> & actions) {
                 case SDLK_s: a = Action::BACKWARD; break;
                 case SDLK_c: a = Action::DOWN; break;
                 case SDLK_SPACE: a = Action::UP; break;
-                case SDLK_TAB: a = Action::DEBUG; break;
                 case SDLK_LSHIFT: a = Action::TOGGLESPEED; break;
-                case SDLK_f: a = Action::ERASE; break;
             }
-            for(unsigned int i = 0; i < actions.size(); i++) {
-                if (actions[i] == a) {
-                    actions.erase(actions.begin() + i);
-                }
-            }
+			actions.erase(std::remove(actions.begin(), actions.end(), a), actions.end());
         }
     }
 }

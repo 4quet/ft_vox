@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/18 16:15:29 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/21 15:26:35 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/21 15:57:33 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ enum BlockType: char
 # define BLOCK_RENDER_SIZE	1.0f
 # define CHUNK_RENDER_SIZE BLOCK_RENDER_SIZE * CHUNK_SIZE
 
-# define SEED 1
+# define SEED 1337
 
 # define GROUND_LEVEL 0.0f
 # define CAVE_LEVEL	GROUND_LEVEL - CHUNK_RENDER_SIZE
@@ -57,9 +57,9 @@ enum BlockType: char
 # define SNOW_LEVEL GROUND_LEVEL + 6 * CHUNK_RENDER_SIZE
 
 // These constants are expressed in terms of chunks amount
-# define VIEW_DISTANCE_WIDTH 32
-# define VIEW_DISTANCE_HEIGHT 16
+# define VIEW_DISTANCE_WIDTH 22
+# define VIEW_DISTANCE_HEIGHT 22
 # define WORLD_BOTTOM 32
-# define MAX_CHUNK_SETUP_PER_FRAME 32
+# define MAX_CHUNK_SETUP_PER_FRAME 22
 
 #endif
