@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:27:26 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/20 18:31:26 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/21 11:20:33 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,7 @@ void	Chunk::rebuild() {
 void	Chunk::reset() {
 	_setup = false;
 	_built = false;
+	_landscapeSetup = false;
 	_activeBlocks = 0;
 	_totalVertices = 0;
 	left = NULL;

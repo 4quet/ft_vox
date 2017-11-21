@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/24 17:29:47 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/20 19:38:32 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/21 11:28:18 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,12 +106,6 @@ void	ChunkManager::updateLoadList() {
 		_chunkMap.insert( std::pair<index3D, Chunk*>(chunkIndex, chunk) );
 	}
 
-	for (std::vector<Chunk*>::iterator it = _loadList.begin(); it != _loadList.end(); ++it)
-	{
-		Chunk *		chunk = *it;
-		bm.setupLandscape(*chunk);
-	}
-
 	_loadList.clear();
 }
 
@@ -154,6 +148,28 @@ void	ChunkManager::updateSetupList() {
 		if (shouldBeRendered(chunkPos))
 		{
 			setNeighbors(*chunk);
+
+			if (chunk->right && chunk->right->isLandscapeSetup() == false)
+				bm.setupLandscape(*chunk->right);
+
+			if (chunk->left && chunk->left->isLandscapeSetup() == false)
+				bm.setupLandscape(*chunk->left);
+
+			if (chunk->top && chunk->top->isLandscapeSetup() == false)
+				bm.setupLandscape(*chunk->top);
+
+			if (chunk->bottom && chunk->bottom->isLandscapeSetup() == false)
+				bm.setupLandscape(*chunk->bottom);
+
+			if (chunk->front && chunk->front->isLandscapeSetup() == false)
+				bm.setupLandscape(*chunk->front);
+
+			if (chunk->back && chunk->back->isLandscapeSetup() == false)
+				bm.setupLandscape(*chunk->back);
+
+			if (chunk->isLandscapeSetup() == false)
+				bm.setupLandscape(*chunk);
+
 			chunk->setup();
 			setupThisFrame++;
 		}
@@ -178,7 +194,7 @@ bool	ChunkManager::shouldBeRendered(glm::vec3 & chunkPos) const {
 	glm::vec3	d = chunkPos - _camPos;
 	float		dist = glm::distance(_camPos, chunkPos);
 	if (_isUnderGround && chunkPos.y > GROUND_LEVEL)
-	   return false;
+		return false;
 	if (_isAboveGround && chunkPos.y < CAVE_LEVEL)
 		return false;
 	if (_isUnderGround && dist > CHUNK_RENDER_SIZE * 3.0f)
