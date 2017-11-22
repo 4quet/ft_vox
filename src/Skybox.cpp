@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 10:37:37 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/21 13:22:53 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/22 11:27:18 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,12 +105,12 @@ void		Skybox::setBuffers() {
 
 void		Skybox::getFacesPath(std::string directory) {
 
-//	textures_faces.push_back(directory + "/rightFog.jpg" );
-//	textures_faces.push_back(directory + "/leftFog.jpg" );
-//	textures_faces.push_back(directory + "/top.jpg" );
-//	textures_faces.push_back(directory + "/bottomFog.jpg" );
-//	textures_faces.push_back(directory + "/backFog.jpg" );
-//	textures_faces.push_back(directory + "/frontFog.jpg" );
+	// textures_faces.push_back(directory + "/rightFog.jpg" );
+	// textures_faces.push_back(directory + "/leftFog.jpg" );
+	// textures_faces.push_back(directory + "/top.jpg" );
+	// textures_faces.push_back(directory + "/bottomFog.jpg" );
+	// textures_faces.push_back(directory + "/backFog.jpg" );
+	// textures_faces.push_back(directory + "/frontFog.jpg" );
 
 	textures_faces.push_back(directory + "/right.jpg" );
 	textures_faces.push_back(directory + "/left.jpg" );
@@ -128,8 +128,7 @@ void		Skybox::loadTextures() {
 	int width, height, nrChannels;
 	unsigned char *data;
 	stbi_set_flip_vertically_on_load(false);
-	for(GLuint i = 0; i < 6; i++)
-	{
+	for(GLuint i = 0; i < 6; i++) {
 		data = stbi_load(textures_faces[i].c_str(), &width, &height, &nrChannels, 0);
 		if(data) {
 			glTexImage2D(
@@ -137,8 +136,7 @@ void		Skybox::loadTextures() {
 				0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data
 			);
 			stbi_image_free(data);
-		}
-		else {
+		} else {
 			std::cout << "Loading Skybox texture failed: " << textures_faces[i].c_str() << std::endl;
 			stbi_image_free(data);
 			glDeleteTextures(1, &textureID);
