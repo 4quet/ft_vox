@@ -6,16 +6,14 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/25 13:39:17 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/21 17:59:28 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/22 10:47:40 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include"./Camera.hpp"
 
-Camera::Camera() : 
-	eyeVec(12.234f, 23.712f, -11.444f),
-	yaw(0.f), roll(0.f), mousePosition(0.f)
-{
+Camera::Camera() : eyeVec(12.234f, 23.712f, -11.444f), yaw(0.f),
+                    roll(0.f), mousePosition(0.f) {
     updateMatrix();
 }
 
@@ -60,7 +58,6 @@ void        Camera::manageMouse(glm::vec2 mouseDelta) {
         return;
         
     float sensitivity = 1.f;
-    // glm::vec2 mouseDelta = mousePos - mousePosition;
 
     yaw +=  sensitivity * mouseDelta.x;
     roll +=  sensitivity * mouseDelta.y;
@@ -102,18 +99,14 @@ bool     Camera::findBlockInchunk(glm::vec3 ray, glm::vec3 startPoint, Chunk & c
             posCheck.z < chunkPos.z && posCheck.z > chunkPos.z + CHUNK_RENDER_SIZE) {
                 return false;
         }
-        for (int x = 0; x < CHUNK_SIZE; x++)
-        {
-            for (int y = 0; y < CHUNK_SIZE; y++)
-            {
-                for (int z = 0; z < CHUNK_SIZE; z++)
-                {
+        for (int x = 0; x < CHUNK_SIZE; x++) {
+            for (int y = 0; y < CHUNK_SIZE; y++) {
+                for (int z = 0; z < CHUNK_SIZE; z++) {
                     if (posCheck.x > chunkPos.x + x * BLOCK_RENDER_SIZE && posCheck.x < chunkPos.x + x * BLOCK_RENDER_SIZE + BLOCK_RENDER_SIZE &&
                     	posCheck.y > chunkPos.y + y * BLOCK_RENDER_SIZE && posCheck.y < chunkPos.y + y * BLOCK_RENDER_SIZE + BLOCK_RENDER_SIZE &&
                         posCheck.z > chunkPos.z + z * BLOCK_RENDER_SIZE && posCheck.z < chunkPos.z + z * BLOCK_RENDER_SIZE + BLOCK_RENDER_SIZE &&
                         chunk.getBlock(x, y, z) != BLOCKTYPE_INACTIVE) {
                             
-                        // std::cout  << chunkPos.x + x * BLOCK_RENDER_SIZE << " : " << chunkPos.y + y * BLOCK_RENDER_SIZE << " : " << chunkPos.z + z * BLOCK_RENDER_SIZE << std::endl;
                         chunk.getBlock(x, y, z) = BLOCKTYPE_INACTIVE;
                         chunk.rebuild();
                         return true;

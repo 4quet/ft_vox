@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 09:23:13 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/22 10:02:38 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/22 10:40:58 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,6 @@ int     main() {
         window.eventManager(actions);
         
         camera.move(actions, window.getMouseX(), window.getMouseY());
-        // std::cout << window.getMouseX() << " : " << window.getMouseY() << std::endl;
-        // camera.normalizeMouse();
 		camPos = camera.getPosition();
         
 		shader.use();
@@ -61,10 +59,9 @@ int     main() {
 		shader.setVec3("lightPos", camPos.x, camPos.y, camPos.z);
         
         m.update(camera);
-		if (find(actions.begin(), actions.end(), Action::ERASE) != actions.end())
-		{
+		if (find(actions.begin(), actions.end(), Action::ERASE) != actions.end()) {
             trigger++;
-            if (trigger > 100) {
+            if (trigger > 50) {
                 camera.deleteBlock(m.getRenderMap());
                 trigger = 0;
             }
@@ -74,13 +71,11 @@ int     main() {
         
         delta += start;
 		
-		if (delta > 100000)
-		{
+		if (delta > 100000) {
 			fps = 1000 / (SDL_GetTicks() - start);
 			delta = 0;
 		}
-		if (find(actions.begin(), actions.end(), Action::DEBUG) != actions.end())
-		{
+		if (find(actions.begin(), actions.end(), Action::DEBUG) != actions.end()) {
         	UIManager(info, fps, m, camPos);
 		}
     	info.renderText("+", WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2, glm::vec3(1.f, 1.f, 1.f));

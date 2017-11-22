@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   BiomeManager.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thibautpierron <thibautpierron@student.    +#+  +:+       +#+        */
+/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/13 08:46:36 by thibautpier       #+#    #+#             */
-/*   Updated: 2017/11/16 18:50:29 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/22 10:45:33 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ class BiomeManager
         BiomeManager();
         ~BiomeManager();
 
-		void	setupLandscape(Chunk &);
+		void		setupLandscape(Chunk &);
 
     private:
        	FastNoise	heightMapNoise;

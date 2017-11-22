@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/13 08:56:54 by thibautpier       #+#    #+#             */
-/*   Updated: 2017/11/21 17:55:22 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/22 10:45:20 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,18 +80,13 @@ void	BiomeManager::setupLandscape(Chunk & chunk) {
 
 	chunk.setLandscapeSetup(true);
 
-	for (int x = 0; x < CHUNK_SIZE; ++x)
-	{
-		for (int z = 0; z < CHUNK_SIZE; ++z)
-		{
-			if (hasCave)
-			{
-				for (int y = 0; y < CHUNK_SIZE; ++y)
-				{
+	for (int x = 0; x < CHUNK_SIZE; ++x) {
+		for (int z = 0; z < CHUNK_SIZE; ++z) {
+			if (hasCave) {
+				for (int y = 0; y < CHUNK_SIZE; ++y) {
 					float	density = (caveNoise.GetNoise(chunkPos.x + x, chunkPos.z + z, chunkPos.y + y));
 					float	type = (caveNoise.GetNoise(chunkPos.x + x, chunkPos.z + z) + 1.f) / 2.f;
-					if (density > 0.0f)
-					{
+					if (density > 0.0f) {
 						if (type < 0.33f) 
 							chunk.getBlock(x, y, z) = BLOCKTYPE_SAND;
 						else if (type < 0.5f) 
@@ -102,13 +97,10 @@ void	BiomeManager::setupLandscape(Chunk & chunk) {
 					else
 						chunk.getBlock(x, y, z) = BLOCKTYPE_INACTIVE;
 				}
-				
 			}
-			else if (inBetween)
-			{
+			else if (inBetween) {
 				float gradient = 0.0f;
-				for (int y = 0; y < CHUNK_SIZE; ++y)
-				{
+				for (int y = 0; y < CHUNK_SIZE; ++y) {
 					float	density = (caveNoise.GetNoise(chunkPos.x + x, chunkPos.z + z, chunkPos.y + y)) + gradient;
 					float	type = (caveNoise.GetNoise(chunkPos.x + x, chunkPos.z + z) + 1.f) / 2.f;
 					if (density > 0.0f)
@@ -124,40 +116,30 @@ void	BiomeManager::setupLandscape(Chunk & chunk) {
 						chunk.getBlock(x, y, z) = BLOCKTYPE_INACTIVE;
 					gradient += 0.9f / CHUNK_SIZE;
 				}
-			}
-			else
-			{
+			} else {
 				float height = getHeightAt(chunkPos.x + x, chunkPos.z + z);
 				float m = getMoisture(chunkPos.x + x, chunkPos.z + z);
-				for (int y = 0; y < CHUNK_SIZE; ++y)
-				{
+				for (int y = 0; y < CHUNK_SIZE; ++y) {
 					if (chunkPos.y + y < height) {
-
 						if (height < SAND_LEVEL)
 							chunk.getBlock(x, y, z) = BLOCKTYPE_SAND;
 						
-						else if (height < ROCK_LEVEL)
-						{
+						else if (height < ROCK_LEVEL) {
 							if (m < 0.4f) 
 								chunk.getBlock(x, y, z) = BLOCKTYPE_SAND;
 							else if (m < 0.6f) 
 								chunk.getBlock(x, y, z) = BLOCKTYPE_DIRT;
 							else
 								chunk.getBlock(x, y, z) = BLOCKTYPE_ROCK;
-						}
-
-						else if (height < SNOW_LEVEL)
-						{
+						} else if (height < SNOW_LEVEL) {
 							if (m < 0.5f) 
 								chunk.getBlock(x, y, z) = BLOCKTYPE_ROCK;
 							else
 								chunk.getBlock(x, y, z) = BLOCKTYPE_SNOW;
-						}
-						else
+						} else
 							chunk.getBlock(x, y, z) = BLOCKTYPE_SNOW;
 
-					}
-					else if (chunkPos.y + y < WATER_LEVEL)
+					} else if (chunkPos.y + y < WATER_LEVEL)
 						chunk.getBlock(x, y, z) = BLOCKTYPE_WATER;
 					else
 						chunk.getBlock(x, y, z) = BLOCKTYPE_INACTIVE;
