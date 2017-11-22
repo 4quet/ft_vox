@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/25 16:36:07 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/21 16:05:37 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/22 09:56:47 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ void	GLString::setupGl() {
 void	GLString::renderText(std::string text, float x, float y, glm::vec3 color) const {
     this->shader->use();
 	this->shader->setOrthoView(WINDOW_WIDTH, WINDOW_HEIGHT);
-    glUniform3f(glGetUniformLocation(this->shader->getProgramID(), "textColor"), color.x, color.y, color.z);
+	this->shader->setVec3("textColor", color.x, color.y, color.z);
     glActiveTexture(GL_TEXTURE0);
 	glBindVertexArray(this->VAO);
 

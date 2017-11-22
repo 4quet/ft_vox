@@ -6,34 +6,29 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 09:23:13 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/21 16:20:51 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/22 10:02:38 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_vox.hpp"
 
-static void     UIManager(std::vector<Action::Enum> & actions, int fps, ChunkManager & chunkManager, glm::vec3 & camPos) {
-    GLString info;
+static void     UIManager(GLString & info, int fps, ChunkManager & chunkManager, glm::vec3 & camPos) {
         
-	if (find(actions.begin(), actions.end(), Action::DEBUG) != actions.end())
-	{
-        std::string totalBlock = std::to_string(chunkManager.getTotalActiveBlocks());
-        std::string totalChunk = std::to_string(chunkManager.getTotalActiveChunks());
-        
-        info.renderText("x: " + std::to_string(camPos.x), 50, 300, glm::vec3(1.f, 1.f, 1.f));
-        info.renderText("y: " + std::to_string(camPos.y), 50, 250, glm::vec3(1.f, 1.f, 1.f));
-        info.renderText("z: " + std::to_string(camPos.z), 50, 200, glm::vec3(1.f, 1.f, 1.f));
-        info.renderText("FPS: " + std::to_string(fps), 50, 150, glm::vec3(1.f, 1.f, 1.f));
-        info.renderText("rendered chunks: " + totalChunk, 50, 100, glm::vec3(1.f, 1.f, 1.f));
-        info.renderText("rendered blocks: " + totalBlock, 50, 50, glm::vec3(1.f, 1.f, 1.f));
-    }
-    
-    info.renderText("+", WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2, glm::vec3(1.f, 1.f, 1.f));
+	std::string totalBlock = std::to_string(chunkManager.getTotalActiveBlocks());
+	std::string totalChunk = std::to_string(chunkManager.getTotalActiveChunks());
+	
+	info.renderText("x: " + std::to_string(camPos.x), 50, 300, glm::vec3(1.f, 1.f, 1.f));
+	info.renderText("y: " + std::to_string(camPos.y), 50, 250, glm::vec3(1.f, 1.f, 1.f));
+	info.renderText("z: " + std::to_string(camPos.z), 50, 200, glm::vec3(1.f, 1.f, 1.f));
+	info.renderText("FPS: " + std::to_string(fps), 50, 150, glm::vec3(1.f, 1.f, 1.f));
+	info.renderText("rendered chunks: " + totalChunk, 50, 100, glm::vec3(1.f, 1.f, 1.f));
+	info.renderText("rendered blocks: " + totalBlock, 50, 50, glm::vec3(1.f, 1.f, 1.f));
 }
 
 int     main() {
     int	start, delta, fps;
     Sdl_gl_win window;
+    GLString info;
 
     std::vector<Action::Enum> actions;
 
@@ -84,7 +79,11 @@ int     main() {
 			fps = 1000 / (SDL_GetTicks() - start);
 			delta = 0;
 		}
-        UIManager(actions, fps, m, camPos);
+		if (find(actions.begin(), actions.end(), Action::DEBUG) != actions.end())
+		{
+        	UIManager(info, fps, m, camPos);
+		}
+    	info.renderText("+", WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2, glm::vec3(1.f, 1.f, 1.f));
         SDL_GL_SwapWindow(window.getWin());
     }
     return 0;
