@@ -6,19 +6,18 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 09:34:29 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/21 17:30:24 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/22 11:22:31 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Sdl_gl_win.hpp"
 
 Sdl_gl_win::Sdl_gl_win() {
-		initSDL();
-        initGL();
+	initSDL();
+    initGL();
 }
 
 Sdl_gl_win::~Sdl_gl_win() {
-
 	SDL_GL_DeleteContext(ctx);
     SDL_DestroyWindow(win);
     SDL_Quit();
@@ -40,7 +39,6 @@ void	Sdl_gl_win::initSDL() {
                                         WINDOW_WIDTH, WINDOW_HEIGHT,
                                         SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
     ctx = SDL_GL_CreateContext(win);
-    // SDL_ShowCursor(SDL_DISABLE);
     SDL_SetRelativeMouseMode(SDL_TRUE);
     
     if(ctx == 0) {

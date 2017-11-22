@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/25 16:36:07 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/22 09:56:47 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/22 11:21:26 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,10 +39,8 @@ void	GLString::initFont(std::string fontPath) {
 
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
   
-	for (GLubyte c = 0; c < 128; c++)
-	{
-		if (FT_Load_Char(face, c, FT_LOAD_RENDER))
-		{
+	for (GLubyte c = 0; c < 128; c++) {
+		if (FT_Load_Char(face, c, FT_LOAD_RENDER)) {
 			std::cout << "ERROR::FREETYTPE: Failed to load Glyph" << std::endl;
 			continue;
 		}
@@ -101,8 +99,7 @@ void	GLString::renderText(std::string text, float x, float y, glm::vec3 color) c
 	glBindVertexArray(this->VAO);
 
     std::string::const_iterator c;
-    for (c = text.begin(); c != text.end(); c++)
-    {
+    for (c = text.begin(); c != text.end(); c++) {
         Character ch = characters[*c];
 
         GLfloat xpos = x + ch.bearing.x;

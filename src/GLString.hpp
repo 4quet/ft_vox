@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/25 16:36:24 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/16 09:28:58 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/22 11:20:57 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,14 +36,13 @@ class GLString {
 		void		renderText(std::string str, float x, float y, glm::vec3 color) const;
 
 	private:
+		static std::map<GLchar, Character>	characters;
+		Shader								*shader;
+		GLuint								VAO;
+		GLuint								VBO;
+		
 		void		initFont(std::string fontPath);
 		void		setupGl();
-
-		Shader		*shader;
-		static std::map<GLchar, Character> characters;
-		GLuint		VAO;
-		GLuint		VBO;
-		
 };
 
 #endif

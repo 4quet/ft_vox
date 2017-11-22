@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/19 13:18:30 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/21 12:16:38 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/22 11:21:56 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,8 @@ class Sdl_gl_win {
 		SDL_Window		*getWin() const;
 
 	private:
-		void	initSDL();
-		void	initGL() const;
+		void			initSDL();
+		void			initGL() const;
 
 		SDL_Event		events;
 		SDL_GLContext	ctx;

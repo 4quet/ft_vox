@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/27 13:53:42 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/17 19:39:59 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/22 11:19:58 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,44 +53,6 @@ void	Frustum::setPlanes() {
 	planes[5][2] = matrix[2][3] - matrix[2][2];
 	planes[5][3] = matrix[3][3] - matrix[3][2];
 }
-
-/*
-void		Frustum::compute(glm::mat4 view, std::map<index3D, Chunk*> & chunks) {
-	this->view = view;
-	setPlanes();
-
-	int o = 0;
-	for (std::map<index3D, Chunk*>::iterator i = chunks.begin(); i != chunks.end(); ++i) {
-		Chunk *	chunk = i->second;
-		glm::vec3 pos = chunk->getPosition();
-		if (pointIn(pos.x + (CHUNK_SIZE * BLOCK_RENDER_SIZE / 2), pos.y + (CHUNK_SIZE * BLOCK_RENDER_SIZE / 2), pos.z + (CHUNK_SIZE * BLOCK_RENDER_SIZE / 2))) {
-			chunk->setVisibility(true);
-			o++;
-		} else
-			chunk->setVisibility(false);
-	}
-		
-//	 std::cout << "chunks in: " << o << std::endl;
-}
-
-void		Frustum::compute(glm::mat4 view, std::vector<Chunk*> & chunks) {
-	this->view = view;
-	setPlanes();
-
-	int o = 0;
-	for (std::vector<Chunk*>::iterator i = chunks.begin(); i != chunks.end(); ++i) {
-		Chunk *	chunk = *i;
-		glm::vec3 pos = chunk->getPosition();
-		if (pointIn(pos.x + (CHUNK_SIZE * BLOCK_RENDER_SIZE / 2), pos.y + (CHUNK_SIZE * BLOCK_RENDER_SIZE / 2), pos.z + (CHUNK_SIZE * BLOCK_RENDER_SIZE / 2))) {
-			chunk->setVisibility(true);
-			o++;
-		} else
-			chunk->setVisibility(false);
-	}
-		
-//	 std::cout << "chunks in: " << o << std::endl;
-}
-*/
 
 bool		Frustum::pointIn(float x, float y, float z) {
 	for(unsigned int i = 0; i < 6; i++) {
