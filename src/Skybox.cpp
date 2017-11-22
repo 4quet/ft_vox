@@ -6,13 +6,13 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 10:37:37 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/22 11:27:18 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/22 11:34:37 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Skybox.hpp"
 # define STB_IMAGE_IMPLEMENTATION
-# include "./stb_image.h"
+# include "../libs/stb_image.h"
 
 Skybox::Skybox(std::string directory) {
 

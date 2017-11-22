@@ -6,12 +6,12 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:27:26 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/22 11:14:34 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/22 11:34:57 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Chunk.hpp"
-#include "./stb_image.h"
+#include "../libs/stb_image.h"
 
 std::vector<glm::vec2>	Chunk::uvs;
 unsigned int 			Chunk::texturesID;

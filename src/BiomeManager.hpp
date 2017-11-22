@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/13 08:46:36 by thibautpier       #+#    #+#             */
-/*   Updated: 2017/11/22 10:45:33 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/22 11:35:17 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define BIOMEMANAGER_HPP
 
 # include "constants.hpp"
-# include "FastNoise.h"
+# include "../libs/FastNoise.h"
 # include "Chunk.hpp"
 
 class BiomeManager

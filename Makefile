@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: thibautpierron <thibautpierron@student.    +#+  +:+       +#+         #
+#    By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/07/21 11:32:23 by tpierron          #+#    #+#              #
-#    Updated: 2017/11/21 17:57:52 by lfourque         ###   ########.fr        #
+#    Updated: 2017/11/22 11:36:07 by tpierron         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,7 +24,7 @@ SRC =	src/Sdl_gl_win.cpp \
 		src/Camera.cpp \
 		src/GLString.cpp \
 		src/Shader.class.cpp \
-		src/FastNoise.cpp \
+		libs/FastNoise.cpp \
 		src/Frustum.cpp \
 		main.cpp \
 
@@ -45,6 +45,7 @@ all: $(NAME)
 $(OBJ_PATH)%.o: %.cpp
 	@mkdir $(OBJ_PATH) 2> /dev/null || echo "" > /dev/null
 	@mkdir $(OBJ_PATH)/src 2> /dev/null || echo "" > /dev/null
+	@mkdir $(OBJ_PATH)/libs 2> /dev/null || echo "" > /dev/null
 	$(CC) $(CFLAGS) -o $@ -c -Isrc $(PATHS) $< -std=c++11
 
 $(NAME): $(OBJ)

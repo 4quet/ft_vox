@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/24 17:29:47 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/21 11:28:18 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/22 11:39:34 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ ChunkManager::ChunkManager(glm::vec3 camPos) {
 
 	_camPos = camPos;
 
-	Chunk::loadTexturesAtlas("./textures/textures.png");
+	Chunk::loadTexturesAtlas("assets/textures/textures.png");
 	Chunk::setUVs(3, 4, 10);
 	
 	std::vector<std::future<std::pair<index3D, Chunk*>>>	futures;
