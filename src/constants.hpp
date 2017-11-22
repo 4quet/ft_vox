@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/18 16:15:29 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/21 17:38:36 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/22 10:51:42 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@
 # define Z_FAR 4000.f
 
 namespace Action {
-	enum Enum { NONE, LEFT, RIGHT, FORWARD, BACKWARD, UP, DOWN, DEBUG, ESCAPE, TOGGLESPEED, ERASE};
+	enum Enum { NONE, LEFT, RIGHT, FORWARD, BACKWARD, UP, DOWN, DEBUG,
+				ESCAPE, TOGGLESPEED, ERASE};
 }
 
 namespace Faces {
@@ -31,16 +32,9 @@ namespace Biomes {
 	enum Enum { FIELD, DESERT, SNOW, CANYON };
 }
 
-enum BlockType: char
-{
-	BLOCKTYPE_INACTIVE = 0,
-	BLOCKTYPE_WATER,
-	BLOCKTYPE_GRASS,
-	BLOCKTYPE_DIRT,
-	BLOCKTYPE_SAND,
-	BLOCKTYPE_SNOW,
-	BLOCKTYPE_ROCK
-};
+namespace BlockTypes {
+	enum Enum: char { INACTIVE = 0, WATER, GRASS, DIRT, SAND, SNOW, ROCK};
+}
 
 # define CHUNK_SIZE	16
 # define BLOCK_RENDER_SIZE	1.0f

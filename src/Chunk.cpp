@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:27:26 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/21 17:53:49 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/22 11:14:34 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,36 +23,27 @@ Chunk::Chunk(glm::vec3 position)
 
 	_halfBlockSize = BLOCK_RENDER_SIZE / 2.0f;
 
-	// Create the blocks
-	_blocks = new BlockType**[CHUNK_SIZE];
-	for(int i = 0; i < CHUNK_SIZE; i++)
-	{
-		_blocks[i] = new BlockType*[CHUNK_SIZE];
-
-		for(int j = 0; j < CHUNK_SIZE; j++)
-		{
-			_blocks[i][j] = new BlockType[CHUNK_SIZE];
+	_blocks = new BlockTypes::Enum**[CHUNK_SIZE];
+	for(int i = 0; i < CHUNK_SIZE; i++) {
+		_blocks[i] = new BlockTypes::Enum*[CHUNK_SIZE];
+		for(int j = 0; j < CHUNK_SIZE; j++) {
+			_blocks[i][j] = new BlockTypes::Enum[CHUNK_SIZE];
 		}
 	}
 }
 
 Chunk::~Chunk() {
-	// Delete the blocks
-	for (int i = 0; i < CHUNK_SIZE; ++i)
-	{
-		for (int j = 0; j < CHUNK_SIZE; ++j)
-		{
+	for (int i = 0; i < CHUNK_SIZE; ++i) {
+		for (int j = 0; j < CHUNK_SIZE; ++j) {
 			delete [] _blocks[i][j];
 		}
-
 		delete [] _blocks[i];
 	}
 	delete [] _blocks;
 }
 
 void	Chunk::render() {
-	if (_totalVertices > 0)
-	{
+	if (_totalVertices > 0) {
 		glActiveTexture(texturesID);
 		glBindTexture(GL_TEXTURE_2D, texturesID);
 		glBindVertexArray(VAO);
@@ -62,8 +53,7 @@ void	Chunk::render() {
 }
 
 void	Chunk::setup() {
-	if (_setup == false)
-	{
+	if (_setup == false) {
 		fillMesh();
 		_setup = true;
 	}
@@ -94,99 +84,85 @@ void	Chunk::reset() {
 bool	Chunk::isNeighborActive(Chunk * n, int x, int y, int z) const {
 	if (n == NULL)
 		return true;
-	return (n->getBlock(x, y, z) > BLOCKTYPE_WATER);
+	return (n->getBlock(x, y, z) > BlockTypes::WATER);
 }
 
 void	Chunk::fillMesh() {
-	BlockType 		t;
+	BlockTypes::Enum 		t;
 
-	for (int x = 0; x < CHUNK_SIZE; x++)
-	{
-		for (int y = 0; y < CHUNK_SIZE; y++)
-		{
-			for (int z = 0; z < CHUNK_SIZE; z++)
-			{
-				if (_blocks[x][y][z] > BLOCKTYPE_WATER)
-				{
+	for (int x = 0; x < CHUNK_SIZE; x++) {
+		for (int y = 0; y < CHUNK_SIZE; y++) {
+			for (int z = 0; z < CHUNK_SIZE; z++) {
+				if (_blocks[x][y][z] > BlockTypes::WATER) {
 					t = _blocks[x][y][z];
 					if ((y + 1 == CHUNK_SIZE && !isNeighborActive(top, x, 0, z)) ||
-						(y + 1 < CHUNK_SIZE && _blocks[x][y + 1][z] <= BLOCKTYPE_WATER))
-					{
-						if (t == BLOCKTYPE_DIRT && _position.y >= GROUND_LEVEL)
-							t = BLOCKTYPE_GRASS;
+						(y + 1 < CHUNK_SIZE && _blocks[x][y + 1][z] <= BlockTypes::WATER)) {
+
+						if (t == BlockTypes::DIRT && _position.y >= GROUND_LEVEL)
+							t = BlockTypes::GRASS;
 						createFace( glm::vec3(	(_position.x + x * BLOCK_RENDER_SIZE) - _halfBlockSize,
 												(_position.y + y * BLOCK_RENDER_SIZE) + _halfBlockSize,
 												(_position.z + z * BLOCK_RENDER_SIZE) + _halfBlockSize),
-									Faces::TOP, t);
+												Faces::TOP, t);
 					}
 					if ((x + 1 == CHUNK_SIZE && !isNeighborActive(right, 0, y, z)) ||
-							(x + 1 < CHUNK_SIZE && _blocks[x + 1][y][z] <= BLOCKTYPE_WATER))
-					{
+							(x + 1 < CHUNK_SIZE && _blocks[x + 1][y][z] <= BlockTypes::WATER)) {
 						createFace( glm::vec3(	(_position.x + x * BLOCK_RENDER_SIZE) + _halfBlockSize,
 												(_position.y + y * BLOCK_RENDER_SIZE) - _halfBlockSize,
 												(_position.z + z * BLOCK_RENDER_SIZE) + _halfBlockSize),
-									Faces::RIGHT, t);
+												Faces::RIGHT, t);
 					}
 					if ((x - 1 < 0 && !isNeighborActive(left, CHUNK_SIZE - 1, y, z)) ||
-							(x - 1 >= 0 && _blocks[x - 1][y][z] <= BLOCKTYPE_WATER))
-					{
+							(x - 1 >= 0 && _blocks[x - 1][y][z] <= BlockTypes::WATER)) {
 						createFace( glm::vec3(	(_position.x + x * BLOCK_RENDER_SIZE) - _halfBlockSize,
 												(_position.y + y * BLOCK_RENDER_SIZE) - _halfBlockSize,
 												(_position.z + z * BLOCK_RENDER_SIZE) - _halfBlockSize),
-									Faces::LEFT, t);
+												Faces::LEFT, t);
 					}
 					if ((z + 1 == CHUNK_SIZE && !isNeighborActive(front, x, y, 0)) ||
-							(z + 1 < CHUNK_SIZE && _blocks[x][y][z + 1] <= BLOCKTYPE_WATER))
-					{
+							(z + 1 < CHUNK_SIZE && _blocks[x][y][z + 1] <= BlockTypes::WATER)) {
 						createFace( glm::vec3(	(_position.x + x * BLOCK_RENDER_SIZE) - _halfBlockSize,
 												(_position.y + y * BLOCK_RENDER_SIZE) - _halfBlockSize,
 												(_position.z + z * BLOCK_RENDER_SIZE) + _halfBlockSize),
-									Faces::FRONT, t);
+												Faces::FRONT, t);
 					}
 					if ((z - 1 < 0 && !isNeighborActive(back, x, y, CHUNK_SIZE - 1)) ||
-							(z - 1 >= 0 && _blocks[x][y][z - 1] <= BLOCKTYPE_WATER))
-					{
+							(z - 1 >= 0 && _blocks[x][y][z - 1] <= BlockTypes::WATER)) {
 						createFace( glm::vec3(	(_position.x + x * BLOCK_RENDER_SIZE) + _halfBlockSize,
 												(_position.y + y * BLOCK_RENDER_SIZE) - _halfBlockSize,
 												(_position.z + z * BLOCK_RENDER_SIZE) - _halfBlockSize),
-									Faces::BACK, t);
+												Faces::BACK, t);
 					}
 					if ((y - 1 < 0 && !isNeighborActive(bottom, x, CHUNK_SIZE - 1, z)) ||
-							(y - 1 >= 0 && _blocks[x][y - 1][z] <= BLOCKTYPE_WATER))
-					{
+							(y - 1 >= 0 && _blocks[x][y - 1][z] <= BlockTypes::WATER)) {
 						createFace( glm::vec3(	(_position.x + x * BLOCK_RENDER_SIZE) - _halfBlockSize,
 												(_position.y + y * BLOCK_RENDER_SIZE) - _halfBlockSize,
 												(_position.z + z * BLOCK_RENDER_SIZE) - _halfBlockSize),
-									Faces::BOTTOM, t);
+												Faces::BOTTOM, t);
 					}
 					_activeBlocks++;
 				}
-				else if (_blocks[x][y][z] == BLOCKTYPE_WATER)
-				{
-					if (y == CHUNK_SIZE - 1)
-					{
+				else if (_blocks[x][y][z] == BlockTypes::WATER) {
+					if (y == CHUNK_SIZE - 1) {
 						createFace( glm::vec3(	(_position.x + x * BLOCK_RENDER_SIZE) - _halfBlockSize,
 												(_position.y + y * BLOCK_RENDER_SIZE) + _halfBlockSize,
 												(_position.z + z * BLOCK_RENDER_SIZE) + _halfBlockSize),
-									Faces::TOP, BLOCKTYPE_WATER);
+												Faces::TOP, BlockTypes::WATER);
 					}
 					_activeBlocks++;
-
 				}
 			}
 		}
 	}
 
-	if (waterMesh.size())
-	{
+	if (waterMesh.size()) {
 		mesh.insert(mesh.end(), waterMesh.begin(), waterMesh.end());
 		waterMesh.clear();
 	}
 }
 
 void	Chunk::buildMesh() {
-	if (_built == false)
-	{
+	if (_built == false) {
 		if (!VAO)
 			glGenVertexArrays(1, &VAO);
 		if (!VBO)
@@ -213,7 +189,7 @@ void	Chunk::buildMesh() {
 	}
 }
 
-void	Chunk::createFace(glm::vec3 point, Faces::Enum face, BlockType type) {
+void	Chunk::createFace(glm::vec3 point, Faces::Enum face, BlockTypes::Enum type) {
 	glm::vec3 incX = glm::vec3(BLOCK_RENDER_SIZE, 0, 0);
 	glm::vec3 incY = glm::vec3(0, BLOCK_RENDER_SIZE, 0);
 	glm::vec3 incZ = glm::vec3(0, 0, BLOCK_RENDER_SIZE);
@@ -248,13 +224,13 @@ void	Chunk::createFace(glm::vec3 point, Faces::Enum face, BlockType type) {
 	}
 }
 
-void	Chunk::getFaceUVs(Faces::Enum face, BlockType type, std::vector<glm::vec2> & uv) const {
+void	Chunk::getFaceUVs(Faces::Enum face, BlockTypes::Enum type, std::vector<glm::vec2> & uv) const {
 	unsigned int	texture = 0;
 	int r = 0;
 	uv.clear();
 
 	switch(type) {
-		case BLOCKTYPE_GRASS:
+		case BlockTypes::GRASS:
 			if (face == Faces::TOP)
 				texture = 8;
 			else if (face == Faces::BOTTOM)
@@ -262,7 +238,7 @@ void	Chunk::getFaceUVs(Faces::Enum face, BlockType type, std::vector<glm::vec2> 
 			else
 				texture = 0;
 			break;
-		case BLOCKTYPE_SNOW:
+		case BlockTypes::SNOW:
 			if (face == Faces::TOP)
 				texture = 7;
 			else if (face == Faces::BOTTOM)
@@ -270,13 +246,13 @@ void	Chunk::getFaceUVs(Faces::Enum face, BlockType type, std::vector<glm::vec2> 
 			else
 				texture = 6;
 			break;
-		case BLOCKTYPE_DIRT:
+		case BlockTypes::DIRT:
 			texture = 4;
 			break;
-		case BLOCKTYPE_SAND: texture = 5; break;
-		case BLOCKTYPE_WATER: texture = 9; break;
-		case BLOCKTYPE_ROCK: texture = 2; break;
-		case BLOCKTYPE_INACTIVE: break;
+		case BlockTypes::SAND: texture = 5; break;
+		case BlockTypes::WATER: texture = 9; break;
+		case BlockTypes::ROCK: texture = 2; break;
+		case BlockTypes::INACTIVE: break;
 	}
 	
 	texture *= 4;
@@ -284,8 +260,8 @@ void	Chunk::getFaceUVs(Faces::Enum face, BlockType type, std::vector<glm::vec2> 
 	uv.insert(uv.end(), { uvs[texture + 2], uvs[texture + 3], uvs[texture], uvs[texture + 2], uvs[texture], uvs[texture + 1] });
 }
 
-void	Chunk::addFace(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, glm::vec3 p4, glm::vec3  normal, std::vector<glm::vec2> & uv, BlockType type) {
-	std::vector<float> &	rmesh = (type == BLOCKTYPE_WATER) ? waterMesh : mesh;
+void	Chunk::addFace(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, glm::vec3 p4, glm::vec3  normal, std::vector<glm::vec2> & uv, BlockTypes::Enum type) {
+	std::vector<float> &	rmesh = (type == BlockTypes::WATER) ? waterMesh : mesh;
 	rmesh.insert(rmesh.end(), {
 		p1.x, p1.y, p1.z, normal.x, normal.y, normal.z, uv[0].x, uv[0].y,
 		p2.x, p2.y, p2.z, normal.x, normal.y, normal.z, uv[1].x, uv[1].y,
@@ -298,12 +274,21 @@ void	Chunk::addFace(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, glm::vec3 p4, glm:
 	_totalVertices += 6;
 }
 
-glm::vec3 const &	Chunk::getPosition() const { return _position; }
-void		Chunk::setPosition(glm::vec3 pos) { _position = pos; }
+glm::vec3 const &	Chunk::getPosition() const {
+	return _position;
+}
 
-size_t		Chunk::getActiveBlocks() const { return _activeBlocks; }
+void		Chunk::setPosition(glm::vec3 pos) {
+	_position = pos;
+}
 
-BlockType &		Chunk::getBlock(int x, int y, int z) const { return _blocks[x][y][z]; }
+size_t		Chunk::getActiveBlocks() const {
+	return _activeBlocks;
+}
+
+BlockTypes::Enum &		Chunk::getBlock(int x, int y, int z) const {
+	return _blocks[x][y][z];
+}
 
 bool		Chunk::isSetup() const {
 	return _setup;
@@ -369,10 +354,5 @@ void	Chunk::setUVs(unsigned int width, unsigned int height, unsigned int nbr) {
 				break;
 		}
 	}
-
-	// for (unsigned int i = 0; i < uvs.size(); i++) {
-	// 	std::cout << uvs[i].x << " : " << uvs[i].y << std::endl;
-	// }
-
 	Chunk::uvs = uvs;
 }

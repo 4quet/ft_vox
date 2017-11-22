@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/25 13:39:17 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/22 10:47:40 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/22 10:52:58 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,9 +105,9 @@ bool     Camera::findBlockInchunk(glm::vec3 ray, glm::vec3 startPoint, Chunk & c
                     if (posCheck.x > chunkPos.x + x * BLOCK_RENDER_SIZE && posCheck.x < chunkPos.x + x * BLOCK_RENDER_SIZE + BLOCK_RENDER_SIZE &&
                     	posCheck.y > chunkPos.y + y * BLOCK_RENDER_SIZE && posCheck.y < chunkPos.y + y * BLOCK_RENDER_SIZE + BLOCK_RENDER_SIZE &&
                         posCheck.z > chunkPos.z + z * BLOCK_RENDER_SIZE && posCheck.z < chunkPos.z + z * BLOCK_RENDER_SIZE + BLOCK_RENDER_SIZE &&
-                        chunk.getBlock(x, y, z) != BLOCKTYPE_INACTIVE) {
+                        chunk.getBlock(x, y, z) != BlockTypes::INACTIVE) {
                             
-                        chunk.getBlock(x, y, z) = BLOCKTYPE_INACTIVE;
+                        chunk.getBlock(x, y, z) = BlockTypes::INACTIVE;
                         chunk.rebuild();
                         return true;
                     }
