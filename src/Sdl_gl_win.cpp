@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 09:34:29 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/22 11:22:31 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/22 14:12:11 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ void    Sdl_gl_win::eventManager(std::vector<Action::Enum> & actions) {
             }
 			if (find(actions.begin(), actions.end(), a) == actions.end())
                 actions.push_back(a);
-			else
+			else if (a == Action::DEBUG || a == Action::TOGGLESPEED)
 				actions.erase(std::remove(actions.begin(), actions.end(), a), actions.end());
         } 
         if (events.type == SDL_KEYUP) {

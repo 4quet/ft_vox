@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/25 13:39:17 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/22 10:52:58 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/22 14:18:06 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void		Camera::move(std::vector<Action::Enum> & actions, int mouseX, int mouseY) 
     float dx = 0.f;
     float dy = 0.f;
     float dz = 0.f;
-    float speed = 0.05f;
+    float speed = 0.025f;
     bool moveUp = false;
     bool moveDown = false;
 
