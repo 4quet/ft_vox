@@ -6,19 +6,19 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/24 17:29:47 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/23 13:04:45 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/23 16:45:39 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ChunkManager.hpp"
 #include <chrono>
 
-ChunkManager::ChunkManager(glm::vec3 camPos) {
-
-	_camPos = camPos;
+ChunkManager::ChunkManager(glm::vec3 camPos) : _camPos(camPos) {
 
 	Chunk::loadTexturesAtlas("assets/textures/textures.png");
 	Chunk::setUVs(3, 4, 10);
+
+	setGroundFlags();
 	
 	std::vector<std::future<std::pair<index3D, Chunk*>>>	futures;
 
@@ -32,11 +32,13 @@ ChunkManager::ChunkManager(glm::vec3 camPos) {
 		{
 			for (int z = camPos.z + startWidth; z < camPos.z + endWidth; ++z)
 			{
-				futures.emplace_back( std::async( &ChunkManager::initChunkAt, this, x, y, z ) );
+				//futures.emplace_back( std::async( &ChunkManager::initChunkAt, this, x, y, z ) );
+				_chunkMap.insert( initChunkAt(x, y, z) );
 			}
 		}
 	}
 
+	/*
 	for (std::vector<std::future<std::pair<index3D, Chunk*>>>::iterator it = futures.begin(); it != futures.end(); ++it)
 	{
 		std::pair<index3D, Chunk*>	p = (*it).get();
@@ -46,6 +48,7 @@ ChunkManager::ChunkManager(glm::vec3 camPos) {
 			_chunkMap.insert(p);
 		}
 	}
+	*/
 
 	for (std::map<index3D, Chunk*>::iterator it = _chunkMap.begin(); it != _chunkMap.end(); ++it)
 	{
@@ -73,14 +76,18 @@ std::pair<index3D, Chunk*>	ChunkManager::initChunkAt(float xx, float yy, float z
 	return std::pair<index3D, Chunk*>(index3D(xPos, yPos, zPos), chunk);
 }
 
-void	ChunkManager::update(Camera & camera) {
-
-	_camPos = camera.getPosition();
-
+void	ChunkManager::setGroundFlags() {
 	_isUnderGround = (_camPos.y < GROUND_LEVEL) ? true: false;
 	_isAboveGround = (_camPos.y > CAVE_LEVEL) ? true: false;
 //	std::cout << "underGround: " << _isUnderGround << std::endl;
 //	std::cout << "aboveGround: " << _isAboveGround << std::endl << std::endl;
+}
+
+void	ChunkManager::update(Camera & camera) {
+
+	_camPos = camera.getPosition();
+
+	setGroundFlags();
 
 	updateVisibilityList();
 
@@ -134,9 +141,10 @@ void	ChunkManager::setNeighbors(Chunk & chunk) {
 }
 
 void	ChunkManager::updateSetupList() {
-	//std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
+//	std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
 
 	int	setupThisFrame = 0;
+	int	lsSetup = 0;
 
 	for (std::map<float, Chunk*>::iterator it = _setupMap.begin(); it != _setupMap.end(); ++it)
 	{
@@ -150,25 +158,40 @@ void	ChunkManager::updateSetupList() {
 			setNeighbors(*chunk);
 
 			if (chunk->right && chunk->right->isLandscapeSetup() == false)
+			{
 				bm.setupLandscape(*chunk->right);
+				lsSetup++;
+			}
 
-			if (chunk->left && chunk->left->isLandscapeSetup() == false)
+			if (chunk->left && chunk->left->isLandscapeSetup() == false) {
 				bm.setupLandscape(*chunk->left);
+				lsSetup++;
+			}
 
-			if (chunk->top && chunk->top->isLandscapeSetup() == false)
+			if (chunk->top && chunk->top->isLandscapeSetup() == false){
 				bm.setupLandscape(*chunk->top);
+				lsSetup++;
+			}
 
-			if (chunk->bottom && chunk->bottom->isLandscapeSetup() == false)
+			if (chunk->bottom && chunk->bottom->isLandscapeSetup() == false){
 				bm.setupLandscape(*chunk->bottom);
+				lsSetup++;
+			}
 
-			if (chunk->front && chunk->front->isLandscapeSetup() == false)
+			if (chunk->front && chunk->front->isLandscapeSetup() == false){
 				bm.setupLandscape(*chunk->front);
+				lsSetup++;
+			}
 
-			if (chunk->back && chunk->back->isLandscapeSetup() == false)
+			if (chunk->back && chunk->back->isLandscapeSetup() == false){
 				bm.setupLandscape(*chunk->back);
+				lsSetup++;
+			}
 
-			if (chunk->isLandscapeSetup() == false)
+			if (chunk->isLandscapeSetup() == false){
 				bm.setupLandscape(*chunk);
+				lsSetup++;
+			}
 
 			chunk->setup();
 			setupThisFrame++;
@@ -183,7 +206,7 @@ void	ChunkManager::updateSetupList() {
 	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>( t2 - t1 ).count();
 
 	if (duration)
-		std::cout << " duration: " << duration << " ms - " << setupThisFrame << " setup this frame" << std::endl;
+		std::cout << " duration: " << duration << " ms - " << setupThisFrame << " setup this frame - " << lsSetup << " landscapes - " << std::endl;
 		*/
 }
 
@@ -197,7 +220,7 @@ bool	ChunkManager::shouldBeRendered(glm::vec3 & chunkPos) const {
 		return false;
 	if (_isAboveGround && chunkPos.y < CAVE_LEVEL)
 		return false;
-	if (_isUnderGround && dist > CHUNK_RENDER_SIZE * 6.0f)
+	if (_isUnderGround && dist > CHUNK_RENDER_SIZE * 8.0f)
 		return false;
 	if (fabs(d.x) > maxDistWidth)
 		return false;
@@ -216,6 +239,7 @@ void	ChunkManager::setRenderList(Camera & camera) {
 
 	float		halfChunk = CHUNK_RENDER_SIZE / 2.0f;
 	int			setupThisFrame = 0;
+	float		renderDist, setupDist;
 
 	_renderMap.clear();
 
@@ -224,22 +248,21 @@ void	ChunkManager::setRenderList(Camera & camera) {
 		Chunk *		chunk = it->second;
 		glm::vec3	chunkPos = chunk->getPosition();
 
-		float setupDist = glm::distance(_camPos, chunkPos);
-		if (shouldBeRendered(chunkPos) && chunk->getActiveBlocks() > 0)
-		{
-			// improvable
-			float renderDist = glm::distance(_camPos, glm::vec3( chunkPos.x + halfChunk, chunkPos.y + halfChunk, chunkPos.z + halfChunk ));
+		if (shouldBeRendered(chunkPos)) {
 
-			if (frustum.pointIn(chunkPos.x + halfChunk, chunkPos.y + halfChunk, chunkPos.z + halfChunk))
-			{
-				_renderMap.insert(std::pair<float, Chunk*>(renderDist, chunk));
+			if (chunk->getActiveBlocks() > 0) {
+				// improvable
+				if (frustum.pointIn(chunkPos.x + halfChunk, chunkPos.y + halfChunk, chunkPos.z + halfChunk)) {
+					renderDist = glm::distance(_camPos, glm::vec3( chunkPos.x + halfChunk, chunkPos.y + halfChunk, chunkPos.z + halfChunk ));
+					_renderMap.insert(std::pair<float, Chunk*>(renderDist, chunk));
+				}
 			}
 
 			// this may move
-		}
-		if (chunk->isSetup() == false)
-		{
-			_setupMap.insert(std::pair<float, Chunk*>(setupDist, chunk));
+			if (chunk->isSetup() == false) {
+				setupDist = glm::distance(_camPos, chunkPos);
+				_setupMap.insert(std::pair<float, Chunk*>(setupDist, chunk));
+			}
 		}
 	}
 }
