@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:27:26 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/23 09:43:03 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/23 13:05:07 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -342,8 +342,8 @@ void	Chunk::setUVs(unsigned int width, unsigned int height, unsigned int nbr) {
 	// from top/left to bottom/right
 	float stepX = 1 / static_cast<float>(width);
 	float stepY = 1 / static_cast<float>(height);
-	float offsetX = 95 * stepX / 100;
-	float offsetY = 95 * stepY / 100;
+	float offsetX = 5 * stepX / 100;
+	float offsetY = 5 * stepY / 100;
 
 	std::vector<glm::vec2> uvs;
 	
