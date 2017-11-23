@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 09:23:13 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/23 13:17:54 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/23 16:49:34 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,11 @@ static void     UIManager(GLString & info, int fps, ChunkManager & chunkManager,
 	std::string totalBlock = std::to_string(chunkManager.getTotalActiveBlocks());
 	std::string totalChunk = std::to_string(chunkManager.getTotalActiveChunks());
 	
+	info.renderText("FPS: " + std::to_string(fps), 50, 350, glm::vec3(1.f, 1.f, 1.f));
 	info.renderText("x: " + std::to_string(camPos.x), 50, 300, glm::vec3(1.f, 1.f, 1.f));
 	info.renderText("y: " + std::to_string(camPos.y), 50, 250, glm::vec3(1.f, 1.f, 1.f));
 	info.renderText("z: " + std::to_string(camPos.z), 50, 200, glm::vec3(1.f, 1.f, 1.f));
-	info.renderText("FPS: " + std::to_string(fps), 50, 150, glm::vec3(1.f, 1.f, 1.f));
+	info.renderText("seed: " + std::to_string(SEED), 50, 150, glm::vec3(1.f, 1.f, 1.f));
 	info.renderText("rendered chunks: " + totalChunk, 50, 100, glm::vec3(1.f, 1.f, 1.f));
 	info.renderText("rendered blocks: " + totalBlock, 50, 50, glm::vec3(1.f, 1.f, 1.f));
 }
