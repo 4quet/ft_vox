@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:27:26 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/23 17:30:04 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/24 00:11:55 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -324,8 +324,8 @@ void	Chunk::loadTexturesAtlas(std::string file) {
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 		stbi_image_free(data);
 	}
@@ -340,17 +340,15 @@ void	Chunk::setUVs(unsigned int width, unsigned int height, unsigned int nbr) {
 	// from top/left to bottom/right
 	float stepX = 1 / static_cast<float>(width);
 	float stepY = 1 / static_cast<float>(height);
-	float offsetX = 5 * stepX / 100;
-	float offsetY = 5 * stepY / 100;
 
 	std::vector<glm::vec2> uvs;
 	
 	for (int i = height; i > 0; i--) {
 		for (unsigned int j = 0; j < width; j++) {
-			uvs.push_back(glm::vec2((j * stepX) + offsetX, (i * stepY) - offsetY));
-			uvs.push_back(glm::vec2((j * stepX + stepX) - offsetX, (i * stepY) - offsetY));
-			uvs.push_back(glm::vec2((j * stepX + stepX) - offsetX, (i * stepY - stepY) + offsetY));
-			uvs.push_back(glm::vec2((j * stepX) + offsetX, (i * stepY - stepY) + offsetY));
+			uvs.push_back(glm::vec2((j * stepX), (i * stepY)));
+			uvs.push_back(glm::vec2((j * stepX + stepX), (i * stepY)));
+			uvs.push_back(glm::vec2((j * stepX + stepX), (i * stepY - stepY)));
+			uvs.push_back(glm::vec2((j * stepX), (i * stepY - stepY)));
 			if (uvs.size() == nbr * 4)
 				break;
 		}
