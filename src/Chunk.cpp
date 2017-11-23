@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:27:26 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/23 13:05:07 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/23 17:30:04 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,8 @@ unsigned int 			Chunk::texturesID;
 
 Chunk::Chunk(glm::vec3 position)
 	: left(NULL), right(NULL), top(NULL), bottom(NULL), front(NULL), back(NULL),
-	_activeBlocks(0), _totalVertices(0), _position(position),
+	_position(position), _activeBlocks(0), _totalVertices(0), _halfBlockSize(BLOCK_RENDER_SIZE / 2.0f),
 	_setup(false), _landscapeSetup(false), _built(false), VAO(0), VBO(0) {
-
-	_halfBlockSize = BLOCK_RENDER_SIZE / 2.0f;
 
 	_blocks = new BlockTypes::Enum**[CHUNK_SIZE];
 	for(int i = 0; i < CHUNK_SIZE; i++) {
