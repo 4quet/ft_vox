@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:27:26 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/22 11:34:57 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/23 09:43:03 by tpierron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -342,14 +342,17 @@ void	Chunk::setUVs(unsigned int width, unsigned int height, unsigned int nbr) {
 	// from top/left to bottom/right
 	float stepX = 1 / static_cast<float>(width);
 	float stepY = 1 / static_cast<float>(height);
+	float offsetX = 95 * stepX / 100;
+	float offsetY = 95 * stepY / 100;
+
 	std::vector<glm::vec2> uvs;
 	
 	for (int i = height; i > 0; i--) {
 		for (unsigned int j = 0; j < width; j++) {
-			uvs.push_back(glm::vec2(j * stepX, i * stepY));
-			uvs.push_back(glm::vec2(j * stepX + stepX, i * stepY));
-			uvs.push_back(glm::vec2(j * stepX + stepX, i * stepY - stepY));
-			uvs.push_back(glm::vec2(j * stepX, i * stepY - stepY));
+			uvs.push_back(glm::vec2((j * stepX) + offsetX, (i * stepY) - offsetY));
+			uvs.push_back(glm::vec2((j * stepX + stepX) - offsetX, (i * stepY) - offsetY));
+			uvs.push_back(glm::vec2((j * stepX + stepX) - offsetX, (i * stepY - stepY) + offsetY));
+			uvs.push_back(glm::vec2((j * stepX) + offsetX, (i * stepY - stepY) + offsetY));
 			if (uvs.size() == nbr * 4)
 				break;
 		}

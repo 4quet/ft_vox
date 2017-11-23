@@ -6,11 +6,11 @@
 #    By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/07/21 11:32:23 by tpierron          #+#    #+#              #
-#    Updated: 2017/11/22 11:36:07 by tpierron         ###   ########.fr        #
+#    Updated: 2017/11/23 10:36:25 by tpierron         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re install
 
 NAME = ft_vox
 
@@ -58,3 +58,7 @@ fclean: clean
 	rm -f $(NAME)
 
 re: fclean all
+
+install:
+	./script.sh
+	make
