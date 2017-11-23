@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/13 08:56:54 by thibautpier       #+#    #+#             */
-/*   Updated: 2017/11/22 10:52:56 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/23 13:11:56 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ BiomeManager::BiomeManager() {
     heightMapNoise.SetNoiseType(FastNoise::Perlin);
     heightMapNoise.SetFrequency(surfaceFreq);
 
-	caveFreq = 0.09f;
+	caveFreq = 0.125f;
 	caveNoise.SetSeed(SEED);
     caveNoise.SetNoiseType(FastNoise::Perlin);
     caveNoise.SetFrequency(caveFreq);

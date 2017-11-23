@@ -1,4 +1,4 @@
-#version 400
+#version 410
 
 in vec2 uv;
 in vec3 fragPos;
@@ -8,11 +8,10 @@ in vec4	eyePos;
 uniform vec3 lightPos;
 uniform sampler2D text;
 
-out vec4 outputColor;
+uniform float fogDensity;
+uniform vec3 fogColor;
 
-const vec4 fogColor = vec4(1.0, 1.0, 1.0, 1.0);
-const float fStart = 20.0;
-const float fEnd = 250.0;
+out vec4 outputColor;
 
 void main() {
 	vec3 lightColor = vec3(1.0, 1.0, 1.0);
@@ -31,10 +30,10 @@ void main() {
 	vec4	tex = texture(text, uvec);
 
 	float	fogCoord = abs(eyePos.z / eyePos.w);
-	float	fogFactor = (fEnd-fogCoord)/(fEnd-fStart); 
+	float 	fogFactor = exp(-pow(fogDensity*fogCoord, 2.0));
 	fogFactor = 1.0 - clamp(fogFactor, 0.0, 1.0);
 
 	outputColor = tex * vec4(result, 1.0);
-	outputColor = mix(outputColor, fogColor, fogFactor);
+	outputColor = mix(outputColor, vec4(fogColor, 1.0), fogFactor);
 
 }

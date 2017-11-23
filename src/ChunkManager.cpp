@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/24 17:29:47 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/22 11:39:34 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/23 13:04:45 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -197,7 +197,7 @@ bool	ChunkManager::shouldBeRendered(glm::vec3 & chunkPos) const {
 		return false;
 	if (_isAboveGround && chunkPos.y < CAVE_LEVEL)
 		return false;
-	if (_isUnderGround && dist > CHUNK_RENDER_SIZE * 3.0f)
+	if (_isUnderGround && dist > CHUNK_RENDER_SIZE * 6.0f)
 		return false;
 	if (fabs(d.x) > maxDistWidth)
 		return false;
@@ -306,6 +306,16 @@ void	ChunkManager::updateVisibilityList() {
 void	ChunkManager::render(Shader & shader) {
 
 	shader.use();
+	if (_isUnderGround)
+	{
+		shader.setFloat("fogDensity", 0.06f);
+		shader.setVec3("fogColor", 0.f, 0.f, 0.f);
+	}
+	else
+	{
+		shader.setFloat("fogDensity", 0.02f - VIEW_DISTANCE_WIDTH / 5000.f);
+		shader.setVec3("fogColor", 1.f, 1.f, 1.f);
+	}
 
 	_totalActiveBlocks = 0;
 	_totalActiveChunks = 0;

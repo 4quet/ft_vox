@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 09:23:13 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/22 11:39:08 by tpierron         ###   ########.fr       */
+/*   Updated: 2017/11/23 13:17:54 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,9 +36,9 @@ int     main() {
 	glm::vec3		camPos = camera.getPosition();
 	ChunkManager	m(camPos);
     
-    Shader	shader("src/shaders/vertex_shader.glvs", "src/shaders/fragment_shader.glfs");
-    //Shader	shader("src/shaders/vertex_fog_shader.glvs", "src/shaders/fragment_fog_shader.glfs");
+    Shader	shader("src/shaders/vertex_fog_shader.glvs", "src/shaders/fragment_fog_shader.glfs");
     Skybox  skybox("assets/textures/skybox");
+
     
     start = 0;
 	delta = 0;
