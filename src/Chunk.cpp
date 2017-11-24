@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:27:26 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/24 00:11:55 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/24 12:10:11 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,12 +69,6 @@ void	Chunk::reset() {
 	_landscapeSetup = false;
 	_activeBlocks = 0;
 	_totalVertices = 0;
-	left = NULL;
-	right = NULL;
-	top = NULL;
-	bottom = NULL;
-	front = NULL;
-	back = NULL;
 	if (mesh.size())
 		mesh.clear();
 }
@@ -224,7 +218,6 @@ void	Chunk::createFace(glm::vec3 point, Faces::Enum face, BlockTypes::Enum type)
 
 void	Chunk::getFaceUVs(Faces::Enum face, BlockTypes::Enum type, std::vector<glm::vec2> & uv) const {
 	unsigned int	texture = 0;
-	int r = 0;
 	uv.clear();
 
 	switch(type) {

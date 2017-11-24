@@ -6,7 +6,7 @@
 #    By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/07/21 11:32:23 by tpierron          #+#    #+#              #
-#    Updated: 2017/11/23 10:36:25 by tpierron         ###   ########.fr        #
+#    Updated: 2017/11/24 11:15:27 by lfourque         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,7 +29,7 @@ SRC =	src/Sdl_gl_win.cpp \
 		main.cpp \
 
 
-CFLAGS = -Wall -Wextra -Werror -Wno-unused
+CFLAGS = -Wall -Wextra -Werror
 OBJ_PATH = ./obj/
 OBJ_NAME = $(SRC:.cpp=.o)
 PACKAGES = sdl2 freetype2 glm

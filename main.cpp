@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 09:23:13 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/23 16:49:34 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/24 11:54:13 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,6 @@ int     main() {
     Shader	shader("src/shaders/vertex_fog_shader.glvs", "src/shaders/fragment_fog_shader.glfs");
     Skybox  skybox("assets/textures/skybox");
 
-    
     start = 0;
 	delta = 0;
 	fps = 0;

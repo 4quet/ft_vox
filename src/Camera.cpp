@@ -6,13 +6,13 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/25 13:39:17 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/22 14:18:06 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/24 12:13:43 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include"./Camera.hpp"
 
-Camera::Camera() : eyeVec(12.234f, 23.712f, -11.444f), yaw(0.f),
+Camera::Camera() : eyeVec(12.234f, 58.712f, -11.444f), yaw(0.f),
                     roll(0.f), mousePosition(0.f) {
     updateMatrix();
 }
@@ -108,6 +108,12 @@ bool     Camera::findBlockInchunk(glm::vec3 ray, glm::vec3 startPoint, Chunk & c
                         chunk.getBlock(x, y, z) != BlockTypes::INACTIVE) {
                             
                         chunk.getBlock(x, y, z) = BlockTypes::INACTIVE;
+						if (chunk.right) chunk.right->rebuild();
+						if (chunk.left) chunk.left->rebuild();
+						if (chunk.top) chunk.top->rebuild();
+						if (chunk.bottom) chunk.bottom->rebuild();
+						if (chunk.front) chunk.front->rebuild();
+						if (chunk.back) chunk.back->rebuild();
                         chunk.rebuild();
                         return true;
                     }

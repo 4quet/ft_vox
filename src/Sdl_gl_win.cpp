@@ -6,7 +6,7 @@
 /*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 09:34:29 by tpierron          #+#    #+#             */
-/*   Updated: 2017/11/22 14:12:11 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/11/24 11:47:28 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void	Sdl_gl_win::initSDL() {
                                         SDL_WINDOWPOS_UNDEFINED,
                                         SDL_WINDOWPOS_UNDEFINED,
                                         WINDOW_WIDTH, WINDOW_HEIGHT,
-                                        SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
+                                        SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN);
     ctx = SDL_GL_CreateContext(win);
     SDL_SetRelativeMouseMode(SDL_TRUE);
     
@@ -93,6 +93,7 @@ void    Sdl_gl_win::eventManager(std::vector<Action::Enum> & actions) {
                 case SDLK_s: a = Action::BACKWARD; break;
                 case SDLK_c: a = Action::DOWN; break;
                 case SDLK_SPACE: a = Action::UP; break;
+                case SDLK_f: a = Action::ERASE; break;
             }
 			actions.erase(std::remove(actions.begin(), actions.end(), a), actions.end());
         }
