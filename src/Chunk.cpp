@@ -60,7 +60,8 @@ void	Chunk::setup() {
 void	Chunk::rebuild() {
 	reset();
 	_landscapeSetup = true;
-	fillMesh();
+	setup();
+	buildMesh();
 }
 
 void	Chunk::reset() {
@@ -71,6 +72,8 @@ void	Chunk::reset() {
 	_totalVertices = 0;
 	if (mesh.size())
 		mesh.clear();
+	if (waterMesh.size())
+		waterMesh.clear();
 }
 
 bool	Chunk::isNeighborActive(Chunk * n, int x, int y, int z) const {
@@ -82,6 +85,7 @@ bool	Chunk::isNeighborActive(Chunk * n, int x, int y, int z) const {
 void	Chunk::fillMesh() {
 	BlockTypes::Enum 		t;
 
+	_position += glm::vec3(0.5f, 0.5f, 0.5f);
 	for (int x = 0; x < CHUNK_SIZE; x++) {
 		for (int y = 0; y < CHUNK_SIZE; y++) {
 			for (int z = 0; z < CHUNK_SIZE; z++) {
@@ -151,6 +155,7 @@ void	Chunk::fillMesh() {
 		mesh.insert(mesh.end(), waterMesh.begin(), waterMesh.end());
 		waterMesh.clear();
 	}
+	_position -= glm::vec3(0.5f, 0.5f, 0.5f);
 }
 
 void	Chunk::buildMesh() {

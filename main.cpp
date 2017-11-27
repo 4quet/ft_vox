@@ -51,14 +51,14 @@ int     main() {
         window.eventManager(actions);
         
         camera.move(actions, window.getMouseX(), window.getMouseY());
-		camPos = camera.getPosition();
-        
-		shader.use();
+        camPos = camera.getPosition();
+
+        shader.use();
         shader.setCamera(camera.getMatrix());
-		shader.setView();
-		shader.setVec3("lightPos", camPos.x, camPos.y, camPos.z);
-        
-        m.update(camera);
+        shader.setView();
+        shader.setVec3("lightPos", camPos.x, camPos.y, camPos.z);
+
+        m.update(camera);               
 		if (find(actions.begin(), actions.end(), Action::ERASE) != actions.end()) {
             trigger++;
             if (trigger > 50) {
@@ -78,7 +78,7 @@ int     main() {
 		if (find(actions.begin(), actions.end(), Action::DEBUG) != actions.end()) {
         	UIManager(info, fps, m, camPos);
 		}
-    	info.renderText("+", WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2, glm::vec3(1.f, 1.f, 1.f));
+    	info.renderText("+", WINDOW_WIDTH / 2 - 12, WINDOW_HEIGHT / 2 - 12, glm::vec3(1.f, 1.f, 1.f));
         SDL_GL_SwapWindow(window.getWin());
     }
     return 0;

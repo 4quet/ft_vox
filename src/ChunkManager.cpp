@@ -297,9 +297,11 @@ void	ChunkManager::render(Shader & shader) {
 		if (chunk->isBuilt() == false && chunk->isSetup() == true) {
 			chunk->buildMesh();
 		}
-		chunk->render();
-		_totalActiveChunks += 1;
-		_totalActiveBlocks += chunk->getActiveBlocks();
+		if (chunk->isBuilt() && chunk->isSetup()) {
+			chunk->render();
+			_totalActiveChunks += 1;
+			_totalActiveBlocks += chunk->getActiveBlocks();
+		}
 	}
 }
 

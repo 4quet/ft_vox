@@ -66,6 +66,13 @@ void    Sdl_gl_win::eventManager(std::vector<Action::Enum> & actions) {
             return actions.push_back(Action::ESCAPE);
         }
     
+        if (events.type == SDL_MOUSEBUTTONDOWN && events.button.button == SDL_BUTTON_LEFT) {
+            if (find(actions.begin(), actions.end(), Action::ERASE) == actions.end())
+                actions.push_back(Action::ERASE);
+        }
+        if (events.type == SDL_MOUSEBUTTONUP && events.button.button == SDL_BUTTON_LEFT) {
+			actions.erase(std::remove(actions.begin(), actions.end(), Action::ERASE), actions.end());
+        }
         if (events.type == SDL_KEYDOWN) {
             Action::Enum a;
             switch(events.key.keysym.sym) {
@@ -77,7 +84,6 @@ void    Sdl_gl_win::eventManager(std::vector<Action::Enum> & actions) {
                 case SDLK_SPACE: a = Action::UP; break;
                 case SDLK_TAB: a = Action::DEBUG; break;
                 case SDLK_LSHIFT: a = Action::TOGGLESPEED; break;
-                case SDLK_f: a = Action::ERASE; break;
             }
 			if (find(actions.begin(), actions.end(), a) == actions.end())
                 actions.push_back(a);
@@ -93,7 +99,6 @@ void    Sdl_gl_win::eventManager(std::vector<Action::Enum> & actions) {
                 case SDLK_s: a = Action::BACKWARD; break;
                 case SDLK_c: a = Action::DOWN; break;
                 case SDLK_SPACE: a = Action::UP; break;
-                case SDLK_f: a = Action::ERASE; break;
             }
 			actions.erase(std::remove(actions.begin(), actions.end(), a), actions.end());
         }

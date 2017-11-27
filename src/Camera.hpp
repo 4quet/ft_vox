@@ -36,7 +36,6 @@ class Camera {
 		void		updateMatrix();
 		void		manageMouse(glm::vec2);
 		glm::vec3	getRay() const;
-		bool     	findBlockInchunk(glm::vec3 ray, glm::vec3 startPoint, Chunk & chunk);
 
 		glm::mat4	matrix;
 		glm::vec3	eyeVec;

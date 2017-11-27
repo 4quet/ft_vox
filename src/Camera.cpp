@@ -85,63 +85,87 @@ glm::vec3   Camera::getPosition() const {
 }
 
 glm::vec3		Camera::getRay() const {
-    glm::vec3 ray(matrix[0][2], matrix[1][2], matrix[2][2]);
+    glm::vec3 ray(-matrix[0][2], -matrix[1][2], -matrix[2][2]);
     return ray;
 }
 
+static int      sign(float x) { return (x > 0) ? 1 : ((x < 0) ? -1 : 0); }
+static float    intBound(float s, float ds) { return ( ds > 0 ? (ceil(s) - s) / ds : (s - floor(s)) / -ds ); }
 
-bool     Camera::findBlockInchunk(glm::vec3 ray, glm::vec3 startPoint, Chunk & chunk) {
-    glm::vec3 chunkPos = chunk.getPosition();
-    for (float i = 0; i < CHUNK_RENDER_SIZE; i += BLOCK_RENDER_SIZE) {
-        glm::vec3 posCheck = startPoint + ray * -i;
-        if (posCheck.x < chunkPos.x && posCheck.x > chunkPos.x + CHUNK_RENDER_SIZE &&
-            posCheck.y < chunkPos.y && posCheck.y > chunkPos.y + CHUNK_RENDER_SIZE &&
-            posCheck.z < chunkPos.z && posCheck.z > chunkPos.z + CHUNK_RENDER_SIZE) {
-                return false;
-        }
-        for (int x = 0; x < CHUNK_SIZE; x++) {
-            for (int y = 0; y < CHUNK_SIZE; y++) {
-                for (int z = 0; z < CHUNK_SIZE; z++) {
-                    if (posCheck.x > chunkPos.x + x * BLOCK_RENDER_SIZE && posCheck.x < chunkPos.x + x * BLOCK_RENDER_SIZE + BLOCK_RENDER_SIZE &&
-                    	posCheck.y > chunkPos.y + y * BLOCK_RENDER_SIZE && posCheck.y < chunkPos.y + y * BLOCK_RENDER_SIZE + BLOCK_RENDER_SIZE &&
-                        posCheck.z > chunkPos.z + z * BLOCK_RENDER_SIZE && posCheck.z < chunkPos.z + z * BLOCK_RENDER_SIZE + BLOCK_RENDER_SIZE &&
-                        chunk.getBlock(x, y, z) != BlockTypes::INACTIVE) {
-                            
-                        chunk.getBlock(x, y, z) = BlockTypes::INACTIVE;
-						if (chunk.right) chunk.right->rebuild();
-						if (chunk.left) chunk.left->rebuild();
-						if (chunk.top) chunk.top->rebuild();
-						if (chunk.bottom) chunk.bottom->rebuild();
-						if (chunk.front) chunk.front->rebuild();
-						if (chunk.back) chunk.back->rebuild();
-                        chunk.rebuild();
-                        return true;
-                    }
-                }
-            }
-        }
-    }
-    return false;
-}
-
-void        Camera::deleteBlock(std::map<float, Chunk*> & chunks) {
-    glm::vec3 ray = getRay();
-    glm::vec3 startPoint = eyeVec;
+void        Camera::deleteBlock(std::map<float, Chunk*> & chunks) {      
+    glm::vec3   direction = getRay();
+    glm::vec3   origin = eyeVec;
+    float       range = 10.f;
+            
+    float oX = origin.x;
+    float oY = origin.y;
+    float oZ = origin.z;
     
-    for (float i = 0.f; i < 2.f * CHUNK_RENDER_SIZE; i += BLOCK_RENDER_SIZE / 2) {
-        glm::vec3 posCheck = startPoint + (ray * -i);
-        for (std::map<float, Chunk*>::iterator it = chunks.begin(); it != chunks.end(); ++it) {
-            glm::vec3 chunkPos = it->second->getPosition();
-            if (posCheck.x > chunkPos.x && posCheck.x < chunkPos.x + CHUNK_RENDER_SIZE &&
-                posCheck.y > chunkPos.y && posCheck.y < chunkPos.y + CHUNK_RENDER_SIZE &&
-                posCheck.z > chunkPos.z && posCheck.z < chunkPos.z + CHUNK_RENDER_SIZE) {
-                    
-                bool b = findBlockInchunk(ray, startPoint + ray * -(i - static_cast<float>(BLOCK_RENDER_SIZE)), *it->second);
-                if (b)
-                    return;
-                else
-                    continue;
+    float x = floor(oX);
+    float y = floor(oY);
+    float z = floor(oZ);
+    
+    float dX = direction.x;
+    float dY = direction.y;
+    float dZ = direction.z;
+
+    int stepX = sign(dX);
+    int stepY = sign(dY);
+    int stepZ = sign(dZ);
+
+    float tMaxX = intBound(oX, dX);
+    float tMaxY = intBound(oY, dY);
+    float tMaxZ = intBound(oZ, dZ);
+
+    float deltaX = stepX / dX;
+    float deltaY = stepY / dY;
+    float deltaZ = stepZ / dZ;
+
+    while (fabs(oX - x) < range && fabs(oY - y) < range && fabs(oZ - z) < range) {
+        if(tMaxX <= tMaxY && tMaxX <= tMaxZ) {
+            x += stepX;
+            tMaxX += deltaX;
+        } else if(tMaxY <= tMaxX && tMaxY <= tMaxZ) {
+            y += stepY;
+            tMaxY += deltaY;
+        } else {
+            z += stepZ;
+            tMaxZ += deltaZ;
+        }
+
+        for (std::map<float, Chunk*>::iterator it = chunks.begin(); it != chunks.end(); ++it) {      
+            Chunk & chunk = *it->second;
+            glm::vec3  chunkPos = chunk.getPosition();
+
+            if (x >= chunkPos.x && x < chunkPos.x + CHUNK_RENDER_SIZE &&
+                y >= chunkPos.y && y < chunkPos.y + CHUNK_RENDER_SIZE &&
+                z >= chunkPos.z && z < chunkPos.z + CHUNK_RENDER_SIZE) {
+
+                    for (int cx = 0; cx < CHUNK_SIZE; cx++) {
+                        for (int cy = 0; cy < CHUNK_SIZE; cy++) {
+                            for (int cz = 0; cz < CHUNK_SIZE; cz++) {
+                                
+                                if (x == chunkPos.x + cx * BLOCK_RENDER_SIZE &&
+                                    y == chunkPos.y + cy * BLOCK_RENDER_SIZE &&
+                                    z == chunkPos.z + cz * BLOCK_RENDER_SIZE &&
+                                    chunk.getBlock(cx, cy, cz) != BlockTypes::INACTIVE) {
+
+                                        chunk.getBlock(cx, cy, cz) = BlockTypes::INACTIVE;
+                                		if (chunk.right) chunk.right->rebuild();
+                                    	if (chunk.left) chunk.left->rebuild();
+                    					if (chunk.top) chunk.top->rebuild();
+                						if (chunk.bottom) chunk.bottom->rebuild();
+                        				if (chunk.front) chunk.front->rebuild();
+                                        if (chunk.back) chunk.back->rebuild();
+                                        chunk.rebuild();
+                                        return;
+                                }
+                            }
+                        }
+                    }
             }
         }
     }
+    
 }
+    
