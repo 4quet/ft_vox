@@ -22,20 +22,22 @@ ChunkManager::ChunkManager(glm::vec3 camPos) :
 
 	setGroundFlags();
 	
-	int	startWidth = -(VIEW_DISTANCE_WIDTH / 2);
-	int endWidth = VIEW_DISTANCE_WIDTH / 2;
-	int	startHeight = -(VIEW_DISTANCE_HEIGHT / 2);
-	int endHeight = VIEW_DISTANCE_HEIGHT / 2;
-	for (int x = camPos.x + startWidth; x < camPos.x + endWidth; ++x) {
-		for (int y = camPos.y + startHeight; y < camPos.y + endHeight; ++y) {
-			for (int z = camPos.z + startWidth; z < camPos.z + endWidth; ++z) {
-				_chunkMap.insert( initChunkAt(x, y, z) );
+	Chunk *		chunk;
+	glm::vec3	chunkPos;
+
+	camPos.x = floor(camPos.x);
+	camPos.y = floor(camPos.y);
+	camPos.z = floor(camPos.z);
+	
+	for (float x = camPos.x - _maxDistWidth; x < camPos.x + _maxDistWidth; x += CHUNK_RENDER_SIZE) {
+		for (float y = -_maxDistHeight; y < _maxDistHeight; y += CHUNK_RENDER_SIZE) {
+			for (float z = camPos.z - _maxDistWidth; z < camPos.z + _maxDistWidth; z += CHUNK_RENDER_SIZE) {
+				chunk = new Chunk(glm::vec3(x, y, z));
+				bm.setupLandscape(*chunk);
+				_chunkMap.insert( std::pair<index3D, Chunk*>(index3D(x, y, z), chunk) );
 			}
 		}
 	}
-
-	Chunk *		chunk;
-	glm::vec3	chunkPos;
 
 	for (std::map<index3D, Chunk*>::iterator it = _chunkMap.begin(); it != _chunkMap.end(); ++it) {
 		chunk = it->second;
@@ -52,17 +54,6 @@ ChunkManager::~ChunkManager() {
 	for (std::map<index3D, Chunk*>::iterator it = _chunkMap.begin(); it != _chunkMap.end(); ++it) {
 		delete it->second;
 	}
-}
-
-std::pair<index3D, Chunk*>	ChunkManager::initChunkAt(float xx, float yy, float zz) {
-	float	chunkRenderSize = CHUNK_RENDER_SIZE;
-	float	xPos = xx * chunkRenderSize;
-	float	yPos = yy * chunkRenderSize;
-	float	zPos = zz * chunkRenderSize;
-
-	Chunk *		chunk = new Chunk(glm::vec3(xPos, yPos, zPos));
-	bm.setupLandscape(*chunk);
-	return std::pair<index3D, Chunk*>(index3D(xPos, yPos, zPos), chunk);
 }
 
 void	ChunkManager::setGroundFlags() {
@@ -230,7 +221,7 @@ void	ChunkManager::setRenderList(Camera & camera) {
 }
 
 void	ChunkManager::updateUnloadList() {
-	for (std::vector<index3D>::iterator it = _unloadList.begin(); it != _unloadList.end(); ++it) {
+		for (std::vector<index3D>::iterator it = _unloadList.begin(); it != _unloadList.end(); ++it) {
 		_chunkMap.erase(*it);
 	}
 	_unloadList.clear();

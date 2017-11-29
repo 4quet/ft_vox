@@ -60,7 +60,6 @@ class ChunkManager
 		void						updateVisibilityList();
 		void						setRenderList(Camera &);
 
-		std::pair<index3D, Chunk*>	initChunkAt(float, float, float);
 		bool						shouldBeRendered(glm::vec3 &) const;
 		void						setGroundFlags();
 		void						setNeighbors(Chunk &);
