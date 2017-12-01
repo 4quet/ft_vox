@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ChunkManager.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/24 17:29:47 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/24 12:17:27 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/01 17:51:15 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ ChunkManager::ChunkManager(glm::vec3 camPos) :
 	_camPos(camPos),
 	_maxDistWidth((CHUNK_RENDER_SIZE * VIEW_DISTANCE_WIDTH) / 2.0f),
 	_maxDistHeight((CHUNK_RENDER_SIZE * VIEW_DISTANCE_HEIGHT) / 2.0f) {
-
+		
 	Chunk::loadTexturesAtlas("assets/textures/textures.png");
 	Chunk::setUVs(3, 4, 10);
 
@@ -62,7 +62,7 @@ void	ChunkManager::setGroundFlags() {
 }
 
 void	ChunkManager::update(Camera & camera) {
-
+	
 	_camPos = camera.getPosition();
 
 	setGroundFlags();
@@ -180,7 +180,7 @@ bool	ChunkManager::shouldBeRendered(glm::vec3 & chunkPos) const {
 		return false;
 	if (_isAboveGround && chunkPos.y < CAVE_LEVEL)
 		return false;
-	if (_isUnderGround && dist > CHUNK_RENDER_SIZE * 8.0f)
+	if (_isUnderGround && dist > CHUNK_RENDER_SIZE * 5.0f)
 		return false;
 	if (fabs(d.x) > _maxDistWidth - CHUNK_RENDER_SIZE)
 		return false;
@@ -285,10 +285,7 @@ void	ChunkManager::render(Shader & shader) {
 
 	for (std::map<float, Chunk*>::reverse_iterator it = _renderMap.rbegin(); it != _renderMap.rend(); ++it) {
 		chunk = it->second;
-		if (chunk->isBuilt() == false && chunk->isSetup() == true) {
-			chunk->buildMesh();
-		}
-		if (chunk->isBuilt() && chunk->isSetup()) {
+		if (chunk->isSetup()) {
 			chunk->render();
 			_totalActiveChunks += 1;
 			_totalActiveBlocks += chunk->getActiveBlocks();

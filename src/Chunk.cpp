@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Chunk.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:27:26 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/24 12:10:11 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/01 17:49:14 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,30 +19,33 @@ unsigned int 			Chunk::texturesID;
 Chunk::Chunk(glm::vec3 position)
 	: left(NULL), right(NULL), top(NULL), bottom(NULL), front(NULL), back(NULL),
 	_position(position), _activeBlocks(0), _totalVertices(0), _halfBlockSize(BLOCK_RENDER_SIZE / 2.0f),
-	_setup(false), _landscapeSetup(false), _built(false), VAO(0), VBO(0) {
-
-	_blocks = new BlockTypes::Enum**[CHUNK_SIZE];
-	for(int i = 0; i < CHUNK_SIZE; i++) {
-		_blocks[i] = new BlockTypes::Enum*[CHUNK_SIZE];
-		for(int j = 0; j < CHUNK_SIZE; j++) {
-			_blocks[i][j] = new BlockTypes::Enum[CHUNK_SIZE];
-		}
-	}
+	_setup(false), _landscapeSetup(false), VAO(0), VBO(0) {
+	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &VBO);
+	glBindVertexArray(VAO);
+		
+		glBindBuffer(GL_ARRAY_BUFFER, VBO);
+		
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)0);
+		glEnableVertexAttribArray(0);
+		
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+		glEnableVertexAttribArray(1);
+		
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(6 * sizeof(GLfloat)));
+		glEnableVertexAttribArray(2);
+		
+	glBindVertexArray(0);	
 }
 
 Chunk::~Chunk() {
-	for (int i = 0; i < CHUNK_SIZE; ++i) {
-		for (int j = 0; j < CHUNK_SIZE; ++j) {
-			delete [] _blocks[i][j];
-		}
-		delete [] _blocks[i];
-	}
-	delete [] _blocks;
+	glDeleteBuffers(1, &VBO);
+	glDeleteVertexArrays(1, &VAO);
 }
 
 void	Chunk::render() {
 	if (_totalVertices > 0) {
-		glActiveTexture(texturesID);
+		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texturesID);
 		glBindVertexArray(VAO);
 		glDrawArrays(GL_TRIANGLES, 0, _totalVertices);
@@ -52,7 +55,9 @@ void	Chunk::render() {
 
 void	Chunk::setup() {
 	if (_setup == false) {
-		fillMesh();
+			fillMesh();
+		if (mesh.size() > 0)
+			buildMesh();
 		_setup = true;
 	}
 }
@@ -61,19 +66,15 @@ void	Chunk::rebuild() {
 	reset();
 	_landscapeSetup = true;
 	setup();
-	buildMesh();
 }
 
 void	Chunk::reset() {
 	_setup = false;
-	_built = false;
 	_landscapeSetup = false;
 	_activeBlocks = 0;
 	_totalVertices = 0;
-	if (mesh.size())
-		mesh.clear();
-	if (waterMesh.size())
-		waterMesh.clear();
+	mesh.clear();
+	waterMesh.clear();
 }
 
 bool	Chunk::isNeighborActive(Chunk * n, int x, int y, int z) const {
@@ -140,10 +141,11 @@ void	Chunk::fillMesh() {
 				}
 				else if (_blocks[x][y][z] == BlockTypes::WATER) {
 					if (y == CHUNK_SIZE - 1) {
+						t = BlockTypes::WATER;
 						createFace( glm::vec3(	(_position.x + x * BLOCK_RENDER_SIZE) - _halfBlockSize,
 												(_position.y + y * BLOCK_RENDER_SIZE) + _halfBlockSize,
 												(_position.z + z * BLOCK_RENDER_SIZE) + _halfBlockSize),
-												Faces::TOP, BlockTypes::WATER);
+												Faces::TOP, t);
 					}
 					_activeBlocks++;
 				}
@@ -159,34 +161,17 @@ void	Chunk::fillMesh() {
 }
 
 void	Chunk::buildMesh() {
-	if (_built == false) {
-		if (!VAO)
-			glGenVertexArrays(1, &VAO);
-		if (!VBO)
-			glGenBuffers(1, &VBO);
-
 		glBindVertexArray(VAO);
 
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glBufferData(GL_ARRAY_BUFFER, mesh.size() * sizeof(float), &mesh[0], GL_STATIC_DRAW);
-
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)0);
-		glEnableVertexAttribArray(0);
-
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
-		glEnableVertexAttribArray(1);
-
-		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(6 * sizeof(GLfloat)));
-		glEnableVertexAttribArray(2);
+			glBindBuffer(GL_ARRAY_BUFFER, VBO);
+			glBufferData(GL_ARRAY_BUFFER, mesh.size() * sizeof(float), &mesh[0], GL_STATIC_DRAW);
 
 		glBindVertexArray(0);	
-		_built = true;
 		mesh.clear();
 		waterMesh.clear();
-	}
 }
 
-void	Chunk::createFace(glm::vec3 point, Faces::Enum face, BlockTypes::Enum type) {
+void	Chunk::createFace(glm::vec3 point, Faces::Enum face, BlockTypes::Enum & type) {
 	glm::vec3 incX = glm::vec3(BLOCK_RENDER_SIZE, 0, 0);
 	glm::vec3 incY = glm::vec3(0, BLOCK_RENDER_SIZE, 0);
 	glm::vec3 incZ = glm::vec3(0, 0, BLOCK_RENDER_SIZE);
@@ -256,7 +241,7 @@ void	Chunk::getFaceUVs(Faces::Enum face, BlockTypes::Enum type, std::vector<glm:
 	uv.insert(uv.end(), { uvs[texture + 2], uvs[texture + 3], uvs[texture], uvs[texture + 2], uvs[texture], uvs[texture + 1] });
 }
 
-void	Chunk::addFace(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, glm::vec3 p4, glm::vec3  normal, std::vector<glm::vec2> & uv, BlockTypes::Enum type) {
+void	Chunk::addFace(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, glm::vec3 p4, glm::vec3  normal, std::vector<glm::vec2> & uv, BlockTypes::Enum & type) {
 	std::vector<float> &	rmesh = (type == BlockTypes::WATER) ? waterMesh : mesh;
 	rmesh.insert(rmesh.end(), {
 		p1.x, p1.y, p1.z, normal.x, normal.y, normal.z, uv[0].x, uv[0].y,
@@ -282,7 +267,7 @@ size_t		Chunk::getActiveBlocks() const {
 	return _activeBlocks;
 }
 
-BlockTypes::Enum &		Chunk::getBlock(int x, int y, int z) const {
+BlockTypes::Enum &		Chunk::getBlock(int x, int y, int z) {
 	return _blocks[x][y][z];
 }
 
@@ -296,10 +281,6 @@ bool		Chunk::isLandscapeSetup() const {
 
 void		Chunk::setLandscapeSetup(bool b) {
 	_landscapeSetup = b;
-}
-
-bool		Chunk::isBuilt() const {
-	return _built;
 }
 
 void	Chunk::loadTexturesAtlas(std::string file) {

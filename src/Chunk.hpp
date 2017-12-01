@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Chunk.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tpierron <tpierron@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lfourque <lfourque@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/23 11:23:42 by lfourque          #+#    #+#             */
-/*   Updated: 2017/11/23 17:28:07 by lfourque         ###   ########.fr       */
+/*   Updated: 2017/12/01 17:52:44 by lfourque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,12 +36,11 @@ class Chunk
 		void				buildMesh();
 
 		glm::vec3 const &	getPosition() const;
-		BlockTypes::Enum &	getBlock(int, int, int) const;
+		BlockTypes::Enum &	getBlock(int, int, int);
 		size_t				getActiveBlocks() const;
 
 		bool				isSetup() const;
 		bool				isLandscapeSetup() const;
-		bool				isBuilt() const;
 
 		void				setPosition(glm::vec3);
 		void				setLandscapeSetup(bool);
@@ -61,14 +60,13 @@ class Chunk
 
 		glm::vec3						_position;
 
-		BlockTypes::Enum***				_blocks;
+		BlockTypes::Enum				_blocks[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE];
 		size_t							_activeBlocks;
 		size_t							_totalVertices;
 		float							_halfBlockSize;
 
 		bool							_setup;
 		bool							_landscapeSetup;
-		bool							_built;
 
 		GLuint							VAO;
 		GLuint							VBO;
@@ -79,8 +77,8 @@ class Chunk
 		static std::vector<glm::vec2>	uvs;
 
 		void	fillMesh();
-		void	createFace(glm::vec3 point, Faces::Enum face, BlockTypes::Enum type);
-		void	addFace(glm::vec3, glm::vec3, glm::vec3, glm::vec3, glm::vec3, std::vector<glm::vec2> &, BlockTypes::Enum);
+		void	createFace(glm::vec3 point, Faces::Enum face, BlockTypes::Enum & type);
+		void	addFace(glm::vec3, glm::vec3, glm::vec3, glm::vec3, glm::vec3, std::vector<glm::vec2> &, BlockTypes::Enum &);
 		void	getFaceUVs(Faces::Enum face, BlockTypes::Enum t, std::vector<glm::vec2> &) const;
 		bool	isNeighborActive(Chunk *, int, int, int) const;
 };
